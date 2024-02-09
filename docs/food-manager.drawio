@@ -1,11 +1,11 @@
-<mxfile host="Electron" modified="2024-02-03T16:41:09.970Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.0 Chrome/114.0.5735.289 Electron/25.8.3 Safari/537.36" etag="8EucoRF7BpFx8b0NEpzv" version="22.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-08T17:10:13.976Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="F-mQd4xu1UBiF4J1j3ey" version="23.0.2" type="device">
   <diagram name="Page-1" id="T6cko9FeHpLKsRzLdbao">
-    <mxGraphModel dx="1891" dy="1093" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="873" dy="474" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-1" value="FoodStorageDB (Postgres, Mysql, MSSql)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
-          <mxGeometry x="205" y="66.25" width="170" height="70" as="geometry" />
+        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-1" value="FoodStorageDB (Postgres, Mysql, MSSql)&lt;br&gt;Склад продуктов" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
+          <mxGeometry x="192.5" width="195" height="136.25" as="geometry" />
         </mxCell>
         <mxCell id="_-U-S_5GEpXPM-ycMZ6S-2" value="&lt;b&gt;FoodStorageServiceAPI&amp;nbsp;&lt;/b&gt;(WebAPI)&lt;br&gt;Роль: учет продуктров на складе&lt;br&gt;Задачи: хранение справочника продуктов, а также список доступных на складе с возможностью добавления, и расхода." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="150" y="217.5" width="280" height="132.5" as="geometry" />
@@ -13,13 +13,13 @@
         <mxCell id="_-U-S_5GEpXPM-ycMZ6S-3" value="&lt;b&gt;FoodPlannerServiceAPI&lt;/b&gt; (WebAPI)&lt;br&gt;Роль: Сервис планирования&lt;br&gt;Задачи: Генерация отчета израсходованных продуктов, c истекшим сроком годности, а также отчета необходимых продуктов для закупки. Содержит справочники с указанием не снижаемым остатком продуктов, а также стоимости от поставщиков.&lt;br&gt;&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="470" y="217.5" width="285" height="135" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-4" value="Повар (Cooker)&lt;br&gt;Роль: Прием товаров с закупки и помещение, &lt;br&gt;и вывод товаров на кухню" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-4" value="Повар (Cooker)&lt;br&gt;Роль: вывод товаров на кухню&lt;br&gt;2. Добавление выполнен" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="425" y="850" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-5" value="Менеджер по закупкам&lt;br&gt;(Food Manager)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-5" value="Менеджер по закупкам&lt;br&gt;(Food Manager)&lt;br&gt;1. Принимает товар на склад&lt;br&gt;2. Получает отчет на закупки&lt;br&gt;, срок годности, предположение лучшего магазина" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="1030" y="850" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-10" value="&lt;b&gt;ReportNotifyServiceAPI&lt;/b&gt;&amp;nbsp;(WebAPI)&lt;br&gt;Роль: Сервис доставки отчетов товаров для закупки Менеджеру по закупкам&lt;br&gt;Задачи: Отправка репорта по email, sms или как telegramBot .&lt;br&gt;&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-10" value="&lt;b&gt;NotifyServiceAPI&lt;/b&gt;&amp;nbsp;(Service)&lt;br&gt;Роль: Сервис доставки отчетов товаров для закупки Менеджеру по закупкам&lt;br&gt;Задачи: Отправка репорта по email, sms или как telegramBot .&lt;br&gt;&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="790" y="217.5" width="250" height="132.5" as="geometry" />
         </mxCell>
         <mxCell id="_-U-S_5GEpXPM-ycMZ6S-12" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="_-U-S_5GEpXPM-ycMZ6S-2" target="_-U-S_5GEpXPM-ycMZ6S-1" edge="1">
@@ -28,19 +28,10 @@
             <mxPoint x="230" y="150" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-13" value="FoodPlannerDB (Postgres, Mysql, MSSql)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
-          <mxGeometry x="512.5" y="70" width="200" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-14" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="_-U-S_5GEpXPM-ycMZ6S-3" target="_-U-S_5GEpXPM-ycMZ6S-13" edge="1">
-          <mxGeometry width="100" height="100" relative="1" as="geometry">
-            <mxPoint x="460" y="270" as="sourcePoint" />
-            <mxPoint x="560" y="170" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="_-U-S_5GEpXPM-ycMZ6S-22" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="150" y="600" width="1210" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-23" value="&lt;b&gt;CookerUI&lt;/b&gt;&lt;br&gt;Роль: Консоль для повара.&lt;br&gt;Задачи: Колл-венный ввод и вывод продуктов со склада" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-23" value="&lt;b&gt;CookerUI&lt;/b&gt;&lt;br&gt;Роль: Консоль для повара.&lt;br&gt;Задачи: Колл-венный ввод и вывод продуктов со склада. &lt;br&gt;Создание меню, рецепты.&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="175" y="655" width="555" height="100" as="geometry" />
         </mxCell>
         <mxCell id="_-U-S_5GEpXPM-ycMZ6S-24" value="&lt;b&gt;ManagerUI&lt;/b&gt;&lt;br&gt;Роль: Консоль для менеджера.&lt;br&gt;Задачи: Отображение отчетов, список продуктров и динамика цен" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -49,61 +40,61 @@
         <mxCell id="_-U-S_5GEpXPM-ycMZ6S-25" value="FoodManagerPortal (WebUI, React JS or Razor)" style="text;html=1;strokeColor=default;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="150" y="600" width="295" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-33" value="&lt;b&gt;FoodSupplierServiceAPI&lt;/b&gt; (WebAPI)&lt;br&gt;Роль: Сервис выборки цен с API поставщиков&lt;br&gt;Задачи: Парсинг популярных сетевый магазинов забор стоимости и помещение в базу данных&lt;br&gt;&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-33" value="&lt;b&gt;FoodSupplierServiceAPI&lt;/b&gt; (Service)&lt;br&gt;Роль: Сервис выборки цен с API поставщиков&lt;br&gt;Задачи: Парсинг популярных сетевый магазинов забор стоимости и помещение в базу данных&lt;br&gt;&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1070" y="217.5" width="290" height="132.5" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-37" value="FoodCostDB (Postgres, Mysql, MSSql)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
-          <mxGeometry x="810" y="70" width="200" height="70" as="geometry" />
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-1" value="&lt;b&gt;RabbitMQ Service&lt;br&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="150" y="430" width="1210" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="_-U-S_5GEpXPM-ycMZ6S-38" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="_-U-S_5GEpXPM-ycMZ6S-37" edge="1">
-          <mxGeometry width="100" height="100" relative="1" as="geometry">
-            <mxPoint x="910.5" y="218" as="sourcePoint" />
-            <mxPoint x="857.5" y="170" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-1" value="&lt;b&gt;RabbitMQ Service&lt;br&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="150" y="430" width="1210" height="95" as="geometry" />
-        </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-6" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="EZJYrZKHXKxH80ixJi9q-1">
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-6" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="EZJYrZKHXKxH80ixJi9q-1" edge="1">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="190" y="450" as="sourcePoint" />
             <mxPoint x="290" y="350" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-7" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-7" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.383;exitY=-0.017;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1" source="_-U-S_5GEpXPM-ycMZ6S-22">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="610" y="430.5" as="sourcePoint" />
             <mxPoint x="612" y="352.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-8" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-8" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="914" y="428" as="sourcePoint" />
             <mxPoint x="916" y="350" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-9" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-9" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="1214" y="430.5" as="sourcePoint" />
             <mxPoint x="1216" y="352.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-11" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.114;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
-          <mxGeometry width="100" height="100" relative="1" as="geometry">
-            <mxPoint x="755" y="603" as="sourcePoint" />
-            <mxPoint x="757" y="525" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-12" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.239;entryY=0.994;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="_-U-S_5GEpXPM-ycMZ6S-22">
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-12" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.239;entryY=0.994;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="_-U-S_5GEpXPM-ycMZ6S-22" edge="1">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="439" y="840" as="sourcePoint" />
             <mxPoint x="445" y="790" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="EZJYrZKHXKxH80ixJi9q-13" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.239;entryY=0.994;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+        <mxCell id="EZJYrZKHXKxH80ixJi9q-13" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.239;entryY=0.994;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="1044.33" y="841" as="sourcePoint" />
             <mxPoint x="1044.33" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1WLvX2fDrFhUAKe2hhPe-1" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.707;entryY=1.008;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.295;exitY=-0.011;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="_-U-S_5GEpXPM-ycMZ6S-22" target="_-U-S_5GEpXPM-ycMZ6S-2">
+          <mxGeometry width="100" height="100" relative="1" as="geometry">
+            <mxPoint x="351" y="598" as="sourcePoint" />
+            <mxPoint x="780" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1WLvX2fDrFhUAKe2hhPe-2" value="FoodSupllierDB (Postgres, Mysql, MSSql)&lt;br&gt;Стоимость" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="10" width="200" height="126.25" as="geometry" />
+        </mxCell>
+        <mxCell id="1WLvX2fDrFhUAKe2hhPe-3" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="100" height="100" relative="1" as="geometry">
+            <mxPoint x="1220" y="218" as="sourcePoint" />
+            <mxPoint x="1220" y="140" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
