@@ -12,8 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FoodStorage.BusinessLogic\FoodStorage.BusinessLogic.csproj" />
-    <ProjectReference Include="..\FoodStorage.DataAccess\FoodStorage.DataAccess.csproj" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Models\" />
+    <Folder Include="Mapping\" />
   </ItemGroup>
 
 </Project>
