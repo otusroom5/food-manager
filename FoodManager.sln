@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FoodSupplier", "FoodSupplie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{8CEA2DD1-3D46-4D01-8C34-449AC799F2AE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserAuth", "UserAuth", "{48A59C55-375D-484A-BF5F-6DB27A9A5F4F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FoodUserAuth", "FoodUserAuth", "{48A59C55-375D-484A-BF5F-6DB27A9A5F4F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserNotifier", "UserNotifier", "{F1D5A5F4-FBFD-47E5-B2F4-F0AF79C430C2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FoodUserNotifier", "FoodUserNotifier", "{F1D5A5F4-FBFD-47E5-B2F4-F0AF79C430C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Application", "Core.Application", "{BB0D3455-7173-4F1F-AA76-5E1946FE032F}"
 EndProject
@@ -41,17 +41,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodSupplier.WebAPI", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodManager.Shared", "src\Shared\FoodManager.Shared\FoodManager.Shared.csproj", "{10F9D466-03CD-4C76-BD44-A886CF8FB7EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAuth.DataAccess", "src\UserAuth\UserAuth.DataAccess\UserAuth.DataAccess.csproj", "{72E12353-27DC-4503-9E67-87C2AAD41773}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserAuth.DataAccess", "src\FoodUserAuth\FoodUserAuth.DataAccess\FoodUserAuth.DataAccess.csproj", "{72E12353-27DC-4503-9E67-87C2AAD41773}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAuth.BusinessLogic", "src\UserAuth\UserAuth.BusinessLogic\UserAuth.BusinessLogic.csproj", "{C6DA7F22-8728-4699-9597-8158D5EE9ACF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserAuth.BusinessLogic", "src\FoodUserAuth\FoodUserAuth.BusinessLogic\FoodUserAuth.BusinessLogic.csproj", "{C6DA7F22-8728-4699-9597-8158D5EE9ACF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAuth.WebApi", "src\UserAuth\UserAuth.WebAPI\UserAuth.WebApi.csproj", "{C457CBCB-8914-4019-9B3D-F82D1DE6A095}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserAuth.WebApi", "src\FoodUserAuth\FoodUserAuth.WebAPI\FoodUserAuth.WebApi.csproj", "{C457CBCB-8914-4019-9B3D-F82D1DE6A095}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserNotifier.BusinessLogic", "src\UserNotifier\UserNotifier.BusinessLogic\UserNotifier.BusinessLogic.csproj", "{84D46591-710B-4D89-9DAB-4BABF4B5171D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.BusinessLogic", "src\FoodUserNotifier\FoodUserNotifier.BusinessLogic\FoodUserNotifier.BusinessLogic.csproj", "{84D46591-710B-4D89-9DAB-4BABF4B5171D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserNotifier.DataAccess", "src\UserNotifier\UserNotifier.DataAccess\UserNotifier.DataAccess.csproj", "{F6A6B242-E60B-4653-BA2C-890D15F16F07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.DataAccess", "src\FoodUserNotifier\FoodUserNotifier.DataAccess\FoodUserNotifier.DataAccess.csproj", "{F6A6B242-E60B-4653-BA2C-890D15F16F07}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserNotifier.WebApi", "src\UserNotifier\UserNotifier.WebAPI\UserNotifier.WebApi.csproj", "{EE94FD38-5A9D-411E-BFD0-FDBFCB9F1810}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.WebApi", "src\FoodUserNotifier\FoodUserNotifier.WebAPI\FoodUserNotifier.WebApi.csproj", "{EE94FD38-5A9D-411E-BFD0-FDBFCB9F1810}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8AF5A4AF-3C4B-4440-B5EF-E03F6A81FC1E}"
 EndProject
@@ -67,10 +67,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodManager.WebUI", "src\Fo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodSupplier.BusinessLogic.Tests", "tests\FoodSupplier.BusinessLogic.Tests\FoodSupplier.BusinessLogic.Tests.csproj", "{C673232B-E0B4-4B63-AF86-E81F38C260B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAuth.BusinessLogic.Tests", "tests\UserAuth.BusinessLogic.Tests\UserAuth.BusinessLogic.Tests.csproj", "{F9DED2B8-A6CB-463C-B97B-F02CD8DE36BA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserNotifier.BusinessLogic.Tests", "tests\UserNotifier.BusinessLogic.Tests\UserNotifier.BusinessLogic.Tests.csproj", "{F8DE8255-7B72-4606-B41A-FBB01DEC4A02}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.Core.Tests", "tests\FoodPlanner.Core.Tests\FoodPlanner.Core.Tests.csproj", "{5D7D4D2C-9923-4D65-84A5-495A201B2E0B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.Api", "src\FoodPlanner\FoodPlanner.Api\FoodPlanner.Api.csproj", "{FE55AD14-A8C2-4E82-A39D-D293B1832DF8}"
@@ -81,21 +77,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Domain", "Core.Domain"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstractions", "Abstractions", "{7CC234E2-F288-478E-BC28-EA0EFE895787}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Entities", "src\FoodStorage\Core.Domain\Domain.Entities\Domain.Entities.csproj", "{8A4D9DA0-ECC2-414E-8962-963C00879430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Entities", "src\FoodStorage\Core.Domain\Domain.Entities\Domain.Entities.csproj", "{8A4D9DA0-ECC2-414E-8962-963C00879430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Implementations", "src\FoodStorage\Infrastructure\Infrastructure.Implementations\Infrastructure.Implementations.csproj", "{90637363-C58F-4502-93AA-091F47B2F02C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Implementations", "src\FoodStorage\Infrastructure\Infrastructure.Implementations\Infrastructure.Implementations.csproj", "{90637363-C58F-4502-93AA-091F47B2F02C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.EntityFramework", "src\FoodStorage\Infrastructure\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj", "{A67FC45E-DCC1-413A-8D7C-09CC12359AA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework", "src\FoodStorage\Infrastructure\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj", "{A67FC45E-DCC1-413A-8D7C-09CC12359AA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Repositories", "src\FoodStorage\Core.Application\Abstractions\Application.Repositories\Application.Repositories.csproj", "{9DB58DC1-45A1-4929-9F48-1C3724805AB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Repositories", "src\FoodStorage\Core.Application\Abstractions\Application.Repositories\Application.Repositories.csproj", "{9DB58DC1-45A1-4929-9F48-1C3724805AB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Services", "src\FoodStorage\Core.Application\Abstractions\Application.Services\Application.Services.csproj", "{775B0EC0-D6CB-4DB7-821A-A4E690ABF139}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Services", "src\FoodStorage\Core.Application\Abstractions\Application.Services\Application.Services.csproj", "{775B0EC0-D6CB-4DB7-821A-A4E690ABF139}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Implementations", "src\FoodStorage\Core.Application\Application.Implementations\Application.Implementations.csproj", "{9ACE8768-A5C2-4E17-BB9F-C7617E4AFD75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Implementations", "src\FoodStorage\Core.Application\Application.Implementations\Application.Implementations.csproj", "{9ACE8768-A5C2-4E17-BB9F-C7617E4AFD75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Contracts", "src\FoodStorage\Core.Application\Application.Contracts\Application.Contracts.csproj", "{8151017B-9D82-413E-A7FC-0B0D0C7F29D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Contracts", "src\FoodStorage\Core.Application\Application.Contracts\Application.Contracts.csproj", "{8151017B-9D82-413E-A7FC-0B0D0C7F29D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Tests", "src\FoodStorage\Core.Application\Application.Tests\Application.Tests.csproj", "{7796F968-4013-441E-A9C4-CE7A6B52E906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Tests", "src\FoodStorage\Core.Application\Application.Tests\Application.Tests.csproj", "{7796F968-4013-441E-A9C4-CE7A6B52E906}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserAuth.BusinessLogic.Tests", "tests\FoodUserAuth.BusinessLogic.Tests\FoodUserAuth.BusinessLogic.Tests.csproj", "{096CA417-9C4F-49BD-BB59-CE7B553D0A6E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.BusinessLogic.Tests", "tests\FoodUserNotifier.BusinessLogic.Tests\FoodUserNotifier.BusinessLogic.Tests.csproj", "{9E115534-8766-45A3-A297-84D57FA68D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,14 +163,6 @@ Global
 		{C673232B-E0B4-4B63-AF86-E81F38C260B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C673232B-E0B4-4B63-AF86-E81F38C260B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C673232B-E0B4-4B63-AF86-E81F38C260B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9DED2B8-A6CB-463C-B97B-F02CD8DE36BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9DED2B8-A6CB-463C-B97B-F02CD8DE36BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9DED2B8-A6CB-463C-B97B-F02CD8DE36BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9DED2B8-A6CB-463C-B97B-F02CD8DE36BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8DE8255-7B72-4606-B41A-FBB01DEC4A02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8DE8255-7B72-4606-B41A-FBB01DEC4A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8DE8255-7B72-4606-B41A-FBB01DEC4A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8DE8255-7B72-4606-B41A-FBB01DEC4A02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D7D4D2C-9923-4D65-84A5-495A201B2E0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D7D4D2C-9923-4D65-84A5-495A201B2E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D7D4D2C-9923-4D65-84A5-495A201B2E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -215,6 +207,14 @@ Global
 		{7796F968-4013-441E-A9C4-CE7A6B52E906}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7796F968-4013-441E-A9C4-CE7A6B52E906}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7796F968-4013-441E-A9C4-CE7A6B52E906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{096CA417-9C4F-49BD-BB59-CE7B553D0A6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{096CA417-9C4F-49BD-BB59-CE7B553D0A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{096CA417-9C4F-49BD-BB59-CE7B553D0A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{096CA417-9C4F-49BD-BB59-CE7B553D0A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E115534-8766-45A3-A297-84D57FA68D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E115534-8766-45A3-A297-84D57FA68D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E115534-8766-45A3-A297-84D57FA68D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E115534-8766-45A3-A297-84D57FA68D86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -245,8 +245,6 @@ Global
 		{D22AFD73-FE24-420E-897F-79EEEAD947C3} = {8AF5A4AF-3C4B-4440-B5EF-E03F6A81FC1E}
 		{95326564-4A9A-4D5A-9C21-A294CD037172} = {DAC1C578-3FA2-453E-8FE0-1053D8D8A552}
 		{C673232B-E0B4-4B63-AF86-E81F38C260B8} = {9A6E8B55-A900-4D4A-B962-867F456D8ACE}
-		{F9DED2B8-A6CB-463C-B97B-F02CD8DE36BA} = {DB6E219D-5BB1-4BE8-8F5E-550DC3D78C47}
-		{F8DE8255-7B72-4606-B41A-FBB01DEC4A02} = {B873DEC0-F772-4048-870D-7E51BBD02D36}
 		{5D7D4D2C-9923-4D65-84A5-495A201B2E0B} = {8AF5A4AF-3C4B-4440-B5EF-E03F6A81FC1E}
 		{FE55AD14-A8C2-4E82-A39D-D293B1832DF8} = {B585FC4B-47D4-4BD0-A555-85BB58F749A8}
 		{C8134CFD-9246-4AD7-A0FD-1598A9266B81} = {8CEA2DD1-3D46-4D01-8C34-449AC799F2AE}
@@ -260,6 +258,8 @@ Global
 		{9ACE8768-A5C2-4E17-BB9F-C7617E4AFD75} = {BB0D3455-7173-4F1F-AA76-5E1946FE032F}
 		{8151017B-9D82-413E-A7FC-0B0D0C7F29D0} = {BB0D3455-7173-4F1F-AA76-5E1946FE032F}
 		{7796F968-4013-441E-A9C4-CE7A6B52E906} = {BB0D3455-7173-4F1F-AA76-5E1946FE032F}
+		{096CA417-9C4F-49BD-BB59-CE7B553D0A6E} = {DB6E219D-5BB1-4BE8-8F5E-550DC3D78C47}
+		{9E115534-8766-45A3-A297-84D57FA68D86} = {B873DEC0-F772-4048-870D-7E51BBD02D36}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E52912C-CC99-4241-8335-4D85EB1C035E}
