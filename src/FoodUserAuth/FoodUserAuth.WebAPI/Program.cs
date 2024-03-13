@@ -6,11 +6,18 @@ using FoodUserAuth.DataAccess.Abstractions;
 using FoodUserAuth.DataAccess.Repositories;
 using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
 using FoodUserAuth.BusinessLogic.Utils;
+using FoodUserAuth.DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
 builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection<AuthenticationOptions>());
+
+builder.Services.AddDbContext<UserDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("UserAuthConnection"));
+});
 
 builder.Services.AddControllers();
 builder.Services.AddLogging(options=>
