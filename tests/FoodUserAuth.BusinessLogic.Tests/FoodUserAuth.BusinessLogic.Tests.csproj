@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Faker.Net" Version="2.0.163" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
+    <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     <PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
@@ -20,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FoodUserAuth\FoodUserAuth.BusinessLogic\FoodUserAuth.BusinessLogic.csproj" />
     <ProjectReference Include="..\..\src\FoodUserAuth\FoodUserAuth.DataAccess\FoodUserAuth.DataAccess.csproj" />
+    <ProjectReference Include="..\..\src\FoodUserAuth\FoodUserAuth.WebAPI\FoodUserAuth.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

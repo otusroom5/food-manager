@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.16">
@@ -25,6 +26,10 @@
   <ItemGroup>
     <ProjectReference Include="..\FoodUserAuth.BusinessLogic\FoodUserAuth.BusinessLogic.csproj" />
     <ProjectReference Include="..\FoodUserAuth.DataAccess\FoodUserAuth.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mapping\" />
   </ItemGroup>
 
 </Project>
