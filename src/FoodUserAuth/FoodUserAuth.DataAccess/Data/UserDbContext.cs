@@ -8,5 +8,15 @@ namespace FoodUserAuth.DataAccess.Data
         public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+               .Entity<User>()
+               .Property(e => e.State)
+               .HasConversion(
+                   v => v.ToString(),
+                   v => (UserState)Enum.Parse(typeof(UserState), v));
+        }
     }
 }

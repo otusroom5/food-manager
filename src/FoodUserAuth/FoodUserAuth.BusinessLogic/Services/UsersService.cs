@@ -18,7 +18,7 @@ namespace FoodUserAuth.BusinessLogic.Services
         /// <summary>
         /// This method change user password
         /// </summary>
-        public void ChangePassword(Guid id)
+        public void ChangePassword(Guid id, string password)
         {
             throw new NotImplementedException();
         }
@@ -35,14 +35,6 @@ namespace FoodUserAuth.BusinessLogic.Services
         /// This method disable exist user
         /// </summary>
         public void DisableUser(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// This method enable exist user
-        /// </summary>
-        public void EnableUser(Guid id)
         {
             throw new NotImplementedException();
         }

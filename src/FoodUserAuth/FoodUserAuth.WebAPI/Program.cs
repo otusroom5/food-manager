@@ -34,6 +34,7 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
 
 builder.Services.AddAuthorization();
+builder.Services.AddMapper();
 
 var app = builder.Build();
 
@@ -48,7 +49,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     options.RoutePrefix = string.Empty;
 });
-
 
 app.UseAuthorization();
 app.MapControllers();
