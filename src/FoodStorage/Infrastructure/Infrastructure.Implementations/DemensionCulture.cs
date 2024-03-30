@@ -20,16 +20,12 @@ namespace Infrastructure.Implementations
         public static string LiterEn;
         public static string AmountEn;
 
-        static DemensionCulture()
-        {
-            Demension();
-        }
+        static DemensionCulture(){ Demension();}
 
         static private void Demension()
         {
             var russian = new CultureInfo("ru-RU");
             Thread.CurrentThread.CurrentCulture = russian;
-
             MilligramRu = Mass.GetAbbreviation(MassUnit.Milligram);
             GramRu = Mass.GetAbbreviation(MassUnit.Gram);
             KilogramRu = Mass.GetAbbreviation(MassUnit.Kilogram);
@@ -39,7 +35,6 @@ namespace Infrastructure.Implementations
 
             var english = new CultureInfo("en-EN");
             Thread.CurrentThread.CurrentCulture = english;
-
             MilligramEn = Mass.GetAbbreviation(MassUnit.Milligram);
             GramEn = Mass.GetAbbreviation(MassUnit.Gram);
             KilogramEn = Mass.GetAbbreviation(MassUnit.Kilogram);
@@ -47,7 +42,5 @@ namespace Infrastructure.Implementations
             LiterEn = Volume.GetAbbreviation(VolumeUnit.Liter);
             AmountEn = Scalar.GetAbbreviation(ScalarUnit.Amount);
         }
-
-
     }
 }
