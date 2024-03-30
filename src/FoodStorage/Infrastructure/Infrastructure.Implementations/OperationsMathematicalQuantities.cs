@@ -1,54 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using UnitsNet;
-using UnitsNet.Units;
 
-namespace PseudoMenu.units.ru
+namespace Infrastructure.Implementations
 {
     internal class OperationsMathematicalQuantities
     {
 
-        string milligramRu;
-        string gramRu;
-        string kilogramRu;
-        string milliliterRu;
-        string literRu;
-        string amountRu;
-
-        string milligramEn;
-        string gramEn;
-        string kilogramEn;
-        string milliliterEn;
-        string literEn;
-        string amountEn;
-
-      internal  OperationsMathematicalQuantities()
-        {
-            var russian = new CultureInfo("ru-RU");
-            Thread.CurrentThread.CurrentCulture = russian;
-
-            milligramRu = Mass.GetAbbreviation(MassUnit.Milligram);
-            gramRu = Mass.GetAbbreviation(MassUnit.Gram);
-            kilogramRu = Mass.GetAbbreviation(MassUnit.Kilogram);
-            milliliterRu = Volume.GetAbbreviation(VolumeUnit.Milliliter);
-            literRu = Volume.GetAbbreviation(VolumeUnit.Liter);
-            amountRu = Scalar.GetAbbreviation(ScalarUnit.Amount);
-
-            var english = new CultureInfo("en-EN");
-            Thread.CurrentThread.CurrentCulture = english;
-
-            milligramEn = Mass.GetAbbreviation(MassUnit.Milligram);
-            gramEn = Mass.GetAbbreviation(MassUnit.Gram);
-            kilogramEn = Mass.GetAbbreviation(MassUnit.Kilogram);
-            milliliterEn = Volume.GetAbbreviation(VolumeUnit.Milliliter);
-            literEn = Volume.GetAbbreviation(VolumeUnit.Liter);
-            amountEn = Scalar.GetAbbreviation(ScalarUnit.Amount);
-        }
+        static OperationsMathematicalQuantities() { }
 
         /// <summary>
         /// принимает значение и размерность из БД и  возвращает тип IQuantity со значением и размерностью
@@ -56,17 +14,16 @@ namespace PseudoMenu.units.ru
         /// <param name="value">Значение </param>
         /// <param name="dimension">размерность в русской культуре</param>
         /// <returns></returns>
-        internal IQuantity DataUnits(double value, string dimension)
+        internal static IQuantity DataUnits(double value, string dimension)
         {
             IQuantity quantity = default;
-            if (dimension == milligramRu|| dimension == milligramEn) { quantity = Mass.FromMilligrams(value); }
-            if (dimension == gramRu|| dimension == gramEn) { quantity = Mass.FromGrams(value); }
-            if (dimension == kilogramRu || dimension == kilogramEn) { quantity = Mass.FromKilograms(value); }
-            if (dimension == milliliterRu || dimension == milliliterEn) { quantity = Volume.FromMilliliters(value); }
-            if (dimension == literRu || dimension == literEn) { quantity = Volume.FromLiters(value); }
-            if (dimension == amountRu || dimension == amountEn) { quantity = Scalar.FromAmount(value); }
+            if (dimension == DemensionCulture.MilligramRu || dimension == DemensionCulture.MilligramEn) { quantity = Mass.FromMilligrams(value); }
+            if (dimension == DemensionCulture.GramRu || dimension == DemensionCulture.GramEn) { quantity = Mass.FromGrams(value); }
+            if (dimension == DemensionCulture.KilogramRu || dimension == DemensionCulture.KilogramEn) { quantity = Mass.FromKilograms(value); }
+            if (dimension == DemensionCulture.MilliliterRu || dimension == DemensionCulture.MilliliterEn) { quantity = Volume.FromMilliliters(value); }
+            if (dimension == DemensionCulture.LiterRu || dimension == DemensionCulture.LiterEn) { quantity = Volume.FromLiters(value); }
+            if (dimension == DemensionCulture.AmountRu || dimension == DemensionCulture.AmountEn) { quantity = Scalar.FromAmount(value); }
             return quantity;
-
         }
 
         /// <summary>
@@ -74,11 +31,10 @@ namespace PseudoMenu.units.ru
         /// </summary>
         /// <param name="t">значение IQuantity</param>
         /// <returns>Возвращает размерность в русской культуре (для БД)</returns>
-        internal string dimensionRU(IQuantity t)
+        internal static string DimensionValueCultureRU(IQuantity t)
         {
             var russian = new CultureInfo("ru-RU");
             Thread.CurrentThread.CurrentCulture = russian;
-
             return t.ToUnit(t.Unit).ToString().Split(" ")[1];
         }
 
@@ -87,11 +43,25 @@ namespace PseudoMenu.units.ru
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        internal string dimensionEN(IQuantity t)
+        internal static string DimensionValueCultureEN(IQuantity t)
         {
             var english = new CultureInfo("en-En");
             Thread.CurrentThread.CurrentCulture = english;
             return t.ToUnit(t.Unit).ToString().Split(" ")[1];
+        }
+
+        /// <summary>
+        /// Вспомогательная функция для функции Sum
+        /// </summary>
+        /// <param name="quantity1"></param>
+        /// <param name="quantity2"></param>
+        /// <returns>взвращает сумму значений приведенного к размерности 1 операнда</returns>
+        static private IQuantity _sum(IQuantity quantity1, IQuantity quantity2)
+        {
+            IQuantity quantity = default;
+            double sumValue = ((double)quantity1.Value) + ((double)quantity2.ToUnit(quantity1.Unit).Value);
+            quantity = Quantity.From(sumValue, quantity1.Unit);
+            return quantity;
         }
 
         /// <summary>
@@ -101,29 +71,23 @@ namespace PseudoMenu.units.ru
         /// <param name="quantity2"></param>
         /// <returns>Возвращает значение суммы с размерностью одного из операндов размерность которого наибольшая </returns>
         /// <exception cref="ArgumentException"></exception>
-        internal IQuantity sum(IQuantity quantity1 , IQuantity quantity2) 
+        static internal IQuantity Sum(IQuantity quantity1, IQuantity quantity2)
         {
-            IQuantity quantity= default;
-
+            IQuantity quantity = default;
             if (quantity1.QuantityInfo.Name == quantity2.QuantityInfo.Name)
             {
-                
                 if (quantity1.Unit.GetHashCode() < quantity2.Unit.GetHashCode())
                 {
-                    double sumValue = ((double)quantity1.Value) + ((double)quantity2.ToUnit(quantity1.Unit).Value);
-                    quantity = Quantity.From(sumValue, quantity1.Unit);
+                    quantity = _sum(quantity1, quantity2);
                 }
                 else
                 {
-                    double sumValue = ((double)quantity2.Value) + ((double)quantity1.ToUnit(quantity2.Unit).Value);
-                    quantity = Quantity.From(sumValue, quantity2.Unit);
+                    quantity = _sum(quantity2, quantity1);
                 }
             }
             else { throw new ArgumentException("неправильные аргументы функции"); };
             return quantity;
-        
         }
-
 
         /// <summary>
         /// Разность 2 значений 
@@ -132,11 +96,11 @@ namespace PseudoMenu.units.ru
         /// <param name="quantity2"></param>
         /// <returns>Возвращает значение разности с размерностью одного из операндов размерность которого наибольшая </returns>
         /// <exception cref="ArgumentException"></exception>
-        internal IQuantity difference (IQuantity quantity1, IQuantity quantity2) 
+        static internal IQuantity Difference(IQuantity quantity1, IQuantity quantity2)
         {
             IQuantity quantity = default;
             if (quantity1.QuantityInfo.Name == quantity2.QuantityInfo.Name)
-            {    
+            {
                 if (quantity1.Unit.GetHashCode() < quantity2.Unit.GetHashCode())
                 {
                     if (((double)quantity1.Value) > ((double)quantity2.ToUnit(quantity1.Unit).Value))
@@ -144,9 +108,9 @@ namespace PseudoMenu.units.ru
                         double differenceValue = ((double)quantity1.Value) - ((double)quantity2.ToUnit(quantity1.Unit).Value);
                         quantity = Quantity.From(differenceValue, quantity1.Unit);
                     }
-                    else 
+                    else
                     {
-                        double differenceValue = (((double)quantity2.ToUnit(quantity1.Unit).Value -(double)quantity1.Value));
+                        double differenceValue = (((double)quantity2.ToUnit(quantity1.Unit).Value - (double)quantity1.Value));
                         quantity = Quantity.From(differenceValue, quantity1.Unit);
                     }
                 }
@@ -161,11 +125,12 @@ namespace PseudoMenu.units.ru
                     {
                         double differenceValue = (double)quantity1.ToUnit(quantity2.Unit).Value - (double)quantity2.Value;
                         quantity = Quantity.From(differenceValue, quantity2.Unit);
-                    } 
+                    }
                 }
             }
-            else { throw new ArgumentException("неправильные аргументы функции"); };
+            else { throw new ArgumentException("Неправильные аргументы функции"); };
             return quantity;
         }
+
     }
 }
