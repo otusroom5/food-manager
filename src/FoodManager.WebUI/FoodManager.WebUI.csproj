@@ -6,8 +6,4 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="UnitsNet" Version="5.49.0" />
-  </ItemGroup>
-
 </Project>

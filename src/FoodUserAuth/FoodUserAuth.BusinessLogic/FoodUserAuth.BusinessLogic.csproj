@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="UnitsNet" Version="5.49.0" />
   </ItemGroup>
 
   <ItemGroup>

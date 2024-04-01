@@ -29,25 +29,24 @@ namespace Infrastructure.Implementations
         /// <summary>
         /// принимает значение и возвращает размерность в русской культуре
         /// </summary>
-        /// <param name="t">значение IQuantity</param>
+        /// <param name="Value">значение IQuantity</param>
         /// <returns>Возвращает размерность в русской культуре (для БД)</returns>
-        internal static string DimensionValueCultureRU(IQuantity t)
+        internal static string DimensionValueCultureRU(IQuantity Value)
         {
-            var russian = new CultureInfo("ru-RU");
-            Thread.CurrentThread.CurrentCulture = russian;
-            return t.ToUnit(t.Unit).ToString().Split(" ")[1];
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU"); 
+            return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
         }
 
         /// <summary>
         /// принимает значение и возвращает размерность в анлийской культуре
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="Value"></param>
         /// <returns></returns>
-        internal static string DimensionValueCultureEN(IQuantity t)
+        internal static string DimensionValueCultureEN(IQuantity Value)
         {
-            var english = new CultureInfo("en-En");
-            Thread.CurrentThread.CurrentCulture = english;
-            return t.ToUnit(t.Unit).ToString().Split(" ")[1];
+            
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-En");
+            return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
         }
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace Infrastructure.Implementations
         /// <param name="quantity1"></param>
         /// <param name="quantity2"></param>
         /// <returns>взвращает сумму значений приведенного к размерности 1 операнда</returns>
-        static private IQuantity _sum(IQuantity quantity1, IQuantity quantity2)
+        static private IQuantity SumLocalize(IQuantity quantity1, IQuantity quantity2)
         {
             IQuantity quantity = default;
             double sumValue = ((double)quantity1.Value) + ((double)quantity2.ToUnit(quantity1.Unit).Value);
@@ -78,11 +77,11 @@ namespace Infrastructure.Implementations
             {
                 if (quantity1.Unit.GetHashCode() < quantity2.Unit.GetHashCode())
                 {
-                    quantity = _sum(quantity1, quantity2);
+                    quantity = SumLocalize(quantity1, quantity2);
                 }
                 else
                 {
-                    quantity = _sum(quantity2, quantity1);
+                    quantity = SumLocalize(quantity2, quantity1);
                 }
             }
             else { throw new ArgumentException("неправильные аргументы функции"); };

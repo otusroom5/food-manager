@@ -12,8 +12,4 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="UnitsNet" Version="5.49.0" />
-  </ItemGroup>
-
 </Project>
