@@ -1,4 +1,5 @@
 ﻿using FoodUserAuth.DataAccess.Entities;
+using FoodUserAuth.DataAccess.Types;
 
 namespace FoodUserAuth.BusinessLogic.Tests.Utils
 {

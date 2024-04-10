@@ -1,4 +1,6 @@
-﻿namespace FoodUserAuth.DataAccess.Entities
+﻿using FoodUserAuth.DataAccess.Types;
+
+namespace FoodUserAuth.DataAccess.Entities
 {
     public class User
     {

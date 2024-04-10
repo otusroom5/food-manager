@@ -1,4 +1,7 @@
-﻿namespace FoodUserAuth.WebApi.Extensions
+﻿using Microsoft.Extensions.Configuration;
+using System;
+
+namespace FoodUserAuth.WebApi.Extensions
 {
     public static class OptionsConfigurationManagerExtension
     {

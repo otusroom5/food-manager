@@ -8,6 +8,12 @@ using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
 using FoodUserAuth.BusinessLogic.Utils;
 using FoodUserAuth.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());

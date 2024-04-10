@@ -1,4 +1,5 @@
 ﻿using FoodUserAuth.DataAccess.Entities;
+using FoodUserAuth.DataAccess.Types;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodUserAuth.DataAccess.Data

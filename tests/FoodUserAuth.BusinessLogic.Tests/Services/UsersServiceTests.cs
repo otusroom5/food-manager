@@ -5,6 +5,7 @@ using FoodUserAuth.BusinessLogic.Dto;
 using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.BusinessLogic.Tests.Utils;
+using FoodUserAuth.DataAccess.Types;
 
 namespace FoodUserAuth.BusinessLogic.Services.Tests
 {
@@ -113,12 +114,13 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
 
             Guid createdId = userService.CreateUser(newUser);
 
-            Assert.That(actual?.Id, Is.EqualTo(newGuid)); // Id
+            Assert.IsNotNull(actual);
+            Assert.That(actual.Id, Is.EqualTo(newGuid)); // Id
             Assert.That(createdId, Is.EqualTo(newGuid)); // Check result of CreateUser method
-            Assert.That(actual?.State, Is.EqualTo(newUser.State));
-            Assert.That(actual?.UserName, Is.EqualTo(newUser.UserName));
-            Assert.That(actual?.FullName, Is.EqualTo(newUser.FullName));
-            Assert.That(actual?.Email, Is.EqualTo(newUser.Email));
+            Assert.That(actual.State, Is.EqualTo(newUser.State));
+            Assert.That(actual.UserName, Is.EqualTo(newUser.UserName));
+            Assert.That(actual.FullName, Is.EqualTo(newUser.FullName));
+            Assert.That(actual.Email, Is.EqualTo(newUser.Email));
         }
 
         [Test()]
@@ -232,7 +234,11 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             usersRepository
                 .Setup(f => f.Update(It.IsAny<User>()));
             var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto userDto = new UserDto(Guid.NewGuid(), UserState.Enabled);
+            UserDto userDto = new UserDto()
+            {
+                Id = Guid.NewGuid(),
+                State = UserState.Enabled,
+            };
 
             Assert.Throws<UserNotFoundException>(() => userService.UpdateUser(userDto));
         }
@@ -321,8 +327,10 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             var result = new List<UserDto>();
             foreach (var user in users)
             {
-                result.Add(new UserDto(user.Id, user.State)
+                result.Add(new UserDto()
                 {
+                    Id = user.Id,
+                    State = user.State,
                     Email = user.Email,
                     FullName = user.FullName,
                     UserName = user.UserName
@@ -341,8 +349,9 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
 
         private UserDto CreateFakeUserDto()
         {
-            return new UserDto(Faker.Enum.Random<UserState>())
+            return new UserDto()
             {
+                State = Faker.Enum.Random<UserState>(),
                 Email = Faker.Internet.Email(),
                 FullName = Faker.Name.FullName(),
                 UserName = Faker.Name.First()

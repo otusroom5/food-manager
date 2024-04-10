@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using System.Runtime.InteropServices;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace FoodUserAuth.WebApi.Extensions
 {
@@ -12,11 +13,7 @@ namespace FoodUserAuth.WebApi.Extensions
 
         public static IMapper CreateDefaultMapper()
         {
-            var mapperConfiguration = new MapperConfiguration(cfg => {
-
-            });
-
-            return new Mapper(mapperConfiguration);
+            throw new NotImplementedException();
         }
     }
 }

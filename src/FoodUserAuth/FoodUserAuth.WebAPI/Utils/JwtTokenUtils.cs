@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using FoodUserAuth.BusinessLogic.Types;
 using FoodUserAuth.WebApi.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace FoodUserAuth.WebApi.Utils
 {

@@ -7,6 +7,8 @@ using FoodUserAuth.BusinessLogic.Abstractions;
 using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.WebApi.Exceptions;
 using FoodUserAuth.WebApi.Models;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace FoodUserAuth.WebApi.Controllers
 {

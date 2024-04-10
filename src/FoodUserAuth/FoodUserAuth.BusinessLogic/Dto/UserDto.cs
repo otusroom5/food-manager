@@ -1,24 +1,17 @@
-﻿using FoodUserAuth.DataAccess.Entities;
+﻿using FoodUserAuth.DataAccess.Types;
 
 namespace FoodUserAuth.BusinessLogic.Dto
 {
-    public class UserDto : IEquatable<UserDto?>
+    public class UserDto : IEquatable<UserDto>
     {
-        public Guid Id { get; }
-        public string UserName { get; set; } = null!;
-        public string FullName {  get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public UserState State { get; }
+        public Guid Id { get; set; }
+        public string UserName { get; set; }
+        public string FullName {  get; set; }
+        public string Email { get; set; }
+        public UserState State { get; set; }
 
-        public UserDto(Guid id, UserState state)
-        {
-            Id = id;
-            State = state;
-        }
 
-        public UserDto(UserState state) : this(Guid.Empty, state) {}
-
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as UserDto);
         }
@@ -38,12 +31,12 @@ namespace FoodUserAuth.BusinessLogic.Dto
             return HashCode.Combine(Id, UserName, FullName, Email, State);
         }
 
-        public static bool operator ==(UserDto? left, UserDto? right)
+        public static bool operator ==(UserDto left, UserDto right)
         {
             return EqualityComparer<UserDto>.Default.Equals(left, right);
         }
 
-        public static bool operator !=(UserDto? left, UserDto? right)
+        public static bool operator !=(UserDto left, UserDto right)
         {
             return !(left == right);
         }

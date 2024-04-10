@@ -1,4 +1,4 @@
-﻿namespace FoodUserAuth.DataAccess.Entities
+﻿namespace FoodUserAuth.DataAccess.Types
 {
     public enum UserState
     {
