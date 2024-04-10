@@ -1,4 +1,6 @@
-﻿namespace FoodStorage.WebApi.Models;
+﻿using System.ComponentModel;
+
+namespace FoodStorage.WebApi.Models;
 
 /// <summary>
 /// Модель единицы продукта (в холодильнике)
@@ -24,4 +26,10 @@ public class ProductItemModel
     /// Дата изготовления
     /// </summary>
     public DateTime CreatingDate { get; set; }
+
+    [DefaultValue(null)]
+    /// <summary>
+    /// Дата окончания срока годности
+    /// </summary>
+    public DateTime? ExpiryDate { get; set; }
 }
