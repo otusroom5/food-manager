@@ -77,25 +77,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Domain", "Core.Domain"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstractions", "Abstractions", "{7CC234E2-F288-478E-BC28-EA0EFE895787}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Entities", "src\FoodStorage\Core.Domain\Domain.Entities\Domain.Entities.csproj", "{8A4D9DA0-ECC2-414E-8962-963C00879430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Domain.Entities", "src\FoodStorage\Core.Domain\Domain.Entities\FoodStorage.Domain.Entities.csproj", "{8A4D9DA0-ECC2-414E-8962-963C00879430}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Implementations", "src\FoodStorage\Infrastructure\Infrastructure.Implementations\Infrastructure.Implementations.csproj", "{90637363-C58F-4502-93AA-091F47B2F02C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Infrastructure.Implementations", "src\FoodStorage\Infrastructure\Infrastructure.Implementations\FoodStorage.Infrastructure.Implementations.csproj", "{90637363-C58F-4502-93AA-091F47B2F02C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework", "src\FoodStorage\Infrastructure\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj", "{A67FC45E-DCC1-413A-8D7C-09CC12359AA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Infrastructure.EntityFramework", "src\FoodStorage\Infrastructure\Infrastructure.EntityFramework\FoodStorage.Infrastructure.EntityFramework.csproj", "{A67FC45E-DCC1-413A-8D7C-09CC12359AA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Repositories", "src\FoodStorage\Core.Application\Abstractions\Application.Repositories\Application.Repositories.csproj", "{9DB58DC1-45A1-4929-9F48-1C3724805AB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Application.Repositories", "src\FoodStorage\Core.Application\Abstractions\Application.Repositories\FoodStorage.Application.Repositories.csproj", "{9DB58DC1-45A1-4929-9F48-1C3724805AB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Services", "src\FoodStorage\Core.Application\Abstractions\Application.Services\Application.Services.csproj", "{775B0EC0-D6CB-4DB7-821A-A4E690ABF139}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Application.Services", "src\FoodStorage\Core.Application\Abstractions\Application.Services\FoodStorage.Application.Services.csproj", "{775B0EC0-D6CB-4DB7-821A-A4E690ABF139}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Implementations", "src\FoodStorage\Core.Application\Application.Implementations\Application.Implementations.csproj", "{9ACE8768-A5C2-4E17-BB9F-C7617E4AFD75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Application.Implementations", "src\FoodStorage\Core.Application\Application.Implementations\FoodStorage.Application.Implementations.csproj", "{9ACE8768-A5C2-4E17-BB9F-C7617E4AFD75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Contracts", "src\FoodStorage\Core.Application\Application.Contracts\Application.Contracts.csproj", "{8151017B-9D82-413E-A7FC-0B0D0C7F29D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Application.Contracts", "src\FoodStorage\Core.Application\Application.Contracts\FoodStorage.Application.Contracts.csproj", "{8151017B-9D82-413E-A7FC-0B0D0C7F29D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Tests", "src\FoodStorage\Core.Application\Application.Tests\Application.Tests.csproj", "{7796F968-4013-441E-A9C4-CE7A6B52E906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Application.Tests", "src\FoodStorage\Core.Application\Application.Tests\FoodStorage.Application.Tests.csproj", "{7796F968-4013-441E-A9C4-CE7A6B52E906}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserAuth.BusinessLogic.Tests", "tests\FoodUserAuth.BusinessLogic.Tests\FoodUserAuth.BusinessLogic.Tests.csproj", "{096CA417-9C4F-49BD-BB59-CE7B553D0A6E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.BusinessLogic.Tests", "tests\FoodUserNotifier.BusinessLogic.Tests\FoodUserNotifier.BusinessLogic.Tests.csproj", "{9E115534-8766-45A3-A297-84D57FA68D86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodStorage.Domain.Tests", "src\FoodStorage\Core.Domain\Domain.Tests\FoodStorage.Domain.Tests.csproj", "{F213B188-21D5-463B-81ED-4A1DDF9C3F66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -215,6 +217,10 @@ Global
 		{9E115534-8766-45A3-A297-84D57FA68D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E115534-8766-45A3-A297-84D57FA68D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E115534-8766-45A3-A297-84D57FA68D86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F213B188-21D5-463B-81ED-4A1DDF9C3F66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F213B188-21D5-463B-81ED-4A1DDF9C3F66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F213B188-21D5-463B-81ED-4A1DDF9C3F66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F213B188-21D5-463B-81ED-4A1DDF9C3F66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -260,6 +266,7 @@ Global
 		{7796F968-4013-441E-A9C4-CE7A6B52E906} = {BB0D3455-7173-4F1F-AA76-5E1946FE032F}
 		{096CA417-9C4F-49BD-BB59-CE7B553D0A6E} = {DB6E219D-5BB1-4BE8-8F5E-550DC3D78C47}
 		{9E115534-8766-45A3-A297-84D57FA68D86} = {B873DEC0-F772-4048-870D-7E51BBD02D36}
+		{F213B188-21D5-463B-81ED-4A1DDF9C3F66} = {4D3A7A89-5CBB-44D3-8FE4-992DA145DF9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E52912C-CC99-4241-8335-4D85EB1C035E}
