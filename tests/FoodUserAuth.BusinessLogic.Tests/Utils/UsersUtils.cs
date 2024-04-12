@@ -24,8 +24,8 @@ namespace FoodUserAuth.BusinessLogic.Tests.Utils
             {
                 Id = Guid.NewGuid(),
                 Email = Faker.Internet.Email(),
-                FullName = Faker.Name.FullName(),
-                UserName = Faker.Name.First(),
+                FirstName = Faker.Name.FullName(),
+                LoginName = Faker.Name.First(),
                 State = Faker.Enum.Random<UserState>(),
                 Password = Faker.Identification.UkNhsNumber()
             };

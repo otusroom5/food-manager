@@ -118,8 +118,8 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             Assert.That(actual.Id, Is.EqualTo(newGuid)); // Id
             Assert.That(createdId, Is.EqualTo(newGuid)); // Check result of CreateUser method
             Assert.That(actual.State, Is.EqualTo(newUser.State));
-            Assert.That(actual.UserName, Is.EqualTo(newUser.UserName));
-            Assert.That(actual.FullName, Is.EqualTo(newUser.FullName));
+            Assert.That(actual.LoginName, Is.EqualTo(newUser.UserName));
+            Assert.That(actual.FirstName, Is.EqualTo(newUser.FullName));
             Assert.That(actual.Email, Is.EqualTo(newUser.Email));
         }
 
@@ -316,8 +316,8 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             {
                 Id = Guid.NewGuid(),
                 Email = Faker.Internet.Email(),
-                FullName = Faker.Name.FullName(),
-                UserName = Faker.Name.First(),
+                FirstName = Faker.Name.FullName(),
+                LoginName = Faker.Name.First(),
                 State = Faker.Enum.Random<UserState>(),
                 Password = Faker.Identification.UkNhsNumber()
             };
@@ -332,8 +332,8 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                     Id = user.Id,
                     State = user.State,
                     Email = user.Email,
-                    FullName = user.FullName,
-                    UserName = user.UserName
+                    FullName = user.FirstName,
+                    UserName = user.LoginName
                 });
             }
             return result.ToArray();

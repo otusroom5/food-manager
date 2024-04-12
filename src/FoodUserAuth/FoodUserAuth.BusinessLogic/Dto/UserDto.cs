@@ -2,7 +2,7 @@
 
 namespace FoodUserAuth.BusinessLogic.Dto
 {
-    public class UserDto : IEquatable<UserDto>
+    public sealed class UserDto : IEquatable<UserDto>
     {
         public Guid Id { get; set; }
         public string UserName { get; set; }
@@ -16,7 +16,7 @@ namespace FoodUserAuth.BusinessLogic.Dto
             return Equals(obj as UserDto);
         }
 
-        public bool Equals(UserDto? other)
+        public bool Equals(UserDto other)
         {
             return other is not null &&
                    Id.Equals(other.Id) &&

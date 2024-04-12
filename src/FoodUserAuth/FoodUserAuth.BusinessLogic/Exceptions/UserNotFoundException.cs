@@ -2,17 +2,18 @@
 
 namespace FoodUserAuth.BusinessLogic.Exceptions
 {
-    public class UserNotFoundException : Exception
+    [Serializable]
+    public class UserNotFoundException : DomainBaseException
     {
         public UserNotFoundException()
         {
         }
 
-        public UserNotFoundException(string? message) : base(message)
+        public UserNotFoundException(string message) : base(message)
         {
         }
 
-        public UserNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+        public UserNotFoundException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
