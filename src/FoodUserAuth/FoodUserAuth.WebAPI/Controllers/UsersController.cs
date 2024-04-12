@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FoodUserAuth.BusinessLogic.Abstractions;
-using FoodUserAuth.BusinessLogic.Services;
 using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.WebApi.Models;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace FoodUserAuth.WebApi.Controllers
 {

@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-using FoodUserAuth.BusinessLogic.Dto;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace FoodUserAuth.WebApi.Exceptions
 {

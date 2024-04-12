@@ -8,6 +8,12 @@ using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
 using FoodUserAuth.BusinessLogic.Utils;
 using FoodUserAuth.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
@@ -34,6 +40,7 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
 
 builder.Services.AddAuthorization();
+builder.Services.AddMapper();
 
 var app = builder.Build();
 
@@ -48,7 +55,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     options.RoutePrefix = string.Empty;
 });
-
 
 app.UseAuthorization();
 app.MapControllers();

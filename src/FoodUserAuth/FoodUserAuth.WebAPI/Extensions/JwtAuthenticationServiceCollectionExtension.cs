@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using FoodUserAuth.WebApi.Utils;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodUserAuth.WebApi.Extensions
 {
