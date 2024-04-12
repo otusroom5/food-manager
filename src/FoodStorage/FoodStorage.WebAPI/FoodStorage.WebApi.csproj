@@ -13,8 +13,11 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
     <Folder Include="Mapping\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Domain\Domain.Entities\FoodStorage.Domain.Entities.csproj" />
   </ItemGroup>
 
 </Project>
