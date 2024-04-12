@@ -44,7 +44,6 @@ namespace Infrastructure.Implementations
         /// <returns></returns>
         internal static string DimensionValueCultureEN(IQuantity Value)
         {
-            
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-En");
             return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
         }
