@@ -13,7 +13,7 @@ public class RecipeModel
     /// <summary>
     /// Наименование рецепта
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; }
 
     /// <summary>
     /// Позиции рецепта (продукт + его количество)

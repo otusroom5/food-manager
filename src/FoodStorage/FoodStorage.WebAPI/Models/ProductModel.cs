@@ -1,6 +1,4 @@
-﻿using FoodStorage.Domain.Entities.ProductEntity;
-
-namespace FoodStorage.WebApi.Models;
+﻿namespace FoodStorage.WebApi.Models;
 
 /// <summary>
 /// Модель продукта
@@ -20,7 +18,7 @@ public class ProductModel
     /// <summary>
     /// Единица изменерения
     /// </summary>
-    public ProductUnit Unit { get; set; }
+    public string Unit { get; set; }
 
     /// <summary>
     /// Минимальный остаток на день
