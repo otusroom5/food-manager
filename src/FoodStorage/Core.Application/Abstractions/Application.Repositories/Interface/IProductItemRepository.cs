@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities.Entities;
+﻿using FoodStorage.Domain.Entities.ProductItemEntity;
+using FoodStorage.Domain.Entities.ProductEntity;
+
 
 namespace Application.Repositories.Interface
 {
-    internal interface IProductItemRepository
+    public interface IProductItemRepository
     {
         public ProductItemId Create(ProductItem productItem);
         public ProductItem FinfById(ProductItemId productItemId);
@@ -15,7 +12,5 @@ namespace Application.Repositories.Interface
         public IEnumerable<ProductItem> GetAll();
         public void Change(ProductItem productItem);
         public void Delete(ProductItem productItem);
-
-
     }
 }

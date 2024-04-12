@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities.Entities;
+﻿using FoodStorage.Domain.Entities.ProductHistoryEntity;
+using FoodStorage.Domain.Entities.ProductEntity;
+
 
 namespace Application.Repositories.Interface
 {
-    internal interface IProductHistoryRepository
+    public interface IProductHistoryRepository
     {
-        ProductHistoryId Create(ProductHistory productHistory);
-        ProductHistory FindById(ProductHistory productHistory);
-        IEnumerable<ProductHistory> GetByProductName(ProductName productName);
-        IEnumerable<ProductHistory> GetAll();
-        void Delete(ProductHistory productHistory);
+       public ProductHistoryId Create(ProductHistory productHistory);
+       public ProductHistory FindById(ProductHistory productHistory);
+       public IEnumerable<ProductHistory> GetByProductName(ProductName productName);
+       public IEnumerable<ProductHistory> GetAll();
+       public void Delete(ProductHistory productHistory);
     }
 }
