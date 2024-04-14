@@ -3,11 +3,8 @@ using UnitsNet;
 
 namespace Infrastructure.Implementations
 {
-    internal class OperationsMathematicalQuantities
+    internal static class OperationsMathematicalQuantities
     {
-
-        static OperationsMathematicalQuantities() { }
-
         /// <summary>
         /// принимает значение и размерность из БД и  возвращает тип IQuantity со значением и размерностью
         /// </summary>
@@ -34,7 +31,7 @@ namespace Infrastructure.Implementations
         internal static string DimensionValueCultureRU(IQuantity value)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU"); 
-            return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
+            return value.ToUnit(value.Unit).ToString().Split(" ")[1];
         }
 
         /// <summary>
@@ -128,6 +125,5 @@ namespace Infrastructure.Implementations
             else { throw new ArgumentException("Неправильные аргументы функции"); };
             return quantity;
         }
-
     }
 }
