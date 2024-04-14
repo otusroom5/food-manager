@@ -1,7 +1,6 @@
 ﻿using FoodStorage.Domain.Entities.ProductHistoryEntity;
 using FoodStorage.Domain.Entities.ProductEntity;
 
-
 namespace Application.Repositories.Interface
 {
     public interface IProductHistoryRepository
