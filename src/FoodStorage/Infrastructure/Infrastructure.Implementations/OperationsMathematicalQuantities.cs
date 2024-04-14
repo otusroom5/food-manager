@@ -31,7 +31,7 @@ namespace Infrastructure.Implementations
         /// </summary>
         /// <param name="Value">значение IQuantity</param>
         /// <returns>Возвращает размерность в русской культуре (для БД)</returns>
-        internal static string DimensionValueCultureRU(IQuantity Value)
+        internal static string DimensionValueCultureRU(IQuantity value)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU"); 
             return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
@@ -42,10 +42,10 @@ namespace Infrastructure.Implementations
         /// </summary>
         /// <param name="Value"></param>
         /// <returns></returns>
-        internal static string DimensionValueCultureEN(IQuantity Value)
+        internal static string DimensionValueCultureEN(IQuantity value)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-En");
-            return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
+            return value.ToUnit(value.Unit).ToString().Split(" ")[1];
         }
 
         /// <summary>
@@ -56,9 +56,8 @@ namespace Infrastructure.Implementations
         /// <returns>взвращает сумму значений приведенного к размерности 1 операнда</returns>
         static private IQuantity SumLocalize(IQuantity quantity1, IQuantity quantity2)
         {
-            IQuantity quantity = default;
             double sumValue = ((double)quantity1.Value) + ((double)quantity2.ToUnit(quantity1.Unit).Value);
-            quantity = Quantity.From(sumValue, quantity1.Unit);
+            IQuantity quantity = Quantity.From(sumValue, quantity1.Unit);
             return quantity;
         }
 

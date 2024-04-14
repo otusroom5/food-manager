@@ -6,11 +6,11 @@ namespace Application.Repositories.Interface
 {
     public interface IRecipeRepository
     {
-      public RecipeId Create(Recipe value);
-      public ProductHistory FindById(RecipeId value); 
-      public IEnumerable<Recipe> GetByProductId(ProductId value); 
+      public RecipeId Create(Recipe recipe);
+      public Recipe FindById(RecipeId recipeId); 
+      public IEnumerable<Recipe> GetByProductId(ProductId productId); 
       public IEnumerable<Recipe> GetAll();
-      public void Change(Recipe value);
-      public void Delete(Recipe value);
+      public void Change(Recipe recipe);
+      public void Delete(Recipe recipe);
     }
 }

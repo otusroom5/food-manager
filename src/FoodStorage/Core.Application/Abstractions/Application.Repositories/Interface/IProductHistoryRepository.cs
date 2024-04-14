@@ -8,7 +8,7 @@ namespace Application.Repositories.Interface
     {
        public ProductHistoryId Create(ProductHistory productHistory);
        public ProductHistory FindById(ProductHistory productHistory);
-       public IEnumerable<ProductHistory> GetByProductName(ProductName productName);
+       public IEnumerable<ProductHistory> GetByProductId(ProductId productId);
        public IEnumerable<ProductHistory> GetAll();
        public void Delete(ProductHistory productHistory);
     }

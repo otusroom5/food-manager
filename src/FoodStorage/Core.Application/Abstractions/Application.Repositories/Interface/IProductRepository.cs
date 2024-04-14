@@ -4,7 +4,7 @@ namespace Application.Repositories.Interface
 {
     public interface IProductRepository
     {
-       public string Create(Product product);
+       public ProductId Create(Product product);
        public Product FindById(ProductId productId); 
        public Product FindByName(ProductName productName);
        public IEnumerable<Product> GetAll();
