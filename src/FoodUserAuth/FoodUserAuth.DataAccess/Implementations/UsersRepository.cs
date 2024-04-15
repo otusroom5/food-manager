@@ -4,52 +4,102 @@ using FoodUserAuth.DataAccess.Entities;
 
 namespace FoodUserAuth.DataAccess.Repositories
 {
-    public class UsersRepository : IUsersRepository
+    public class UsersRepository : IUsersRepository, IDisposable
     {
         private readonly UserDbContext _userDbContext;
+        private bool disposedValue;
+
         public UsersRepository(UserDbContext userDbContext)
         {
             _userDbContext = userDbContext;
         }
 
-        public Guid Create(User user)
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Guid</returns>
+
+        public void Create(User user)
         {
             _userDbContext.Users.Add(user);
-            _userDbContext.SaveChanges();
-
-            return user.Id;
         }
-        public void Update(User updatedUser)
+
+        /// <summary>
+        /// Update user, throw exception if user is not found.
+        /// </summary>
+        /// <param name="user"></param>
+        public void Update(User user)
         {
-            if (updatedUser != null)
-            {
-                var user = _userDbContext.Users.FirstOrDefault(f => f.Id == updatedUser.Id);
-                if (user != null)
-                {
-                    user.Password = updatedUser.Password;
-                    _userDbContext.SaveChanges();
-                }
-            }
+            _userDbContext.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
         }
 
+        /// <summary>
+        /// Delete user by id, if throw exception if user is not found.
+        /// </summary>
+        /// <param name="id"></param>
         public void Delete(Guid id)
         {
-            var user = _userDbContext.Users.FirstOrDefault(f => f.Id == id);
-            if (user != null)
-            {
-                _userDbContext.Users.Remove(user);
-                _userDbContext.SaveChanges();
-            }
+            User foundUser = GetById(id);
+            _userDbContext.Users.Remove(foundUser);
+            _userDbContext.SaveChanges();
         }
 
+        /// <summary>
+        /// Return all list of users
+        /// </summary>
+        /// <returns>IEnumerable<User></returns>
         public IEnumerable<User> GetAll()
         {
             return _userDbContext.Users.ToList();
         }
 
-        public User? FindUserByName(string userName)
+        /// <summary>
+        /// Find user by name, if user is not found then return null
+        /// </summary>
+        /// <param name="loginName"></param>
+        /// <returns>User</returns>
+        public User FindUserByLoginName(string loginName)
         {
-            throw new NotImplementedException();
-        }      
+            return (from users in _userDbContext.Users
+                    where users.LoginName == loginName
+                    select users).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get user by id, throw exception if user is not found
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>User</returns>
+        public User GetById(Guid id)
+        {
+            return (from users in _userDbContext.Users
+                         where users.Id == id
+                         select users).FirstOrDefault();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _userDbContext.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+
+        public void Dispose()
+        {     
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Save()
+        {
+            _userDbContext.SaveChanges();
+        }
     }
 }
