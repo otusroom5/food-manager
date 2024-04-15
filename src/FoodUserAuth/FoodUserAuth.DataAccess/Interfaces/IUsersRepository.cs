@@ -7,7 +7,8 @@ namespace FoodUserAuth.DataAccess.Abstractions
         Guid Create(User user);
         void Update(User user);
         void Delete(Guid id);
+        User GetById(Guid id);
         IEnumerable<User> GetAll();
-        User? FindUserByName(string userName);
+        User FindUserByName(string loginName);
     }
 }
