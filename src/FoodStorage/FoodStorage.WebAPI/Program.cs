@@ -1,20 +1,16 @@
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
-builder.Services.AddLogging();
-builder.Services.AddSwaggerGen();
+namespace FoodStorage.WebApi;
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
-
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = string.Empty;
-});
-
-app.Run();
