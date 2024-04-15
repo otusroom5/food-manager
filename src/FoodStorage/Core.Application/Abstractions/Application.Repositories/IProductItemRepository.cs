@@ -1,7 +1,7 @@
 ﻿using FoodStorage.Domain.Entities.ProductItemEntity;
 using FoodStorage.Domain.Entities.ProductEntity;
 
-namespace Application.Repositories.Interface
+namespace FoodStorage.Application.Repositories
 {
     public interface IProductItemRepository
     {
