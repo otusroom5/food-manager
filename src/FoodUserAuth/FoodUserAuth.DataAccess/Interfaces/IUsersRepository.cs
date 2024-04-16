@@ -4,10 +4,12 @@ namespace FoodUserAuth.DataAccess.Abstractions
 {
     public interface IUsersRepository
     {
-        Guid Create(User user);
+        void Create(User user);
         void Update(User user);
         void Delete(Guid id);
+        User GetById(Guid id);
         IEnumerable<User> GetAll();
-        User? FindUserByName(string userName);
+        User FindUserByLoginName(string loginName);
+        void Save();
     }
 }
