@@ -1,14 +1,10 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿namespace FoodUserAuth.BusinessLogic.Services;
 
-namespace FoodUserAuth.BusinessLogic.Services
+public partial class UserVerificationService
 {
-    public partial class UserVerificationService
+    public interface IPasswordHasher
     {
-        public interface IPasswordHasher
-        {
-            string ComputeHash(string password);
-            bool VerifyHash(string password, string hashedPassword);
-        }
+        string ComputeHash(string password);
+        bool VerifyHash(string password, string hashedPassword);
     }
 }

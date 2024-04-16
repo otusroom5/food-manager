@@ -4,7 +4,7 @@ namespace FoodUserAuth.BusinessLogic.Abstractions
 {
     public interface IUsersService
     {
-        Guid CreateUser(UserDto user);
+        (UserDto User, string Password) CreateUser(UserDto user);
         IEnumerable<UserDto> GetAll();
         void UpdateUser(UserDto user);
         void DisableUser(Guid id);

@@ -27,7 +27,7 @@ namespace FoodUserAuth.BusinessLogic.Services
         public bool TryVerifyUser(string userName, string hashedPassword, out VerifiedUserDto? user)
         {
             user = null;
-            User? foundUser = _usersRepository.FindUserByName(userName);
+            User? foundUser = _usersRepository.FindUserByLoginName(userName);
 
             if (foundUser is null)
             {
