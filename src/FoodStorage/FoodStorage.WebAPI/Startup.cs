@@ -1,4 +1,5 @@
-﻿using FoodStorage.Infrastructure.Implementations;
+﻿using FoodStorage.Application.Implementations;
+using FoodStorage.Infrastructure.Implementations;
 
 namespace FoodStorage.WebApi;
 
@@ -17,6 +18,7 @@ public class Startup
         services.AddLogging();
         services.AddSwaggerGen();
 
+        services.AddApplication();
         services.AddInfrastructure(Configuration);
     }
 
@@ -24,17 +26,21 @@ public class Startup
     {
         if (env.IsDevelopment())
         {
-            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
-        if (!env.IsProduction())
+        app.UseRouting();
+
+        app.UseSwaggerUI(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Storage Api V1");
-                c.RoutePrefix = string.Empty;
-            });
-        }
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Storage Api V1");
+            c.RoutePrefix = string.Empty;
+        });
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }

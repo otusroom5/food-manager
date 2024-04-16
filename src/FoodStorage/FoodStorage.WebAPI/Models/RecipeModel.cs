@@ -18,5 +18,5 @@ public class RecipeModel
     /// <summary>
     /// Позиции рецепта (продукт + его количество)
     /// </summary>
-    public Dictionary<Guid, string> Positions { get; set; } = new Dictionary<Guid, string>();
+    public List<RecipePositionModel> Positions { get; set; } = new List<RecipePositionModel>();
 }
