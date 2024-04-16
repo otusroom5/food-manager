@@ -1,9 +1,10 @@
-﻿using System.Globalization;
+﻿using FoodStorage.Domain.Entities.Common.Exceptions;
+using System.Globalization;
 using UnitsNet;
 
 namespace Infrastructure.Implementations
 {
-    internal static class OperationsMathematicalQuantities
+    internal static class OperationsMathematicalQuantities 
     {
         /// <summary>
         /// принимает значение и размерность из БД и  возвращает тип IQuantity со значением и размерностью
@@ -122,7 +123,7 @@ namespace Infrastructure.Implementations
                     }
                 }
             }
-            else { throw new ArgumentException("Неправильные аргументы функции"); };
+            else { throw new DomainEntitiesException("Неправильные аргументы функции");}; // ArgumentException
             return quantity;
         }
     }

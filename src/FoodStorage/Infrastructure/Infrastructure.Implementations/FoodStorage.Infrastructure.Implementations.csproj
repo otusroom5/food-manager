@@ -10,4 +10,8 @@
     <PackageReference Include="UnitsNet" Version="5.49.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core.Domain\Domain.Entities\FoodStorage.Domain.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
