@@ -2,10 +2,11 @@
 using Moq;
 using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Dto;
-using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.BusinessLogic.Tests.Utils;
 using FoodUserAuth.DataAccess.Types;
+using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
+using FoodUserAuth.BusinessLogic.Interfaces;
 
 namespace FoodUserAuth.BusinessLogic.Services.Tests
 {
@@ -16,7 +17,7 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
         public static string DefaultNewPasswordHashed = $"{DefaultNewPassword}!";
 
         #region GetAll()
-        
+
         [Test()]
         public void GetAll_CheckResultList_ShouldBeEquals()
         {
@@ -26,13 +27,15 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Setup(f => f.GetAll())
                 .Returns(fakeUsers);
             IEnumerable<UserDto> expected = ConvertToUserDto(fakeUsers);
-            var userService = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
             IEnumerable<UserDto> actual = userService.GetAll();
 
             CollectionAssert.AreEqual(expected, actual);
         }
-        
+
         #endregion
 
         #region ChangePassword()
@@ -43,12 +46,14 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             User user = CreateFakeUser();
             var usersRepositoryMock = new Mock<IUsersRepository>();
             usersRepositoryMock
-                .Setup(f => f.GetAll())
-                .Returns(new User[] { user });
+                .Setup(f => f.GetById(It.IsAny<Guid>()))
+                .Returns(user);
             usersRepositoryMock
                 .Setup(f => f.Update(It.IsAny<User>()))
                 .Callback<User>(f => user.Password = f.Password);
-            var userService = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
             userService.ChangePassword(user.Id, DefaultNewPassword);
 
@@ -56,7 +61,7 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
         }
 
         [Test()]
-        public void ChangePassword_PutNullPassword_ThrowArgumentNullException()
+        public void ChangePassword_PutEmptyOrNullPassword_ThrowArgumentException()
         {
             User user = CreateFakeUser();
             var usersRepositoryMock = new Mock<IUsersRepository>();
@@ -64,23 +69,12 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Setup(f => f.GetAll())
                 .Returns(new User[] { user });
             Guid userId = usersRepositoryMock.Object.GetAll().First().Id;
-            var userService = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
-
-            Assert.Throws<ArgumentNullException>(() => userService.ChangePassword(userId, null));
-        }
-
-        [Test()]
-        public void ChangePassword_PutEmptyPassword_ThrowArgumentException()
-        {
-            User user = CreateFakeUser();
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            usersRepositoryMock
-                .Setup(f => f.GetAll())
-                .Returns(new User[] { user });
-            Guid userId = usersRepositoryMock.Object.GetAll().First().Id;
-            var userService = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
             Assert.Throws<ArgumentException>(() => userService.ChangePassword(userId, string.Empty));
+            Assert.Throws<ArgumentException>(() => userService.ChangePassword(userId, null));
         }
 
         [Test()]
@@ -90,7 +84,9 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             usersRepositoryMock
                 .Setup(f => f.GetAll())
                 .Returns(new User[] { });
-            UsersService service = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
+            UsersService service = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
             Assert.Throws<UserNotFoundException>(() => service.ChangePassword(Guid.NewGuid(), DefaultNewPassword));
         }
@@ -100,83 +96,141 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
         #region CreateUser()
 
         [Test()]
-        public void CreateUser_CheckCorrectUserDetails_True()
+        public void CreateUser_PutNullToUserArgument_ThrowArgumentNullException()
+        {
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            usersRepositoryMock
+                .Setup(f => f.Create(It.IsAny<User>()));
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
+
+            Assert.Throws<ArgumentNullException>(() => userService.CreateUser(null));
+        }
+
+        [Test()]
+        public void CreateUser_CheckCorrectUserData_True()
         {
             User actual = null;
             Guid newGuid = Guid.NewGuid();
             var usersRepositoryMock = new Mock<IUsersRepository>();
             usersRepositoryMock
                 .Setup(f => f.Create(It.IsAny<User>()))
-                .Callback<User>(f => actual = f)
-                .Returns(newGuid);
-            UserDto newUser = CreateFakeUserDto();
-            var userService = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
-
-            Guid createdId = userService.CreateUser(newUser);
+                .Callback<User>(f => actual = f);
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
+            var createdUser = userService.CreateUser(CreateFakeUserDto());
 
             Assert.IsNotNull(actual);
-            Assert.That(actual.Id, Is.EqualTo(newGuid)); // Id
-            Assert.That(createdId, Is.EqualTo(newGuid)); // Check result of CreateUser method
-            Assert.That(actual.State, Is.EqualTo(newUser.State));
-            Assert.That(actual.LoginName, Is.EqualTo(newUser.UserName));
-            Assert.That(actual.FirstName, Is.EqualTo(newUser.FullName));
-            Assert.That(actual.Email, Is.EqualTo(newUser.Email));
+            Assert.That(actual.Id, Is.EqualTo(createdUser.User.Id));
+            Assert.That(actual.State, Is.EqualTo(createdUser.User.State));
+            Assert.That(actual.LoginName, Is.EqualTo(createdUser.User.LoginName));
+            Assert.That(actual.FirstName, Is.EqualTo(createdUser.User.FirstName));
+            Assert.That(actual.LastName, Is.EqualTo(createdUser.User.LastName));
+            Assert.That(actual.Email, Is.EqualTo(createdUser.User.Email));
         }
 
         [Test()]
-        public void CreateUser_PutNullToUserName_ThrowArgumentNullException()
+        public void CreateUser_PutNullOrEmptyToLoginName_ThrowRequiredPropertyException()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             usersRepositoryMock
-                .Setup(f => f.Create(It.IsAny<User>()))
-                .Returns(Guid.NewGuid());
-            var userService = new UsersService(usersRepositoryMock.Object, CreateDefaultPasswordHasher());
-            UserDto newUser = CreateFakeUserDto();
-            newUser.UserName = null;
+                .Setup(f => f.Create(It.IsAny<User>()));
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
-            Assert.Throws<ArgumentNullException>(() => userService.CreateUser(newUser));
+            Assert.Throws<RequiredPropertyException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = Faker.Name.Last(),
+                LoginName = null
+            }));
+            Assert.Throws<RequiredPropertyException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = Faker.Name.Last(),
+                LoginName = string.Empty
+            }));
         }
 
         [Test()]
-        public void CreateUser_PutEmptyToUserName_ThrowArgumentException()
+        public void CreateUser_PutNullOrEmptyToFirstName_ThrowRequiredPropertyException()
         {
             var usersRepository = new Mock<IUsersRepository>();
-            usersRepository
-                .Setup(f => f.Create(It.IsAny<User>()))
-                .Returns(Guid.NewGuid());
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto newUser = CreateFakeUserDto();
-            newUser.UserName = string.Empty;
+            usersRepository.Setup(f => f.Create(It.IsAny<User>()));
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
-            Assert.Throws<ArgumentException>(() => userService.CreateUser(newUser));
+            Assert.Throws<RequiredPropertyException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = string.Empty,
+                LastName = Faker.Name.Last(),
+                LoginName = Faker.Name.First()
+            }));
+            Assert.Throws<RequiredPropertyException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = null,
+                LastName = Faker.Name.Last(),
+                LoginName = Faker.Name.First()
+            }));
         }
 
         [Test()]
-        public void CreateUser_PutNullToFullName_ThrowArgumentNullException()
+        public void CreateUser_PutNullOrEmptyToLastName_ThrowRequiredPropertyException()
         {
             var usersRepository = new Mock<IUsersRepository>();
-            usersRepository
-                .Setup(f => f.Create(It.IsAny<User>()))
-                .Returns(Guid.NewGuid());
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto newUser = CreateFakeUserDto();
-            newUser.FullName = null;
-            
-            Assert.Throws<ArgumentNullException>(() => userService.CreateUser(newUser));
+            usersRepository.Setup(f => f.Create(It.IsAny<User>()));
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
+
+            Assert.Throws<RequiredPropertyException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = string.Empty,
+                LoginName = Faker.Name.First()
+            }));
+            Assert.Throws<RequiredPropertyException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = null,
+                LoginName = Faker.Name.First()
+            }));
         }
 
         [Test()]
-        public void CreateUser_PutEmptyToFullName_ThrowArgumentException()
+        public void CreateUser_PutExistingLoginName_ThrowUserAlreadyExistException()
         {
             var usersRepository = new Mock<IUsersRepository>();
-            usersRepository
-                .Setup(f => f.Create(It.IsAny<User>()))
-                .Returns(Guid.NewGuid());
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto newUser = CreateFakeUserDto();
-            newUser.FullName = string.Empty;
-            
-            Assert.Throws<ArgumentException>(() => userService.CreateUser(newUser));
+            usersRepository.Setup(f => f.FindUserByLoginName("test"))
+                .Returns(() => new UserDto() { LoginName = "test" });
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
+
+            Assert.Throws<UserAlreadyExistException>(() => userService.CreateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = string.Empty,
+                LoginName = "test"
+            }));
         }
 
         #endregion
@@ -196,7 +250,9 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Setup(f => f.Update(It.IsAny<User>()))
                 .Callback<User>(f => actual = f.State);
 
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
             userService.DisableUser(fakeUser.Id);
 
             Assert.That(actual, Is.EqualTo(UserState.Disabled));
@@ -208,7 +264,9 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             usersRepository
                 .Setup(f => f.GetAll())
                 .Returns(new User[] { });
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
             Assert.Throws<UserNotFoundException>(() => userService.DisableUser(Guid.NewGuid()));
         }
@@ -225,7 +283,20 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
         #region UpdateUser()
 
         [Test()]
-        public void UpdateUser_PutIncorrectUserId_ThrowUserNotFoundException()
+        public void UpdateUser_PutNullToUserArgument_ThrowArgumentNullException()
+        {
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            usersRepositoryMock
+                .Setup(f => f.Create(It.IsAny<User>()));
+            var userService = new UsersService(usersRepositoryMock.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
+
+            Assert.Throws<ArgumentNullException>(() => userService.UpdateUser(null));
+        }
+
+        [Test()]
+        public void UpdateUser_PutNonExistUserId_ThrowUserNotFoundException()
         {
             var usersRepository = new Mock<IUsersRepository>();
             usersRepository
@@ -233,18 +304,17 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Returns(new User[] { UsersUtils.CreateFakeUser() });
             usersRepository
                 .Setup(f => f.Update(It.IsAny<User>()));
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto userDto = new UserDto()
-            {
-                Id = Guid.NewGuid(),
-                State = UserState.Enabled,
-            };
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
+            UserDto userDto = CreateFakeUserDto();
+            userDto.Id = Guid.NewGuid();
 
             Assert.Throws<UserNotFoundException>(() => userService.UpdateUser(userDto));
         }
 
         [Test()]
-        public void UpdateUser_PutNullToUserNameForExistUser_ThrowArgumentNullException()
+        public void UpdateUser_PutEmptyOrNullToLoginName_ThrowRequiredPropertyException()
         {
             var usersRepository = new Mock<IUsersRepository>();
             usersRepository
@@ -252,15 +322,30 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Returns(new User[] { UsersUtils.CreateFakeUser() });
             usersRepository
                 .Setup(f => f.Update(It.IsAny<User>()));
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto userDto = userService.GetAll().First();
-            userDto.UserName = null;
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
-            Assert.Throws<ArgumentNullException>(() => userService.UpdateUser(userDto));
+            Assert.Throws<RequiredPropertyException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = Faker.Name.Last(),
+                LoginName = null
+            }));
+            Assert.Throws<RequiredPropertyException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = Faker.Name.Last(),
+                LoginName = string.Empty
+            }));
         }
 
         [Test()]
-        public void UpdateUser_PutEmptyToUserNameForExistUser_ThrowArgumentException()
+        public void UpdateUser_PutEmptyOrNullToFirstName_ThrowArgumentException()
         {
             var usersRepository = new Mock<IUsersRepository>();
             usersRepository
@@ -268,15 +353,30 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Returns(new User[] { UsersUtils.CreateFakeUser() });
             usersRepository
                 .Setup(f => f.Update(It.IsAny<User>()));
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto userDto = userService.GetAll().First();
-            userDto.UserName = string.Empty;
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
-            Assert.Throws<ArgumentException>(() => userService.UpdateUser(userDto));
+            Assert.Throws<RequiredPropertyException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = null,
+                LastName = Faker.Name.Last(),
+                LoginName = Faker.Name.First()
+            }));
+            Assert.Throws<RequiredPropertyException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = string.Empty,
+                LastName = Faker.Name.Last(),
+                LoginName = Faker.Name.First()
+            }));
         }
 
         [Test()]
-        public void UpdateUser_PutNullToFullNameForExistUser_ThrowArgumentNullException()
+        public void UpdateUser_PutEmptyOrNullToLastName_ThrowArgumentException()
         {
             var usersRepository = new Mock<IUsersRepository>();
             usersRepository
@@ -284,31 +384,49 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 .Returns(new User[] { UsersUtils.CreateFakeUser() });
             usersRepository
                 .Setup(f => f.Update(It.IsAny<User>()));
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto userDto = userService.GetAll().First();
-            userDto.FullName = null;
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
-            Assert.Throws<ArgumentNullException>(() => userService.UpdateUser(userDto));
+            Assert.Throws<RequiredPropertyException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = null,
+                LoginName = Faker.Name.First()
+            }));
+            Assert.Throws<RequiredPropertyException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = string.Empty,
+                LoginName = Faker.Name.First()
+            }));
         }
 
         [Test()]
-        public void UpdateUser_PutEmptyToFullNameForExistUser_ThrowArgumentException()
+        public void UpdateUser_PutExistingLoginName_ThrowUserAlreadyExistException()
         {
             var usersRepository = new Mock<IUsersRepository>();
-            usersRepository
-                .Setup(f => f.GetAll())
-                .Returns(new User[] { UsersUtils.CreateFakeUser() });
-            usersRepository
-                .Setup(f => f.Update(It.IsAny<User>()));
-            var userService = new UsersService(usersRepository.Object, CreateDefaultPasswordHasher());
-            UserDto userDto = userService.GetAll().First();
-            userDto.FullName = string.Empty;
+            usersRepository.Setup(f => f.FindUserByLoginName("test"))
+                .Returns(() => new UserDto() { LoginName = "test" });
+            var userService = new UsersService(usersRepository.Object,
+                CreateDefaultPasswordHasher(),
+                CreateDefaultPasswordGenerator());
 
-            Assert.Throws<ArgumentException>(() => userService.UpdateUser(userDto));
+            Assert.Throws<UserAlreadyExistException>(() => userService.UpdateUser(new UserDto()
+            {
+                State = Faker.Enum.Random<UserState>(),
+                Email = Faker.Internet.Email(),
+                FirstName = Faker.Name.First(),
+                LastName = string.Empty,
+                LoginName = "test"
+            }));
         }
 
         #endregion
-
 
         public User CreateFakeUser()
         {
@@ -322,6 +440,7 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                 Password = Faker.Identification.UkNhsNumber()
             };
         }
+
         private UserDto[] ConvertToUserDto(IEnumerable<User> users)
         {
             var result = new List<UserDto>();
@@ -332,12 +451,14 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
                     Id = user.Id,
                     State = user.State,
                     Email = user.Email,
-                    FullName = user.FirstName,
-                    UserName = user.LoginName
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    LoginName = user.LoginName
                 });
             }
             return result.ToArray();
         }
+
         private IPasswordHasher CreateDefaultPasswordHasher()
         {
             var passwordHasherMock = new Mock<IPasswordHasher>();
@@ -347,14 +468,24 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
             return passwordHasherMock.Object;
         }
 
+        private IPasswordGenerator CreateDefaultPasswordGenerator()
+        {
+            var passwordGenerator = new Mock<IPasswordGenerator>();
+            passwordGenerator
+                .Setup(f => f.GeneratePassword(It.IsAny<UserDto>()))
+                .Returns<string>((userDto) => "test");
+            return passwordGenerator.Object;
+        }
+
         private UserDto CreateFakeUserDto()
         {
             return new UserDto()
             {
                 State = Faker.Enum.Random<UserState>(),
                 Email = Faker.Internet.Email(),
-                FullName = Faker.Name.FullName(),
-                UserName = Faker.Name.First()
+                FirstName = Faker.Name.First(),
+                LastName = Faker.Name.Last(),
+                LoginName = Faker.Name.First()
             };
         }
     }
