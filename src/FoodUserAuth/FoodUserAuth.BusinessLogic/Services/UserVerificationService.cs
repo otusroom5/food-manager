@@ -1,12 +1,11 @@
-﻿using System.Security.Cryptography;
-using FoodUserAuth.BusinessLogic.Abstractions;
-using FoodUserAuth.BusinessLogic.Dto;
+﻿using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.DataAccess.Abstractions;
 using FoodUserAuth.DataAccess.Entities;
 
 namespace FoodUserAuth.BusinessLogic.Services
 {
-    public partial class UserVerificationService : IUserVerificationService
+    public class UserVerificationService : IUserVerificationService
     {
         private readonly IUsersRepository _usersRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -24,10 +23,10 @@ namespace FoodUserAuth.BusinessLogic.Services
         /// <param name="user"></param>
         /// <returns>True if user is valid otherwise false, also return out parameter with detailed user</returns>
         /// <remarks>
-        public bool TryVerifyUser(string userName, string hashedPassword, out VerifiedUserDto? user)
+        public bool TryVerifyUser(string userName, string hashedPassword, out VerifiedUserDto user)
         {
             user = null;
-            User? foundUser = _usersRepository.FindUserByLoginName(userName);
+            User foundUser = _usersRepository.FindUserByLoginName(userName);
 
             if (foundUser is null)
             {

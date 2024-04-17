@@ -1,10 +1,7 @@
-﻿namespace FoodUserAuth.BusinessLogic.Services;
+﻿namespace FoodUserAuth.BusinessLogic.Interfaces;
 
-public partial class UserVerificationService
+public interface IPasswordHasher
 {
-    public interface IPasswordHasher
-    {
-        string ComputeHash(string password);
-        bool VerifyHash(string password, string hashedPassword);
-    }
+    string ComputeHash(string password);
+    bool VerifyHash(string password, string hashedPassword);
 }

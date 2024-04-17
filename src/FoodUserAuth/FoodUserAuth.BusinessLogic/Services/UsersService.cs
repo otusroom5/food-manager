@@ -1,7 +1,5 @@
 ﻿using FoodUserAuth.BusinessLogic.Dto;
-using FoodUserAuth.BusinessLogic.Abstractions;
 using FoodUserAuth.DataAccess.Abstractions;
-using static FoodUserAuth.BusinessLogic.Services.UserVerificationService;
 using FoodUserAuth.BusinessLogic.Interfaces;
 
 namespace FoodUserAuth.BusinessLogic.Services;
