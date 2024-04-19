@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using UnitsNet;
 
-namespace Infrastructure.Implementations
+namespace FoodStorage.Infrastructure.Implementations.Common
 {
     internal class OperationsMathematicalQuantities
     {
@@ -17,12 +17,12 @@ namespace Infrastructure.Implementations
         internal static IQuantity DataUnits(double value, string dimension)
         {
             IQuantity quantity = default;
-            if (dimension == DemensionCulture.MilligramRu || dimension == DemensionCulture.MilligramEn) { quantity = Mass.FromMilligrams(value); }
-            if (dimension == DemensionCulture.GramRu || dimension == DemensionCulture.GramEn) { quantity = Mass.FromGrams(value); }
-            if (dimension == DemensionCulture.KilogramRu || dimension == DemensionCulture.KilogramEn) { quantity = Mass.FromKilograms(value); }
-            if (dimension == DemensionCulture.MilliliterRu || dimension == DemensionCulture.MilliliterEn) { quantity = Volume.FromMilliliters(value); }
-            if (dimension == DemensionCulture.LiterRu || dimension == DemensionCulture.LiterEn) { quantity = Volume.FromLiters(value); }
-            if (dimension == DemensionCulture.AmountRu || dimension == DemensionCulture.AmountEn) { quantity = Scalar.FromAmount(value); }
+            if (dimension == DimensionCulture.MilligramRu || dimension == DimensionCulture.MilligramEn) { quantity = Mass.FromMilligrams(value); }
+            if (dimension == DimensionCulture.GramRu || dimension == DimensionCulture.GramEn) { quantity = Mass.FromGrams(value); }
+            if (dimension == DimensionCulture.KilogramRu || dimension == DimensionCulture.KilogramEn) { quantity = Mass.FromKilograms(value); }
+            if (dimension == DimensionCulture.MilliliterRu || dimension == DimensionCulture.MilliliterEn) { quantity = Volume.FromMilliliters(value); }
+            if (dimension == DimensionCulture.LiterRu || dimension == DimensionCulture.LiterEn) { quantity = Volume.FromLiters(value); }
+            if (dimension == DimensionCulture.AmountRu || dimension == DimensionCulture.AmountEn) { quantity = Scalar.FromAmount(value); }
             return quantity;
         }
 
@@ -33,7 +33,7 @@ namespace Infrastructure.Implementations
         /// <returns>Возвращает размерность в русской культуре (для БД)</returns>
         internal static string DimensionValueCultureRU(IQuantity Value)
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU"); 
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
             return Value.ToUnit(Value.Unit).ToString().Split(" ")[1];
         }
 
@@ -57,7 +57,7 @@ namespace Infrastructure.Implementations
         static private IQuantity SumLocalize(IQuantity quantity1, IQuantity quantity2)
         {
             IQuantity quantity = default;
-            double sumValue = ((double)quantity1.Value) + ((double)quantity2.ToUnit(quantity1.Unit).Value);
+            double sumValue = (double)quantity1.Value + (double)quantity2.ToUnit(quantity1.Unit).Value;
             quantity = Quantity.From(sumValue, quantity1.Unit);
             return quantity;
         }
@@ -101,20 +101,20 @@ namespace Infrastructure.Implementations
             {
                 if (quantity1.Unit.GetHashCode() < quantity2.Unit.GetHashCode())
                 {
-                    if (((double)quantity1.Value) > ((double)quantity2.ToUnit(quantity1.Unit).Value))
+                    if ((double)quantity1.Value > (double)quantity2.ToUnit(quantity1.Unit).Value)
                     {
-                        double differenceValue = ((double)quantity1.Value) - ((double)quantity2.ToUnit(quantity1.Unit).Value);
+                        double differenceValue = (double)quantity1.Value - (double)quantity2.ToUnit(quantity1.Unit).Value;
                         quantity = Quantity.From(differenceValue, quantity1.Unit);
                     }
                     else
                     {
-                        double differenceValue = (((double)quantity2.ToUnit(quantity1.Unit).Value - (double)quantity1.Value));
+                        double differenceValue = (double)quantity2.ToUnit(quantity1.Unit).Value - (double)quantity1.Value;
                         quantity = Quantity.From(differenceValue, quantity1.Unit);
                     }
                 }
                 else
                 {
-                    if (((double)quantity2.Value) > (double)quantity1.ToUnit(quantity2.Unit).Value)
+                    if ((double)quantity2.Value > (double)quantity1.ToUnit(quantity2.Unit).Value)
                     {
                         double differenceValue = (double)quantity2.Value - (double)quantity1.ToUnit(quantity2.Unit).Value;
                         quantity = Quantity.From(differenceValue, quantity2.Unit);
