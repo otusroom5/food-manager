@@ -4,7 +4,7 @@ namespace FoodStorage.Application.Repositories;
 
 public interface IProductRepository
 {
-    public ProductId Create(Product product);
+    public void Create(Product product);
     public Product FindById(ProductId productId);
     public Product FindByName(ProductName productName);
     public IEnumerable<Product> GetAll();
