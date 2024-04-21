@@ -1,5 +1,4 @@
-﻿
-using FoodUserNotifier.DataAccess.Types;
+﻿using FoodUserNotifier.DataAccess.Types;
 
 namespace FoodUserNotifier.BusinessLogic.Abstractions;
 

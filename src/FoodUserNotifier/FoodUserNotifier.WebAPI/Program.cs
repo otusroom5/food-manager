@@ -1,7 +1,6 @@
 using FoodUserNotifier.BusinessLogic.Interfaces;
 using FoodUserNotifier.DataAccess.Implementations;
 using FoodUserNotifier.DataAccess.Interfaces;
-using FoodUserNotifier.DataAccess.Repositories;
 using FoodUserNotifier.WebApi.Extensions;
 using FoodUserNotifier.WebApi.Implementations;
 using FoodUserNotifier.WebApi.Implementations.Options;

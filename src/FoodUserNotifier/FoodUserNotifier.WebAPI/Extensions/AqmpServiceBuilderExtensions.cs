@@ -1,4 +1,4 @@
-﻿using FoodUserNotifier.BusinessLogic.Interfaces;
+﻿using FoodUserNotifier.WebApi.Interfaces;
 
 namespace FoodUserNotifier.WebApi.Extensions;
 
