@@ -1,3 +1,4 @@
+using FoodUserNotifier.BusinessLogic.Implementations;
 using FoodUserNotifier.BusinessLogic.Interfaces;
 using FoodUserNotifier.BusinessLogic.Services;
 using FoodUserNotifier.DataAccess.Implementations;
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IMessageSender, TelegramMessageSender>();
 builder.Services.AddScoped<IMessageSender, SmtpMessageSender>();
 
 builder.Services.AddTransient<IRecepientRepository, RecepientRepository>();
+builder.Services.AddTransient<IRecepientService, RecepientService>();
 builder.Services.AddTransient<IMessageConverter, JsonMessageConverter>();
 builder.Services.AddTransient<IMessageDispatcher, MessageDispatcher>();
 builder.Services.AddSingleton<IAqmpService, AqmpService>();

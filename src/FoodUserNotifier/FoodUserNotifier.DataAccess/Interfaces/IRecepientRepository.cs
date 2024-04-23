@@ -10,4 +10,5 @@ public interface IRecepientRepository
     void Delete(Guid id);
     Recepient GetById(Guid id);
     IEnumerable<Recepient> GetAllForRole(Role role);
+    IEnumerable<Recepient> GetAll();
 }

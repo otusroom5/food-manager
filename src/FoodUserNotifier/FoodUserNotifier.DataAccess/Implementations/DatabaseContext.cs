@@ -5,8 +5,9 @@ namespace FoodUserNotifier.DataAccess.Implementations;
 
 public class DatabaseContext : DbContext
 {
-    public DatabaseContext(DbContextOptions options) : base(options)
+    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
+
     }
 
     public DbSet<Recepient> Recepients { get; set; }

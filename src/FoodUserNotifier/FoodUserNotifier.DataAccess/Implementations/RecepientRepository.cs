@@ -1,16 +1,21 @@
 ﻿using FoodUserNotifier.DataAccess.Entities;
 using FoodUserNotifier.DataAccess.Interfaces;
 using FoodUserNotifier.DataAccess.Types;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodUserNotifier.DataAccess.Implementations;
 
-public class RecepientRepository : IRecepientRepository
+public class RecepientRepository : IRecepientRepository, IDisposable
 {
+    private readonly IServiceScope _serviceScope;
     private readonly DatabaseContext _context;
-    
-    public RecepientRepository(DatabaseContext context)
+    private bool disposedValue;
+
+
+    public RecepientRepository(IServiceScopeFactory scopeFactory)
     {
-        _context = context;
+        _serviceScope = scopeFactory.CreateScope();
+        _context = _serviceScope.ServiceProvider.GetRequiredService<DatabaseContext>();
     }
 
     public Recepient Create(Recepient recepient)
@@ -26,6 +31,11 @@ public class RecepientRepository : IRecepientRepository
         _context.SaveChanges();
     }
 
+    public IEnumerable<Recepient> GetAll()
+    {
+        return _context.Recepients;
+    }
+
     public IEnumerable<Recepient> GetAllForRole(Role role)
     {
         return _context.Recepients.Where(item => item.Role == role);
@@ -39,5 +49,23 @@ public class RecepientRepository : IRecepientRepository
     public void Update(Recepient recepient)
     {
         _context.Entry(recepient).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                _serviceScope.Dispose();
+            }
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
