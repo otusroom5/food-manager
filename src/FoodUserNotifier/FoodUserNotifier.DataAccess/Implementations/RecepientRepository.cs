@@ -2,33 +2,42 @@
 using FoodUserNotifier.DataAccess.Interfaces;
 using FoodUserNotifier.DataAccess.Types;
 
-namespace FoodUserNotifier.DataAccess.Implementations
+namespace FoodUserNotifier.DataAccess.Implementations;
+
+public class RecepientRepository : IRecepientRepository
 {
-    public class RecepientRepository : IRecepientRepository
+    private readonly DatabaseContext _context;
+    
+    public RecepientRepository(DatabaseContext context)
     {
-        public Recepient Create(Recepient recepient)
-        {
-            throw new NotImplementedException();
-        }
+        _context = context;
+    }
 
-        public void Delete(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+    public Recepient Create(Recepient recepient)
+    {
+        _context.Add(recepient);
+        return recepient;
+    }
 
-        public IEnumerable<Recepient> GetAllForRole(Role role)
-        {
-            throw new NotImplementedException();
-        }
+    public void Delete(Guid id)
+    {
+        Recepient foundRecepient = GetById(id);
+        _context.Recepients.Remove(foundRecepient);
+        _context.SaveChanges();
+    }
 
-        public Recepient GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+    public IEnumerable<Recepient> GetAllForRole(Role role)
+    {
+        return _context.Recepients.Where(item => item.Role == role);
+    }
 
-        public void Update(Recepient recepient)
-        {
-            throw new NotImplementedException();
-        }
+    public Recepient GetById(Guid id)
+    {
+        return _context.Recepients.FirstOrDefault(item => item.Id.Equals(id));
+    }
+
+    public void Update(Recepient recepient)
+    {
+        _context.Entry(recepient).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
     }
 }

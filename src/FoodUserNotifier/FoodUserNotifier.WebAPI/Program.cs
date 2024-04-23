@@ -7,6 +7,7 @@ using FoodUserNotifier.WebApi.Implementations;
 using FoodUserNotifier.WebApi.Implementations.Options;
 using FoodUserNotifier.WebApi.Interfaces;
 using FoodUserNotifier.WebApi.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -16,6 +17,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<AqmpClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
 builder.Services.Configure<TelegramClientOptions>(builder.Configuration.GetSection(TelegramClientOptions.TelegramClient));
 builder.Services.Configure<SmptClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
+
+builder.Services.AddDbContext<DatabaseContext>(
+        options => options.UseNpgsql("name=ConnectionStrings:DefaultConnection"));
 
 builder.Services.AddScoped<IMessageSender, TelegramMessageSender>();
 builder.Services.AddScoped<IMessageSender, SmtpMessageSender>();
