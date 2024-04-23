@@ -97,6 +97,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.BusinessLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Domain.Tests", "src\FoodStorage\Core.Domain\Domain.Tests\FoodStorage.Domain.Tests.csproj", "{F213B188-21D5-463B-81ED-4A1DDF9C3F66}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{244262B7-C20A-4089-AFE6-0CBB4F79747E}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

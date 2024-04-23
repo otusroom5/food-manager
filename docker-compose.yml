@@ -1,12 +1,57 @@
-version: '3.8'
+version: "3.8"
 
 services:
   rabbitmq:
+    container_name: rabbitmq-container
     image: rabbitmq:3.10.7-management
     hostname: rabbitmq
-    restart: always
+    restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=room5
       - RABBITMQ_DEFAULT_PASS=room5Password
     ports:
       - 15672:15672
+    networks:
+      - food_net
+
+  postgres:
+    container_name: postgres-container
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_DB: "foodmanagerdb"
+      POSTGRES_USER: "room5"
+      POSTGRES_PASSWORD: "room5Password"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    command: |
+      -c "max_connections=200"
+      -c "shared_buffers=256MB"
+    volumes:
+        - foodmanagerdb-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+    networks:
+      - food_net
+
+  pgadmin:
+    container_name: pgadmin-container
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "foodmanager@room5.com"
+      PGADMIN_DEFAULT_PASSWORD: "room5Password"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    networks:
+      - food_net
+
+volumes:
+  foodmanagerdb-data:
+  pgadmin-data:
+
+networks:
+  food_net:
+    driver: bridge
