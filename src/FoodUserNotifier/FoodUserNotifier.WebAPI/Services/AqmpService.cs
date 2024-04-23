@@ -18,7 +18,7 @@ public class AqmpService : IAqmpService, IDisposable
     private IModel _channel;
 
     public AqmpService(IMessageDispatcher messageDispatcher, 
-        IOptions<AqmpClientOptions> options, ILogger logger)
+        IOptions<AqmpClientOptions> options, ILogger<AqmpService> logger)
     {
         _messageDispatcher = messageDispatcher;
         _options = options;

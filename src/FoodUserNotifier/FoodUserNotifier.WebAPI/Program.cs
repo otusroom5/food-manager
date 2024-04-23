@@ -1,4 +1,5 @@
 using FoodUserNotifier.BusinessLogic.Interfaces;
+using FoodUserNotifier.BusinessLogic.Services;
 using FoodUserNotifier.DataAccess.Implementations;
 using FoodUserNotifier.DataAccess.Interfaces;
 using FoodUserNotifier.WebApi.Extensions;
@@ -16,9 +17,12 @@ builder.Services.Configure<AqmpClientOptions>(builder.Configuration.GetSection(A
 builder.Services.Configure<TelegramClientOptions>(builder.Configuration.GetSection(TelegramClientOptions.TelegramClient));
 builder.Services.Configure<SmptClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
 
-builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
-builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
+builder.Services.AddScoped<IMessageSender, TelegramMessageSender>();
+builder.Services.AddScoped<IMessageSender, SmtpMessageSender>();
+
 builder.Services.AddTransient<IRecepientRepository, RecepientRepository>();
+builder.Services.AddTransient<IMessageConverter, JsonMessageConverter>();
+builder.Services.AddTransient<IMessageDispatcher, MessageDispatcher>();
 builder.Services.AddSingleton<IAqmpService, AqmpService>();
 
 var app = builder.Build();

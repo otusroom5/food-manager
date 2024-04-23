@@ -16,7 +16,7 @@ public class MessageDispatcher : IMessageDispatcher
 
     public MessageDispatcher(IMessageConverter messageConverter, 
         IRecepientRepository recepientRepository,
-        IServiceProvider serviceProvider, ILogger logger)
+        IServiceProvider serviceProvider, ILogger<MessageDispatcher> logger)
     {
         _logger = logger;
         _messageConverter = messageConverter;

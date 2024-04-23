@@ -9,13 +9,13 @@ public class TelegramMessageSender : IMessageSender
 {
     private readonly IOptions<TelegramClientOptions> _options;
     private readonly ILogger _logger;
-    public TelegramMessageSender(IOptions<TelegramClientOptions> options, ILogger logger)
+    public TelegramMessageSender(IOptions<TelegramClientOptions> options, ILogger<TelegramMessageSender> logger)
     {
         _options = options;
         _logger = logger;
     }
     public Task SendAsync(IEnumerable<Recepient> recepients, string message)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }
