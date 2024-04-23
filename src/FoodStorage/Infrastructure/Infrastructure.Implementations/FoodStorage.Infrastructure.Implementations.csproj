@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core.Application\Abstractions\Application.Repositories\FoodStorage.Application.Repositories.csproj" />
     <ProjectReference Include="..\Infrastructure.EntityFramework\FoodStorage.Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 

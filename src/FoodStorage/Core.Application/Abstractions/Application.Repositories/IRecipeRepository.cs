@@ -5,7 +5,7 @@ namespace FoodStorage.Application.Repositories;
 
 public interface IRecipeRepository
 {
-    public RecipeId Create(Recipe recipe);
+    public void Create(Recipe recipe);
     public Recipe FindById(RecipeId recipeId);
     public IEnumerable<Recipe> GetByProductId(ProductId productId);
     public IEnumerable<Recipe> GetAll();

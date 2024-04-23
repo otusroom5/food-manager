@@ -5,8 +5,8 @@ namespace FoodStorage.Application.Repositories;
 
 public interface IProductItemRepository
 {
-    public ProductItemId Create(ProductItem productItem);
-    public ProductItem FinfById(ProductItemId productItemId);
+    public void Create(ProductItem productItem);
+    public ProductItem FindById(ProductItemId productItemId);
     public IEnumerable<ProductItem> GetByProductId(ProductId productId);
     public IEnumerable<ProductItem> GetAll();
     public void Change(ProductItem productItem);
