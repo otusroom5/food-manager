@@ -3,12 +3,12 @@ using Microsoft.Extensions.Options;
 using FoodUserAuth.WebApi.Utils;
 using FoodUserAuth.WebApi.Contracts;
 using FoodUserAuth.WebApi.Extensions;
-using FoodUserAuth.BusinessLogic.Abstractions;
 using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.WebApi.Exceptions;
 using FoodUserAuth.WebApi.Models;
 using Microsoft.Extensions.Logging;
 using System;
+using FoodUserAuth.BusinessLogic.Interfaces;
 
 namespace FoodUserAuth.WebApi.Controllers
 {
