@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodUserAuth.WebApi.Models
-{
-    public class UserLoginModel
-    {
-        [Required]
-        public string UserName { get; set; } = null!;
+namespace FoodUserAuth.WebApi.Models;
 
-        [Required]
-        public string HashedPassword { get; set; } = null!;
-    }
+public class UserLoginModel
+{
+    [Required]
+    public string LoginName { get; set; }
+
+    [Required]
+    public string Password { get; set; }
 }

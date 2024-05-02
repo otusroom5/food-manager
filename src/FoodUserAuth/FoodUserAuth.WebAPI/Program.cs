@@ -4,7 +4,6 @@ using FoodUserAuth.BusinessLogic.Services;
 using FoodUserAuth.DataAccess.Abstractions;
 using FoodUserAuth.DataAccess.Repositories;
 using FoodUserAuth.BusinessLogic.Utils;
-using FoodUserAuth.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using System.IO;
@@ -13,13 +12,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using FoodUserAuth.BusinessLogic.Interfaces;
+using FoodUserAuth.DataAccess.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
-builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection<AuthenticationOptions>());
+var authenticationOptions = new AuthenticationOptions();
+builder.Configuration.GetSection(AuthenticationOptions.Authentication).Bind(authenticationOptions);
 
-builder.Services.AddDbContext<UserDbContext>(options =>
+builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("UserAuthConnection"));
 });
@@ -32,8 +32,7 @@ builder.Services.AddLogging(options=>
     });
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddJwtAuthentication(builder.Configuration.GetOptionsOrCreateDefaults<AuthenticationOptions>());
-builder.Services.AddScoped<IUserVerificationService, UserVerificationService>();
+builder.Services.AddJwtAuthentication(authenticationOptions);
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();

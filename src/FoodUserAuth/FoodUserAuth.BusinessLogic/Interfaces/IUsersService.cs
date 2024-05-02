@@ -8,5 +8,6 @@ public interface IUsersService
     IEnumerable<UserDto> GetAll();
     void UpdateUser(UserDto user);
     void DisableUser(Guid id);
-    void ChangePassword(Guid id, string password);
+    void ChangePassword(string loginName, string password);
+    UserDto VerifyAndGetUserIfSuccess(string loginName, string password);
 }

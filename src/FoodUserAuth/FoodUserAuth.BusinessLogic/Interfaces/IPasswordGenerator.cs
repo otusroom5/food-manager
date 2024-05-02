@@ -1,9 +1,8 @@
 ﻿using FoodUserAuth.BusinessLogic.Dto;
 
-namespace FoodUserAuth.BusinessLogic.Interfaces
+namespace FoodUserAuth.BusinessLogic.Interfaces;
+
+public interface IPasswordGenerator
 {
-    public interface IPasswordGenerator
-    {
-        string GeneratePassword(UserDto userDto);
-    }
+    string GeneratePassword(UserDto userDto);
 }

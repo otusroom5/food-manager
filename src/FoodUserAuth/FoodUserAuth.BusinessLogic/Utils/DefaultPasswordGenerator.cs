@@ -7,6 +7,6 @@ public class DefaultPasswordGenerator : IPasswordGenerator
 {
     public string GeneratePassword(UserDto userDto)
     {
-        throw new NotImplementedException();
+        return userDto.LoginName + new Random().NextInt64().ToString();
     }
 }

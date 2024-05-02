@@ -8,8 +8,9 @@ public sealed class UserDto : IEquatable<UserDto>, ICloneable
     public string LoginName { get; set; }
     public string FirstName {  get; set; }
     public string LastName { get; set; }
+    public UserRole Role { get; set; }
     public string Email { get; set; }
-    public UserState State { get; set; }
+    public bool IsDisabled { get; set; }
 
     public object Clone()
     {
@@ -29,12 +30,12 @@ public sealed class UserDto : IEquatable<UserDto>, ICloneable
                FirstName == other.FirstName &&
                LastName == other.LastName &&
                Email == other.Email &&
-               State == other.State;
+               IsDisabled == other.IsDisabled;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Id, LoginName, FirstName, LastName, Email, State);
+        return HashCode.Combine(Id, LoginName, FirstName, LastName, Email, IsDisabled);
     }
 
     public static bool operator ==(UserDto left, UserDto right)

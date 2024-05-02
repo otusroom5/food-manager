@@ -1,9 +1,7 @@
-﻿namespace FoodUserAuth.WebApi.Contracts
+﻿namespace FoodUserAuth.WebApi.Contracts;
+public class LoginActionResponse
 {
-    public class LoginActionResponse
-    {
-        public string Token { get; set; } = null!;
-        public string Role { get; set; } = null!;
-        public string Message { get; set; } = null!;
-    }
+    public string Token { get; set; }
+    public string Role { get; set; }
+    public string Message { get; set; }
 }

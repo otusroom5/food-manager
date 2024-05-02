@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace FoodUserAuth.WebApi.Exceptions
+namespace FoodUserAuth.WebApi.Exceptions;
+public class ExceptionBase : System.Exception
 {
-    public class ExceptionBase : System.Exception
+    public ExceptionBase()
     {
-        public ExceptionBase()
-        {
-        }
+    }
 
-        public ExceptionBase(string? message) : base(message)
-        {
-        }
+    public ExceptionBase(string? message) : base(message)
+    {
+    }
 
-        public ExceptionBase(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
+    public ExceptionBase(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
 
-        protected ExceptionBase(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+    protected ExceptionBase(SerializationInfo info, StreamingContext context) : base(info, context)
+    {
     }
 }

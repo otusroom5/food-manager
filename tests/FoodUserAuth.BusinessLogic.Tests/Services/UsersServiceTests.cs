@@ -217,7 +217,7 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
         public void CreateUser_PutExistingLoginName_ThrowUserAlreadyExistException()
         {
             var usersRepository = new Mock<IUsersRepository>();
-            usersRepository.Setup(f => f.FindUserByLoginName("test"))
+            usersRepository.Setup(f => f.FindByLoginName("test"))
                 .Returns(() => new UserDto() { LoginName = "test" });
             var userService = new UsersService(usersRepository.Object,
                 CreateDefaultPasswordHasher(),
@@ -410,7 +410,7 @@ namespace FoodUserAuth.BusinessLogic.Services.Tests
         public void UpdateUser_PutExistingLoginName_ThrowUserAlreadyExistException()
         {
             var usersRepository = new Mock<IUsersRepository>();
-            usersRepository.Setup(f => f.FindUserByLoginName("test"))
+            usersRepository.Setup(f => f.FindByLoginName("test"))
                 .Returns(() => new UserDto() { LoginName = "test" });
             var userService = new UsersService(usersRepository.Object,
                 CreateDefaultPasswordHasher(),
