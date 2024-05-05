@@ -1,0 +1,62 @@
+using FoodSupplier.DataAccess.Abstractions;
+using FoodSupplier.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace FoodSupplier.DataAccess.Repositories;
+
+public class PricesRepository : IPricesRepository
+{
+    private readonly FoodSupplierDbContext _context;
+
+    public PricesRepository(FoodSupplierDbContext context)
+    {
+        _context = context;
+    }
+
+    public void Create(PriceEntryEntity priceEntryEntity)
+    {
+        _context.PriceEntries.Add(priceEntryEntity);
+    }
+
+    public PriceEntryEntity Get(Guid priceEntryId)
+    {
+        var candidate = _context.PriceEntries.Find(priceEntryId);
+
+        return candidate;
+    }
+
+    public PriceEntryEntity GetLast(Guid productId)
+    {
+        var candidate = _context.PriceEntries
+            .Where(p => p.Id == productId)
+            .OrderByDescending(p => p.Date)
+            .FirstOrDefault();
+
+        return candidate;
+    }
+
+    public PriceEntryEntity[] GetAll()
+    {
+        return _context.PriceEntries.ToArray();
+    }
+
+    public void Update(PriceEntryEntity priceEntryEntity)
+    {
+        _context.Entry(priceEntryEntity).State = EntityState.Modified;
+    }
+
+    public void Delete(Guid priceEntryId)
+    {
+        var candidate = _context.PriceEntries.Find(priceEntryId);
+
+        if (candidate is not null)
+        {
+            _context.Remove(candidate);
+        }
+    }
+
+    public void Save()
+    {
+        _context.SaveChanges();
+    }
+}
