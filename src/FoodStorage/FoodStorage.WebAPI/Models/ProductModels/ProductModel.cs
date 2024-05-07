@@ -1,4 +1,4 @@
-﻿namespace FoodStorage.WebApi.Models;
+﻿namespace FoodStorage.WebApi.Models.ProductModels;
 
 /// <summary>
 /// Модель продукта
@@ -26,7 +26,7 @@ public class ProductModel
     public int MinAmountPerDay { get; set; }
 
     /// <summary>
-    /// Срок годности в часах
+    /// Срок годности в днях
     /// </summary>
     public double BestBeforeDate { get; set; }
 }

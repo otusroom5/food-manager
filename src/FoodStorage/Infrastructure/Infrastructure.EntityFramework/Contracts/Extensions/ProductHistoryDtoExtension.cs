@@ -13,7 +13,7 @@ public static class ProductHistoryDtoExtension
         var productId = ProductId.FromGuid(productHistoryDto.ProductId);
         var userId = UserId.FromGuid(productHistoryDto.CreatedBy);
 
-        if (Enum.TryParse<ProductState>(productHistoryDto.State, out var state))
+        if (!Enum.TryParse<ProductState>(productHistoryDto.State, out var state))
         {
             throw new InvalidEnumValueException(nameof(productHistoryDto.State), productHistoryDto.State, nameof(ProductState));
         }

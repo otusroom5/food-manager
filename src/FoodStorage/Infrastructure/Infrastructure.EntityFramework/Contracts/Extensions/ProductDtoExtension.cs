@@ -7,7 +7,7 @@ public static class ProductDtoExtension
 {
     public static Product ToEntity(this ProductDto productDto)
     {
-        if (Enum.TryParse<ProductUnit>(productDto.Unit, out var unit))
+        if (!Enum.TryParse<ProductUnit>(productDto.Unit, out var unit))
         {
             throw new InvalidEnumValueException(nameof(productDto.Unit), productDto.Unit, nameof(ProductUnit));
         }

@@ -4,6 +4,7 @@ using FoodStorage.Infrastructure.EntityFramework;
 using FoodStorage.Infrastructure.EntityFramework.Common.Exceptions;
 using FoodStorage.Infrastructure.EntityFramework.Contracts;
 using FoodStorage.Infrastructure.EntityFramework.Contracts.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodStorage.Infrastructure.Implementations;
 
@@ -14,6 +15,7 @@ internal class ProductRepository : IProductRepository
     public ProductRepository(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
+        _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     public void Create(Product product)
@@ -25,6 +27,7 @@ internal class ProductRepository : IProductRepository
 
         ProductDto productDto = product.ToDto();
         _databaseContext.Products.Add(productDto);
+
         _databaseContext.SaveChanges();
     }
 
@@ -36,14 +39,11 @@ internal class ProductRepository : IProductRepository
 
     public Product FindByName(ProductName productName)
     {
-        ProductDto productDto = _databaseContext.Products.FirstOrDefault(p => p.Name == productName.ToString());
+        ProductDto productDto = _databaseContext.Products.FirstOrDefault(p => p.Name.ToLower() == productName.ToString().ToLower());
         return productDto is null ? null : productDto.ToEntity();
     }
 
-    public IEnumerable<Product> GetAll()
-    {
-        return _databaseContext.Products.Select(p => p.ToEntity()).ToList();
-    }
+    public IEnumerable<Product> GetAll() => _databaseContext.Products.Select(p => p.ToEntity()).ToList();
 
     public void Delete(Product product)
     {
@@ -54,5 +54,7 @@ internal class ProductRepository : IProductRepository
 
         ProductDto productDto = product.ToDto();
         _databaseContext.Products.Remove(productDto);
+
+        _databaseContext.SaveChanges();
     }
 }

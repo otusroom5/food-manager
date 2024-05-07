@@ -9,7 +9,7 @@ public static class ProductItemDtoExtension
     {
         var productItemId = ProductItemId.FromGuid(productItemDto.Id);
         var productId = ProductId.FromGuid(productItemDto.ProductId);
-        // Дата окончания срока годности = Дата изготовления + Срок годности в часах
+        // Дата окончания срока годности = Дата изготовления + Срок годности в днях
         DateTime expiryDate = productItemDto.CreatingDate.AddDays(productItemDto.Product.BestBeforeDate);
 
         return ProductItem.CreateNew(productItemId, productId, productItemDto.Amount, productItemDto.CreatingDate, expiryDate);

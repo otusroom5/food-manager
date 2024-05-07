@@ -1,32 +1,69 @@
-﻿using FoodStorage.Application.Services;
+﻿using FoodStorage.Application.Implementations.Common.Exceptions;
+using FoodStorage.Application.Repositories;
+using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities.ProductEntity;
+using FoodStorage.Domain.Entities.ProductItemEntity;
 
 namespace FoodStorage.Application.Implementations;
 
 public class ProductService : IProductService
 {
+    private readonly IProductRepository _productRepository;
+
+    public ProductService(IProductRepository productRepository)
+    {
+        _productRepository = productRepository;
+    }
+
     public ProductId Create(Product product)
     {
-        throw new NotImplementedException();
-    }
+        // проверка на существование продукта с таким же наименованием
+        Product productWithSameName = _productRepository.FindByName(product.Name);
+        if (productWithSameName is not null)
+        {
+            throw new ApplicationLayerException($"Уже существует продукт с таким наименованием: {product.Name}");
+        }
 
-    public void Delete(ProductId productId)
-    {
-        throw new NotImplementedException();
-    }
+        _productRepository.Create(product);
 
-    public IEnumerable<Product> GetAll()
-    {
-        throw new NotImplementedException();
+        return product.Id;
     }
 
     public Product GetById(ProductId productId)
     {
-        throw new NotImplementedException();
+        Product result = _productRepository.FindById(productId);
+
+        if (result is null)
+        {
+            throw new EntityNotFoundException(nameof(Product), productId.ToString());
+        }
+
+        return result;
     }
 
     public Product GetByName(ProductName productName)
     {
-        throw new NotImplementedException();
+        Product result = _productRepository.FindByName(productName);
+
+        if (result is null)
+        {
+            throw new EntityNotFoundException(nameof(Product), productName.ToString());
+        }
+
+        return result;
+    }
+
+    public IEnumerable<Product> GetAll() => _productRepository.GetAll();
+
+    public void Delete(ProductId productId)
+    {
+        Product product = _productRepository.FindById(productId);
+
+        if (product is null)
+        {
+            throw new EntityNotFoundException(nameof(Product), productId.ToString());
+        }
+
+        _productRepository.Delete(product);
     }
 }

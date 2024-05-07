@@ -1,8 +1,8 @@
 ﻿using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.RecipeEntity;
-using FoodStorage.WebApi.Models;
 using FoodStorage.WebApi.Models.Extensions;
+using FoodStorage.WebApi.Models.RecipeModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
@@ -25,7 +25,7 @@ public class RecipeController : ControllerBase
     /// <param name="recipet">Модель рецепта</param>
     /// <returns>Идентификатор созданного рецепта</returns>
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(RecipeModel recipe)
+    public ActionResult<Guid> Create(CreateRecipeModel recipe)
     {
         Recipe recipeToCreate = recipe.ToEntity();
         RecipeId id = _recipeService.Create(recipeToCreate);

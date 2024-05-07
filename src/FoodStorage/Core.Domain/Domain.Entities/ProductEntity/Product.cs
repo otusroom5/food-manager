@@ -28,7 +28,7 @@ public record Product
     public int MinAmountPerDay { get; init; }
 
     /// <summary>
-    /// Срок годности в часах
+    /// Срок годности в днях
     /// </summary>
     public double BestBeforeDate { get; init; }
 
