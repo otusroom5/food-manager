@@ -1,8 +1,9 @@
-﻿using FoodUserAuth.DataAccess.Abstractions;
-using FoodUserAuth.DataAccess.DataContext;
+﻿using FoodUserAuth.DataAccess.DataContext;
 using FoodUserAuth.DataAccess.Entities;
+using FoodUserAuth.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace FoodUserAuth.DataAccess.Repositories;
+namespace FoodUserAuth.DataAccess.Implementations;
 
 public class UsersRepository : IUsersRepository, IDisposable
 {
@@ -20,9 +21,9 @@ public class UsersRepository : IUsersRepository, IDisposable
     /// <param name="user"></param>
     /// <returns>Guid</returns>
 
-    public void Create(User user)
+    public async Task CreateAsync(User user)
     {
-        _userDbContext.Users.Add(user);
+        await _userDbContext.Users.AddAsync(user);
     }
 
     /// <summary>
@@ -38,19 +39,18 @@ public class UsersRepository : IUsersRepository, IDisposable
     /// Delete user by id, if throw exception if user is not found.
     /// </summary>
     /// <param name="id"></param>
-    public void Delete(User user) 
+    public void Delete(User user)
     {
         _userDbContext.Users.Remove(user);
-        _userDbContext.SaveChanges();
     }
 
     /// <summary>
     /// Return all list of users
     /// </summary>
     /// <returns>IEnumerable<User></returns>
-    public IEnumerable<User> GetAll()
+    public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return _userDbContext.Users.ToList();
+        return await _userDbContext.Users.ToListAsync();
     }
 
     /// <summary>
@@ -58,11 +58,11 @@ public class UsersRepository : IUsersRepository, IDisposable
     /// </summary>
     /// <param name="loginName"></param>
     /// <returns>User</returns>
-    public User FindByLoginName(string loginName)
+    public async Task<User> FindByLoginNameAsync(string loginName)
     {
-        return (from users in _userDbContext.Users
+        return await (from users in _userDbContext.Users
                 where users.LoginName == loginName
-                select users).FirstOrDefault();
+                select users).FirstOrDefaultAsync();
     }
 
     /// <summary>
@@ -70,11 +70,16 @@ public class UsersRepository : IUsersRepository, IDisposable
     /// </summary>
     /// <param name="id"></param>
     /// <returns>User</returns>
-    public User GetById(Guid id)
+    public async Task<User> GetByIdAsync(Guid id)
     {
-        return (from users in _userDbContext.Users
-                     where users.Id == id
-                     select users).FirstOrDefault();
+        return await (from users in _userDbContext.Users
+                      where users.Id == id
+                      select users).FirstOrDefaultAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _userDbContext.SaveChangesAsync();
     }
 
     protected virtual void Dispose(bool disposing)
@@ -90,7 +95,7 @@ public class UsersRepository : IUsersRepository, IDisposable
     }
 
     public void Dispose()
-    {     
+    {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }

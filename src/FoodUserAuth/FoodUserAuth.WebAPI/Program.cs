@@ -1,18 +1,17 @@
 using FoodUserAuth.WebApi.Options;
 using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.BusinessLogic.Services;
-using FoodUserAuth.DataAccess.Abstractions;
-using FoodUserAuth.DataAccess.Repositories;
 using FoodUserAuth.BusinessLogic.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
-using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.DataAccess.DataContext;
+using FoodUserAuth.DataAccess.Interfaces;
+using FoodUserAuth.DataAccess.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,12 +33,11 @@ builder.Services.AddLogging(options=>
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthentication(authenticationOptions);
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();
 builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
 
 builder.Services.AddAuthorization();
-builder.Services.AddMapper();
 
 var app = builder.Build();
 

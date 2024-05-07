@@ -7,6 +7,7 @@ using FoodUserAuth.WebApi.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using FoodUserAuth.BusinessLogic.Interfaces;
+using System.Threading.Tasks;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -46,12 +47,12 @@ public class AccountsController : ControllerBase
     /// <response code="200">Token is generated</response>
     /// <response code="400">If the user is not valid</response>
     [HttpPost("Login")]
-    public IActionResult Login(UserLoginModel userModel)
+    public async Task<IActionResult> Login(UserLoginModel userModel)
     {
         _logger.LogTrace($"Attempt login {userModel.LoginName}");
         try
         {
-            var user = _userService.VerifyAndGetUserIfSuccess(userModel.LoginName, userModel.Password);
+            var user = await _userService.VerifyAndGetUserIfSuccessAsync(userModel.LoginName, userModel.Password);
             
             string token = JwtTokenUtils.GenerateToken(_options, user.LoginName, user.Role);
 
@@ -66,6 +67,8 @@ public class AccountsController : ControllerBase
         } 
         catch (Exception ex) 
         {
+            _logger.LogError(ex, ex.Message);
+
             return BadRequest(new LoginActionResponse()
             {
                 Message = ex.Message
@@ -90,15 +93,17 @@ public class AccountsController : ControllerBase
     /// <response code="200">Password is changed</response>
     /// <response code="400">If password is not changed then return error</response>
     [HttpPost("ChangePassword")]
-    public IActionResult ChangePassword(UserLoginModel userModel)
+    public async Task<IActionResult> ChangePassword(UserLoginModel userModel)
     {
         try
         {
-            _userService.ChangePassword(userModel.LoginName, userModel.Password);
+            await _userService.ChangePasswordAsync(userModel.LoginName, userModel.Password);
             return Ok();
         } 
         catch (Exception ex)
         {
+            _logger.LogError(ex, ex.Message);
+
             return BadRequest(new MessageResponse()
             {
                 Message = ex.Message
