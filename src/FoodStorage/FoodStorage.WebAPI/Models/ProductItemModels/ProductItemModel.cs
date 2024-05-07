@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace FoodStorage.WebApi.Models;
+namespace FoodStorage.WebApi.Models.ProductItemModels;
 
 /// <summary>
 /// Модель единицы продукта (в холодильнике)

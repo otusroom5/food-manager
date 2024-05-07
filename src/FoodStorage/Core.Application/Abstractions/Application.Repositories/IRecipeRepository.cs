@@ -7,6 +7,7 @@ public interface IRecipeRepository
 {
     public void Create(Recipe recipe);
     public Recipe FindById(RecipeId recipeId);
+    public Recipe FindByName(RecipeName recipeName);
     public IEnumerable<Recipe> GetByProductId(ProductId productId);
     public IEnumerable<Recipe> GetAll();
     public void Change(Recipe recipe);

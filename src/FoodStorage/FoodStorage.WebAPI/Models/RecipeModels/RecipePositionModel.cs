@@ -1,4 +1,4 @@
-﻿namespace FoodStorage.WebApi.Models;
+﻿namespace FoodStorage.WebApi.Models.RecipeModels;
 
 /// <summary>
 /// Модель позиции рецепта

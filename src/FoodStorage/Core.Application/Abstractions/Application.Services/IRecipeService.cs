@@ -8,8 +8,8 @@ public interface IRecipeService
     public RecipeId Create(Recipe recipe);
     public Recipe GetById(RecipeId recipeId);
     public Recipe GetByName(RecipeName recipeName);
-    public IEnumerable<Recipe> GetAll();
     public IEnumerable<Recipe> GetByProductId(ProductId productId);
+    public IEnumerable<Recipe> GetAll();
     public void Update(Recipe recipe);
     public void Delete(RecipeId recipeId);
 }

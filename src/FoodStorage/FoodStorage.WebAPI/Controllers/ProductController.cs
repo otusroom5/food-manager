@@ -1,7 +1,7 @@
 ﻿using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.WebApi.Models;
 using FoodStorage.WebApi.Models.Extensions;
+using FoodStorage.WebApi.Models.ProductModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
@@ -24,7 +24,7 @@ public class ProductController : ControllerBase
     /// <param name="product">Модель продукта</param>
     /// <returns>Идентификатор созданного продукта</returns>
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(ProductModel product)
+    public ActionResult<Guid> Create(CreateProductModel product)
     {
         Product productToCreate = product.ToEntity();
         ProductId id = _productService.Create(productToCreate);

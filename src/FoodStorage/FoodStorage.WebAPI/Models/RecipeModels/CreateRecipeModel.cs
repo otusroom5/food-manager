@@ -1,15 +1,10 @@
-﻿namespace FoodStorage.WebApi.Models;
+﻿namespace FoodStorage.WebApi.Models.RecipeModels;
 
 /// <summary>
-/// Модель рецепта
+/// Модель создания рецепта
 /// </summary>
-public class RecipeModel
-{  
-   /// <summary>
-   /// Идентификатор рецепта
-   /// </summary>
-    public Guid Id { get; set; }
-
+public class CreateRecipeModel
+{
     /// <summary>
     /// Наименование рецепта
     /// </summary>

@@ -8,6 +8,7 @@ public interface IProductItemRepository
     public void Create(ProductItem productItem);
     public ProductItem FindById(ProductItemId productItemId);
     public IEnumerable<ProductItem> GetByProductId(ProductId productId);
+    public IEnumerable<ProductItem> GetByIds(IEnumerable<ProductItemId> productItemIds);
     public IEnumerable<ProductItem> GetAll();
     public void Change(ProductItem productItem);
     public void Delete(ProductItem productItem);

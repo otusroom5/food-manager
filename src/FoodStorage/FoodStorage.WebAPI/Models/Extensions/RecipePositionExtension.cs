@@ -1,5 +1,6 @@
 ﻿using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.RecipeEntity;
+using FoodStorage.WebApi.Models.RecipeModels;
 
 namespace FoodStorage.WebApi.Models.Extensions
 {

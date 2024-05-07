@@ -5,6 +5,7 @@ using FoodStorage.Infrastructure.EntityFramework;
 using FoodStorage.Infrastructure.EntityFramework.Common.Exceptions;
 using FoodStorage.Infrastructure.EntityFramework.Contracts;
 using FoodStorage.Infrastructure.EntityFramework.Contracts.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodStorage.Infrastructure.Implementations;
 
@@ -15,6 +16,7 @@ internal class ProductHistoryRepository : IProductHistoryRepository
     public ProductHistoryRepository(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
+        _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     public void Create(ProductHistory productHistory)
@@ -26,6 +28,7 @@ internal class ProductHistoryRepository : IProductHistoryRepository
 
         ProductHistoryDto productHistoryDto = productHistory.ToDto();
         _databaseContext.ProductHistoryItems.Add(productHistoryDto);
+
         _databaseContext.SaveChanges();
     }
 
@@ -41,10 +44,7 @@ internal class ProductHistoryRepository : IProductHistoryRepository
         return productHistoryDtos.Select(ph => ph.ToEntity()).ToList();
     }
 
-    public IEnumerable<ProductHistory> GetAll()
-    {
-        return _databaseContext.ProductHistoryItems.Select(ph => ph.ToEntity()).ToList();
-    }
+    public IEnumerable<ProductHistory> GetAll() =>_databaseContext.ProductHistoryItems.Select(ph => ph.ToEntity()).ToList();
 
     public void Delete(ProductHistory productHistory)
     {
@@ -55,5 +55,7 @@ internal class ProductHistoryRepository : IProductHistoryRepository
 
         ProductHistoryDto productHistoryDto = productHistory.ToDto();
         _databaseContext.ProductHistoryItems.Remove(productHistoryDto);
+
+        _databaseContext.SaveChanges();
     }
 }
