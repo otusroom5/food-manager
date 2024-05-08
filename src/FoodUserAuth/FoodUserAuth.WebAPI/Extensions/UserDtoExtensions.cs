@@ -3,7 +3,7 @@ using FoodUserAuth.WebApi.Models;
 
 namespace FoodUserAuth.WebApi.Extensions;
 
-public static class UserDtoExtension
+public static class UserDtoExtensions
 {
     public static UserModel ToModel(this UserDto dto)
     {

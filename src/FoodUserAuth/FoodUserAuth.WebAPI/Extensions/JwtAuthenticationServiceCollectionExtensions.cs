@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodUserAuth.WebApi.Extensions;
 
-public static class JwtAuthenticationServiceCollectionExtension
+public static class JwtAuthenticationServiceCollectionExtensions
 {
     /// <summary>
     /// This method configures authentication with Jwt token

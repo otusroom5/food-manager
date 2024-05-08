@@ -1,67 +1,90 @@
 ﻿using FoodUserAuth.BusinessLogic.Dto;
-using FoodUserAuth.DataAccess.Abstractions;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.BusinessLogic.Extensions;
 using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Exceptions;
+using FoodUserAuth.DataAccess.Interfaces;
+using System.Data;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
 public class UsersService : IUsersService
 {
-    private readonly IUsersRepository _usersRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IPasswordGenerator _passwordGenerator;
+    private readonly User _predefinedUser;
 
-    public UsersService(IUsersRepository usersRepository,
+    public UsersService(IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
         IPasswordGenerator passwordGenerator)
     {
-        _usersRepository = usersRepository;
+        _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _passwordGenerator = passwordGenerator;
+        _predefinedUser = CreatePredefinedUser(unitOfWork.GetUsersRepository(), passwordHasher);
+    }
+
+    private User CreatePredefinedUser(IUsersRepository usersRepository, IPasswordHasher passwordHasher)
+    {
+        return new User()
+        {
+            Id = Guid.NewGuid(),
+            LoginName = "predefined",
+            Email = "predefined@foodmanager.com",
+            Role = DataAccess.Types.UserRole.Administrator,
+            IsDisabled = usersRepository.GetAllAsync().Result.Any(),
+            Password = passwordHasher.ComputeHash("predefined")
+        };
     }
 
     /// <summary>
     /// This method change user password
     /// </summary>
-    public void ChangePassword(string loginName, string password)
+    public async Task ChangePasswordAsync(string loginName, string password)
     {
-        User user = InternalFindUserByLoginName(loginName);
+        User user = await InternalFindUserByLoginNameAsync(loginName);
 
         user.Password = _passwordHasher.ComputeHash(password);
 
-        _usersRepository.Update(user);
+        _unitOfWork.GetUsersRepository().Update(user);
+        
+        await _unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
     /// This method verify user
     /// </summary>
-    public UserDto VerifyAndGetUserIfSuccess(string loginName, string password) 
+    public async Task<UserDto> VerifyAndGetUserIfSuccessAsync(string loginName, string password) 
     {
-        User foundUser = InternalFindUserByLoginName(loginName);
+        User foundUser = await InternalFindUserByLoginNameAsync(loginName);
 
         if (_passwordHasher.VerifyHash(password, foundUser.Password))
         {
-            throw new NotValidPasswordException("Не верный пароль");
+            throw new NotValidPasswordException();
         }
 
         return foundUser.ToDto();
     }
 
 
-    private User InternalFindUserByLoginName(string loginName)
-    {
-        User foundUser = _usersRepository.FindByLoginName(loginName);
+    private async Task<User> InternalFindUserByLoginNameAsync(string loginName)
+    {   
+        User foundUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
 
         if (foundUser == null)
         {
-            throw new UserNotFoundException("Пользователь не найден");
+            if (!IsPredefinedLoginName(loginName))
+            {
+                throw new UserNotFoundException(); 
+            }
+
+            foundUser = _predefinedUser;
         }
 
         if (foundUser.IsDisabled)
         {
-            throw new UserDisabledException("Пользователь не доступен");
+            throw new UserDisabledException();
         }
 
         return foundUser;
@@ -71,73 +94,88 @@ public class UsersService : IUsersService
     /// <summary>
     /// This method create user
     /// </summary>
-    public (UserDto User, string Password) CreateUser(UserDto user)
+    public async Task<(UserDto User, string Password)> CreateUserAsync(UserDto user)
     {
         if (user is null)
         {
             throw new ArgumentNullException(nameof(user));
         }
 
-        if (_usersRepository.FindByLoginName(user.LoginName) != null)
+        if (await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(user.LoginName) != null)
         {
-            throw new UserAlreadyExistException("Пользователь с таким именем уже есть");
+            throw new UserAlreadyExistException();
         }
 
+        string newPassword = _passwordGenerator.GeneratePassword(user.LoginName);
+        
         var entity = user.ToEntity();
+        
         entity.Id = Guid.NewGuid();
         entity.IsDisabled = false;
+        entity.Password = _passwordHasher.ComputeHash(newPassword);
 
-        _usersRepository.Create(entity);
+        _unitOfWork.GetUsersRepository().Create(entity);
+        
+        await _unitOfWork.SaveChangesAsync();
+
         var result = entity.ToDto();
 
-        return (result, _passwordGenerator.GeneratePassword(result));
+        return (result, newPassword);
+    }
+
+    private bool IsPredefinedLoginName(string loginName)
+    {
+        return _predefinedUser?.LoginName.Equals(loginName, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }
 
     /// <summary>
     /// This method disable exist user
     /// </summary>
-    public void DisableUser(Guid id)
+    public async Task DisableUserAsync(Guid id)
     {
-        User item = InternalGet(id);
+        User item = await InternalGetAsync(id);
         item.IsDisabled = true;
-        _usersRepository.Update(item);
+        _unitOfWork.GetUsersRepository().Update(item);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
     /// This method return all available users
     /// </summary>
-    public IEnumerable<UserDto> GetAll()
+    public async Task<IEnumerable<UserDto>> GetAllAsync()
     {
-        return _usersRepository
-                .GetAll()
-                .Select(f => f.ToDto());
+        var items = await _unitOfWork.GetUsersRepository().GetAllAsync();
+
+        return items.Select(f => f.ToDto());
     }
 
     /// <summary>
     /// This method update detaisl of user
     /// </summary>
-    public void UpdateUser(UserDto user)
+    public async Task UpdateUserAsync(UserDto user)
     {
         if (user is null)
         {
             throw new ArgumentNullException(nameof(user));
         }
 
-        User item = InternalGet(user.Id);
+        User item = await InternalGetAsync(user.Id);
 
         item.FirstName = user.FirstName;
         item.LastName = user.LastName;
         item.Email = user.Email;
         item.LoginName = user.LoginName;
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
-    private User InternalGet(Guid id)
+    private async Task<User> InternalGetAsync(Guid id)
     {
-        User item = _usersRepository.GetById(id);
+        User item = await _unitOfWork.GetUsersRepository().GetByIdAsync(id);
 
         if (item == null)
         {
-            throw new UserNotFoundException($"Пользователь не найден");
+            throw new UserNotFoundException();
         }
 
         return item;

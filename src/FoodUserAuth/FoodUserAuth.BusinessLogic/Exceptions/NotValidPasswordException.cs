@@ -4,7 +4,7 @@ namespace FoodUserAuth.BusinessLogic.Exceptions;
 
 public class NotValidPasswordException : Exception
 {
-    public NotValidPasswordException()
+    public NotValidPasswordException(): this ("Password is incorrect")
     {
     }
 

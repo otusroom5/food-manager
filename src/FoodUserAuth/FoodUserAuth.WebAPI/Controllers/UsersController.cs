@@ -8,10 +8,11 @@ using FoodUserAuth.BusinessLogic.Interfaces;
 using System;
 using FoodUserAuth.WebApi.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
-[Authorize(Roles = UserRoleExtension.AdministrationRole)]
+[Authorize(Roles = UserRoleExtensions.AdministrationRole)]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
 public class UsersController : ControllerBase
@@ -34,9 +35,10 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpGet]
-    public ActionResult<IEnumerable<UserModel>> GetAll()
+    public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
     {
-        return Ok(_usersService.GetAll().Select(f => f.ToModel()));
+        var items = await _usersService.GetAllAsync();
+        return Ok(items.Select(f => f.ToModel()));
     }
 
     /// <summary>
@@ -47,11 +49,13 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPut]
-    public ActionResult Create(UserCreateModel model)
+    public async Task<ActionResult> Create(UserCreateModel model)
     {
         try
         {
-            var result = _usersService.CreateUser(model.ToDto());
+            var result = await _usersService.CreateUserAsync(model.ToDto());
+
+            _logger.LogDebug($"Create user ({result.User.Id}) was create");
 
             return Ok(new CreateUserResponse()
             {
@@ -61,6 +65,8 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, ex.Message);
+
             return BadRequest(new MessageResponse()
             {
                 Message = ex.Message
@@ -76,12 +82,13 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPost]
-    public ActionResult Update(UserModel model)
+    public async Task<ActionResult> Update(UserModel model)
     {
         try
         {
-            _usersService.UpdateUser(model.ToDto());
+            await _usersService.UpdateUserAsync(model.ToDto());
 
+            _logger.LogDebug("User was updated");
             return Ok(new MessageResponse()
             {
                 Message = "Success"
@@ -89,6 +96,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, ex.Message);
             return BadRequest(new MessageResponse()
             {
                 Message = ex.Message
@@ -104,12 +112,13 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpDelete]
-    public ActionResult Delete(UserDeleteModel item)
+    public async Task<ActionResult> Delete(UserDeleteModel item)
     {
         try
         {
-            _usersService.DisableUser(Guid.Parse(item.Id));
+            await _usersService.DisableUserAsync(Guid.Parse(item.Id));
 
+            _logger.LogDebug($"User ({item.Id}) was disabled");
             return Ok(new MessageResponse()
             {
                 Message = "Success"
@@ -117,6 +126,8 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, ex.Message);
+
             return BadRequest(new MessageResponse()
             {
                 Message = ex.Message
