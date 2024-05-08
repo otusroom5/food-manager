@@ -16,7 +16,9 @@ using FoodUserAuth.DataAccess.Implementations;
 var builder = WebApplication.CreateBuilder(args);
 
 var authenticationOptions = new AuthenticationOptions();
-builder.Configuration.GetSection(AuthenticationOptions.Authentication).Bind(authenticationOptions);
+IConfigurationSection authenticationSection = builder.Configuration.GetSection(AuthenticationOptions.Authentication);
+builder.Services.Configure<AuthenticationOptions>(authenticationSection);
+authenticationSection.Bind(authenticationOptions);
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -30,7 +32,7 @@ builder.Services.AddLogging(options=>
         options.AddConsole();
     });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenWithBarerAuth();
 builder.Services.AddJwtAuthentication(authenticationOptions);
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -2,7 +2,7 @@
 
 namespace FoodUserAuth.WebApi.Extensions;
 
-public static class UserRoleExtension
+public static class UserRoleExtensions
 {
     public const string AdministrationRole = "administrator";
     public const string CookerRole = "cooker";

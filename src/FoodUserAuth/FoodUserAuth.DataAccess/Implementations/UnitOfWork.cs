@@ -14,7 +14,7 @@ public class UnitOfWork : IUnitOfWork
 
     public IUsersRepository GetUsersRepository()
     {
-        if (_usersRepository == null ) 
+        if (_usersRepository == null) 
         {
             _usersRepository = new UsersRepository(_databaseContext);
         }

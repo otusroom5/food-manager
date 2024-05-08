@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
-[Authorize(Roles = UserRoleExtension.AdministrationRole)]
+[Authorize(Roles = UserRoleExtensions.AdministrationRole)]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
 public class UsersController : ControllerBase

@@ -1,10 +1,11 @@
 ﻿using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.DataAccess.Entities;
-using System.Data;
+
 
 namespace FoodUserAuth.BusinessLogic.Extensions;
 
-public static class UserExtension
+public static class UserExtensions
 {
     public static UserDto ToDto(this User user)
     {

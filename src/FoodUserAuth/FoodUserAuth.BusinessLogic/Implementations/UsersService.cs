@@ -4,6 +4,7 @@ using FoodUserAuth.BusinessLogic.Extensions;
 using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.DataAccess.Interfaces;
+using System.Data;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -12,6 +13,7 @@ public class UsersService : IUsersService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IPasswordGenerator _passwordGenerator;
+    private readonly User _predefinedUser;
 
     public UsersService(IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
@@ -20,6 +22,20 @@ public class UsersService : IUsersService
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _passwordGenerator = passwordGenerator;
+        _predefinedUser = CreatePredefinedUser(unitOfWork.GetUsersRepository(), passwordHasher);
+    }
+
+    private User CreatePredefinedUser(IUsersRepository usersRepository, IPasswordHasher passwordHasher)
+    {
+        return new User()
+        {
+            Id = Guid.NewGuid(),
+            LoginName = "predefined",
+            Email = "predefined@foodmanager.com",
+            Role = DataAccess.Types.UserRole.Administrator,
+            IsDisabled = usersRepository.GetAllAsync().Result.Any(),
+            Password = passwordHasher.ComputeHash("predefined")
+        };
     }
 
     /// <summary>
@@ -45,7 +61,7 @@ public class UsersService : IUsersService
 
         if (_passwordHasher.VerifyHash(password, foundUser.Password))
         {
-            throw new NotValidPasswordException("Не верный пароль");
+            throw new NotValidPasswordException();
         }
 
         return foundUser.ToDto();
@@ -53,17 +69,22 @@ public class UsersService : IUsersService
 
 
     private async Task<User> InternalFindUserByLoginNameAsync(string loginName)
-    {
+    {   
         User foundUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
 
         if (foundUser == null)
         {
-            throw new UserNotFoundException("Пользователь не найден");
+            if (!IsPredefinedLoginName(loginName))
+            {
+                throw new UserNotFoundException(); 
+            }
+
+            foundUser = _predefinedUser;
         }
 
         if (foundUser.IsDisabled)
         {
-            throw new UserDisabledException("Пользователь не доступен");
+            throw new UserDisabledException();
         }
 
         return foundUser;
@@ -82,19 +103,29 @@ public class UsersService : IUsersService
 
         if (await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(user.LoginName) != null)
         {
-            throw new UserAlreadyExistException("Пользователь с таким именем уже есть");
+            throw new UserAlreadyExistException();
         }
 
+        string newPassword = _passwordGenerator.GeneratePassword(user.LoginName);
+        
         var entity = user.ToEntity();
+        
         entity.Id = Guid.NewGuid();
         entity.IsDisabled = false;
+        entity.Password = _passwordHasher.ComputeHash(newPassword);
 
-        await _unitOfWork.GetUsersRepository().CreateAsync(entity);
+        _unitOfWork.GetUsersRepository().Create(entity);
+        
         await _unitOfWork.SaveChangesAsync();
 
         var result = entity.ToDto();
 
-        return (result, _passwordGenerator.GeneratePassword(result));
+        return (result, newPassword);
+    }
+
+    private bool IsPredefinedLoginName(string loginName)
+    {
+        return _predefinedUser?.LoginName.Equals(loginName, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }
 
     /// <summary>
@@ -144,7 +175,7 @@ public class UsersService : IUsersService
 
         if (item == null)
         {
-            throw new UserNotFoundException($"Пользователь не найден");
+            throw new UserNotFoundException();
         }
 
         return item;

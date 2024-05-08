@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -62,7 +63,7 @@ public class AccountsController : ControllerBase
             {
                 Token = token,
                 Role = user.Role.ConvertToString(),
-                Message = String.Empty
+                Message = "Success"
             });
         } 
         catch (Exception ex) 
@@ -92,6 +93,8 @@ public class AccountsController : ControllerBase
     /// </remarks>
     /// <response code="200">Password is changed</response>
     /// <response code="400">If password is not changed then return error</response>
+
+    [Authorize(Roles = UserRoleExtensions.AdministrationRole)]
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePassword(UserLoginModel userModel)
     {
