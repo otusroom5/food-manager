@@ -2,13 +2,14 @@
 using Microsoft.Extensions.Options;
 using FoodUserAuth.WebApi.Utils;
 using FoodUserAuth.WebApi.Contracts;
-using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.WebApi.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using FoodManager.Shared.Auth.Options;
+using FoodManager.Shared.Types;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -18,12 +19,12 @@ namespace FoodUserAuth.WebApi.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
-    private readonly Options.AuthenticationOptions _options;
+    private readonly JwtAuthenticationOptions _options;
     private readonly IUsersService _userService;
 
     public AccountsController(ILogger<AccountsController> logger,
         IUsersService userService,
-        IOptions<Options.AuthenticationOptions> options)
+        IOptions<JwtAuthenticationOptions> options)
     {
         _logger = logger;
         _options = options.Value;
@@ -62,7 +63,7 @@ public class AccountsController : ControllerBase
             return Ok(new LoginActionResponse()
             {
                 Token = token,
-                Role = user.Role.ConvertToString(),
+                Role = user.Role.ToString(),
                 Message = "Success"
             });
         } 
@@ -94,7 +95,7 @@ public class AccountsController : ControllerBase
     /// <response code="200">Password is changed</response>
     /// <response code="400">If password is not changed then return error</response>
 
-    [Authorize(Roles = UserRoleExtensions.AdministrationRole)]
+    [Authorize(Roles = UserRole.Administration)]
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePassword(UserLoginModel userModel)
     {

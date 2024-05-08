@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace FoodUserAuth.WebApi.Utils;
+namespace FoodManager.Shared.Auth.Utils;
 
 public static class SecurityKeyUtils
 {

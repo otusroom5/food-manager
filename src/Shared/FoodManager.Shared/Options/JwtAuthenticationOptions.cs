@@ -1,6 +1,6 @@
-﻿namespace FoodUserAuth.WebApi.Options;
+﻿namespace FoodManager.Shared.Auth.Options;
 
-public class AuthenticationOptions
+public class JwtAuthenticationOptions
 {
     public static string Authentication = "Authentication";
     public string TokenIssuer { get; set; }

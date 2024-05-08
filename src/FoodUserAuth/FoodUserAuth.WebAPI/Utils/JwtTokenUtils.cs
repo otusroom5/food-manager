@@ -1,10 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using FoodUserAuth.WebApi.Extensions;
 using System;
 using System.Collections.Generic;
 using FoodUserAuth.DataAccess.Types;
+using FoodManager.Shared.Auth.Options;
+using FoodManager.Shared.Auth.Utils;
 
 namespace FoodUserAuth.WebApi.Utils;
 
@@ -17,12 +18,12 @@ public static class JwtTokenUtils
     /// <param name="userName"></param>
     /// <param name="role"></param>
     /// <returns>string</returns>
-    public static string GenerateToken(Options.AuthenticationOptions options, string userName, UserRole role)
+    public static string GenerateToken(JwtAuthenticationOptions options, string userName, UserRole role)
     {
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, userName),
-            new Claim(ClaimTypes.Role, role.ConvertToString()),
+            new Claim(ClaimTypes.Role, role.ToString()),
         };
 
         var jwtSecToken = new JwtSecurityToken(

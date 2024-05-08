@@ -1,5 +1,3 @@
-using FoodUserAuth.WebApi.Options;
-using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.BusinessLogic.Services;
 using FoodUserAuth.BusinessLogic.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +10,13 @@ using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.DataAccess.DataContext;
 using FoodUserAuth.DataAccess.Interfaces;
 using FoodUserAuth.DataAccess.Implementations;
+using FoodManager.Shared.Auth.Extensions;
+using FoodManager.Shared.Extensions;
+using FoodManager.Shared.Auth.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var authenticationOptions = new AuthenticationOptions();
-IConfigurationSection authenticationSection = builder.Configuration.GetSection(AuthenticationOptions.Authentication);
-builder.Services.Configure<AuthenticationOptions>(authenticationSection);
-authenticationSection.Bind(authenticationOptions);
+builder.Services.Configure<JwtAuthenticationOptions>(builder.Configuration.GetSection(JwtAuthenticationOptions.Authentication));
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -27,13 +25,16 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddLogging(options=>
-    {
-        options.SetMinimumLevel(LogLevel.Debug);
-        options.AddConsole();
-    });
-
+{
+    options.SetMinimumLevel(LogLevel.Debug);
+    options.AddConsole();
+});
 builder.Services.AddSwaggerGenWithBarerAuth();
-builder.Services.AddJwtAuthentication(authenticationOptions);
+builder.Services.AddJwtAuthentication(options =>
+{
+    options.LoadFromConfiguration(builder.Configuration);
+});
+
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();

@@ -9,10 +9,11 @@ using System;
 using FoodUserAuth.WebApi.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
+using FoodManager.Shared.Types;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
-[Authorize(Roles = UserRoleExtensions.AdministrationRole)]
+[Authorize(Roles = UserRole.Administration)]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
 public class UsersController : ControllerBase
