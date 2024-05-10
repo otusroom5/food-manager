@@ -15,7 +15,7 @@ public static class UserDtoExtensions
             LastName = dto.LastName,
             Email = dto.Email,
             IsDisabled = dto.IsDisabled,
-            Role = dto.Role.ToString()
+            Role = dto.Role
         };
     }
 }

@@ -17,7 +17,7 @@ namespace FoodUserAuth.WebApi.Extensions
                 LastName = model.LastName,
                 Email = model.Email,
                 IsDisabled = model.IsDisabled,
-                Role = Enum.Parse<UserRole>(model.Role)
+                Role = model.Role
             };
         }
     }

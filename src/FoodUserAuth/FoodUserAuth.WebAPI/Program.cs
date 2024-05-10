@@ -13,6 +13,7 @@ using FoodUserAuth.DataAccess.Implementations;
 using FoodManager.Shared.Auth.Extensions;
 using FoodManager.Shared.Extensions;
 using FoodManager.Shared.Auth.Options;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,13 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("UserAuthConnection"));
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+
 builder.Services.AddLogging(options=>
 {
     options.SetMinimumLevel(LogLevel.Debug);
