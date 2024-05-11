@@ -16,6 +16,6 @@ public class MD5PasswordHasher : IPasswordHasher
     public bool VerifyHash(string password, string hashedPassword)
     {
         string newHashed = ComputeHash(password);
-        return String.Equals(password, newHashed, StringComparison.InvariantCultureIgnoreCase);
+        return String.Equals(hashedPassword, newHashed);
     }
 }

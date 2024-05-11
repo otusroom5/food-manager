@@ -59,7 +59,7 @@ public class UsersService : IUsersService
     {
         User foundUser = await InternalFindUserByLoginNameAsync(loginName);
 
-        if (_passwordHasher.VerifyHash(password, foundUser.Password))
+        if (!_passwordHasher.VerifyHash(password, foundUser.Password))
         {
             throw new NotValidPasswordException();
         }
