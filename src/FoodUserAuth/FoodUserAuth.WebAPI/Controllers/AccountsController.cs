@@ -51,14 +51,14 @@ public class AccountsController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> Login(UserLoginModel userModel)
     {
-        _logger.LogTrace($"Attempt login {userModel.LoginName}");
+        _logger.LogTrace("Attempt login {LoginName}", userModel.LoginName);
         try
         {
             var user = await _userService.VerifyAndGetUserIfSuccessAsync(userModel.LoginName, userModel.Password);
             
             string token = JwtTokenUtils.GenerateToken(_options, user.LoginName, user.Role);
 
-            _logger.LogDebug($"Generated token: {token}");
+            _logger.LogDebug("Generated token: {Token}", token);
             
             return Ok(new LoginActionResponse()
             {

@@ -4,7 +4,7 @@ services:
   rabbitmq:
     container_name: rabbitmq-container
     image: rabbitmq:3.10.7-management
-    hostname: rabbitmq
+    hostname: rabbit_mq
     restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=room5
@@ -17,16 +17,17 @@ services:
   postgres:
     container_name: postgres-container
     image: postgres:14.8-alpine3.18
+    hostname: postgres
     environment:
       POSTGRES_DB: "foodmanagerdb"
       POSTGRES_USER: "room5"
       POSTGRES_PASSWORD: "room5Password"
       PGDATA: "/var/lib/postgresql/data/pgdata"
-    command: |
+    command: 
       -c "max_connections=200"
       -c "shared_buffers=256MB"
     volumes:
-        - foodmanagerdb-data:/var/lib/postgresql/data
+      - foodmanagerdb-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     restart: unless-stopped
@@ -36,6 +37,7 @@ services:
   pgadmin:
     container_name: pgadmin-container
     image: dpage/pgadmin4:7.2
+    hostname: postgres_pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: "foodmanager@room5.com"
       PGADMIN_DEFAULT_PASSWORD: "room5Password"
@@ -47,10 +49,37 @@ services:
     restart: unless-stopped
     networks:
       - food_net
+  
+  foodauth:
+    container_name: food-user-auth
+    build: src\FoodUserAuth\FoodUserAuth.WebAPI
+    hostname: food_user_auth
+    environment:
+      - UserAuth_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
+    volumes:
+      - foodauth-data:/app/data
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    networks:
+      - food_net
+
+  foodwebui:
+    container_name: food-manager-web-ui
+    build: src\FoodManager.WebUI
+    hostname: food_manager_web_ui
+    environment:
+      - ManagerUI_ConnectionStrings__UserAuthApi=Host=food_user_auth;Port=8081;Schema=http;ProtocolVersion=1
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - food_net
 
 volumes:
   foodmanagerdb-data:
   pgadmin-data:
+  foodauth-data:
 
 networks:
   food_net:
