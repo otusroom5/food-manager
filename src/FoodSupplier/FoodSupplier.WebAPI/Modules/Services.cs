@@ -9,7 +9,7 @@ public static class Services
 {
     public static void AddServices(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<IPriceCollectorService, PriceCollectorService>();
+        serviceCollection.AddScoped<IPriceCollector, PriceCollector>();
         serviceCollection.AddScoped<IPricesService, PricesService>();
         serviceCollection.AddScoped<IShopsService, ShopsService>();
         serviceCollection.AddScoped<ISupplierService, SupplierService>();

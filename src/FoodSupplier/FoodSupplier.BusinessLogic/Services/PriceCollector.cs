@@ -3,7 +3,7 @@ using FoodSupplier.BusinessLogic.Dto;
 
 namespace FoodSupplier.BusinessLogic.Services;
 
-public class PriceCollectorService : IPriceCollectorService
+public class PriceCollector : IPriceCollector
 {
     public PriceEntryDto Collect(Guid shopId, Guid productId)
     {
