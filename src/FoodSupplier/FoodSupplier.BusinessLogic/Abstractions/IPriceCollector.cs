@@ -2,7 +2,7 @@ using FoodSupplier.BusinessLogic.Dto;
 
 namespace FoodSupplier.BusinessLogic.Abstractions;
 
-public interface IPriceCollectorService
+public interface IPriceCollector
 {
     PriceEntryDto Collect(Guid shopId, Guid productId);
 }
