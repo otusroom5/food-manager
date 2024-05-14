@@ -15,6 +15,7 @@ using FoodManager.Shared.Auth.Options;
 using System.Text.Json.Serialization;
 using System;
 using Serilog;
+using FoodUserAuth.WebApi.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -31,7 +32,8 @@ try
 
     builder.Services.AddDbContext<DatabaseContext>(options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Default"),
+            x => x.MigrationsAssembly("FoodUserAuth.DataAccess"));
     });
 
     builder.Services.AddControllers()
@@ -53,6 +55,8 @@ try
     builder.Services.AddAuthorization();
 
     var app = builder.Build();
+
+    app.UseEfMigration();
 
     if (app.Environment.IsDevelopment())
     {
