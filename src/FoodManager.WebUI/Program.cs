@@ -1,23 +1,68 @@
-var builder = WebApplication.CreateBuilder(args);
+using FoodManager.WebUI.Extensions;
+using FoodManager.WebUI.Options;
+using FoodManager.WebUI.Services.Implementations;
+using FoodManager.WebUI.Services.Interfaces;
+using Serilog;
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+try
 {
-    app.UseExceptionHandler("/Home/Error");
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Configuration.AddEnvironmentVariables("ManagerUI_");
+
+    builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection(AuthenticationOptions.Authentication));
+    builder.Services.AddSerilog();
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddTransient<IAccountService, AccountService>();
+    builder.Services.AddCookieAuthentication(options =>
+    {
+        options.LoadFromConfiguration(builder.Configuration);
+    }, "Account/Login");
+
+    var app = builder.Build();
+
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Account/Error");
+    }
+
+    app.UseRouting();
+    app.UseStaticFiles();
+
+    app.UseCookiePolicy();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Account}/{action=Login}/{id?}");
+    app.MapAreaControllerRoute(
+        name: "administrator_area",
+        areaName: "Administrator",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    app.MapAreaControllerRoute(
+        name: "cooker_area",
+        areaName: "Cooker",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    app.MapAreaControllerRoute(
+        name: "manager_area",
+        areaName: "Cooker",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+    app.Run();
 }
-app.UseStaticFiles();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Unhandled exception");
+    return 1;
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}
 
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();
+return 0;
