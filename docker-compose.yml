@@ -29,7 +29,12 @@ services:
     volumes:
       - foodmanagerdb-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d foodmanagerdb -U room5 -p 5432"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
     networks:
       - food_net
@@ -53,13 +58,14 @@ services:
   foodauth:
     container_name: food-user-auth
     build: src\FoodUserAuth\FoodUserAuth.WebAPI
-    hostname: food_user_auth
+    hostname: foodauth
     environment:
       - UserAuth_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
-    volumes:
-      - foodauth-data:/app/data
     ports:
       - "8081:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - food_net
@@ -67,11 +73,14 @@ services:
   foodwebui:
     container_name: food-manager-web-ui
     build: src\FoodManager.WebUI
-    hostname: food_manager_web_ui
+    hostname: foodwebui
     environment:
-      - ManagerUI_ConnectionStrings__UserAuthApi=Host=food_user_auth;Port=8081;Schema=http;ProtocolVersion=1
+      - ManagerUI_ConnectionStrings__UserAuthApi=Host=foodauth;Port=8081;Schema=http;ProtocolVersion=1;
     ports:
       - "8080:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - food_net
@@ -79,7 +88,6 @@ services:
 volumes:
   foodmanagerdb-data:
   pgadmin-data:
-  foodauth-data:
 
 networks:
   food_net:
