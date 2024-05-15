@@ -44,7 +44,7 @@ try
     builder.Services.AddScoped<IUsersService, UsersService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();
-    builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
+    builder.Services.AddScoped<IPasswordHasher, Sha256PasswordHasher>();
     
     builder.ConfigureAuthentication();
 
