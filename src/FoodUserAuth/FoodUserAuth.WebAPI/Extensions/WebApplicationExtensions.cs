@@ -10,8 +10,11 @@ public static class WebApplicationExtensions
 {
     public static void UseEfMigration(this WebApplication application)
     {
-        var database = application.Services.GetRequiredService<DatabaseContext>();
-        database.Database.Migrate();
+        using (var databaseContextScope = application.Services.CreateScope())
+        {
+            var database = databaseContextScope.ServiceProvider.GetRequiredService<DatabaseContext>();
+            database.Database.Migrate();
+        }
         Log.Logger.Information("Database is migrated!!!");
     }
 }

@@ -11,7 +11,6 @@ using FoodUserAuth.DataAccess.Interfaces;
 using FoodUserAuth.DataAccess.Implementations;
 using FoodManager.Shared.Auth.Extensions;
 using FoodManager.Shared.Extensions;
-using FoodManager.Shared.Auth.Options;
 using System.Text.Json.Serialization;
 using System;
 using Serilog;
@@ -25,8 +24,6 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
     builder.Configuration.AddEnvironmentVariables("UserAuth_");
-
-    builder.Services.Configure<JwtAuthenticationOptions>(builder.Configuration.GetSection(JwtAuthenticationOptions.Authentication));
 
     builder.Services.AddSerilog();
 
@@ -44,19 +41,14 @@ try
     });
 
     builder.Services.AddSwaggerGenWithBarerAuth();
-    builder.Services.AddJwtAuthentication(options =>
-    {
-        options.LoadFromConfiguration(builder.Configuration);
-    });
     builder.Services.AddScoped<IUsersService, UsersService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();
     builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
-    builder.Services.AddAuthorization();
+    
+    builder.ConfigureAuthentication();
 
     var app = builder.Build();
-
-    app.UseEfMigration();
 
     if (app.Environment.IsDevelopment())
     {
@@ -70,6 +62,8 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseEfMigration();
 
     app.Run();
 }
