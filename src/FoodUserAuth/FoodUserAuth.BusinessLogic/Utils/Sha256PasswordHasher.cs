@@ -4,12 +4,15 @@ using System.Text;
 
 namespace FoodUserAuth.BusinessLogic.Utils;
 
-public class MD5PasswordHasher : IPasswordHasher
+public class Sha256PasswordHasher : IPasswordHasher
 {
+    private const string PasswordSalt = "!FoOdAuTh1";
+
     public string ComputeHash(string password)
     {
-        var hasher = MD5.Create();
-        byte[] hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(password));
+        byte[] passWithSalt = Encoding.UTF8.GetBytes(password + PasswordSalt);
+        SHA256 sha256 = SHA256.Create();
+        byte[] hash = sha256.ComputeHash(passWithSalt);
         return Convert.ToBase64String(hash);
     }
 
