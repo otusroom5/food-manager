@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   rabbitmq:
     container_name: rabbitmq-container
@@ -84,6 +82,51 @@ services:
     restart: unless-stopped
     networks:
       - food_net
+
+  foodstorage:
+    container_name: food-storage
+    build: src\FoodStorage\FoodStorage.WebAPI
+    hostname: foodstorage
+    environment:
+        - FoodStorage_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodstoragedb;Username=room5;Password=room5Password
+    ports:
+        - "8082:80"
+    depends_on:
+       postgres:
+         condition: service_healthy
+    restart: unless-stopped
+    networks:
+        - food_net 
+ 
+  foodsupplier:
+    container_name: food-supplier
+    build: src\FoodSupplier\FoodSupplier.WebAPI
+    hostname: foodsupplier    
+    ports:
+        - "8083:80"
+    restart: unless-stopped
+    networks:
+        - food_net 
+
+  foodusernotifier:
+    container_name: food-user-notifier
+    build: src\FoodUserNotifier\FoodUserNotifier.WebAPI
+    hostname: foodusernotifier    
+    ports:
+        - "8084:80"  
+    restart: unless-stopped
+    networks:
+        - food_net 
+
+  foodplanner:
+    container_name: food-planner
+    build: src\FoodPlanner\FoodPlanner.Api
+    hostname: foodplanner    
+    ports:
+        - "8085:80"  
+    restart: unless-stopped
+    networks:
+        - food_net 
 
 volumes:
   foodmanagerdb-data:

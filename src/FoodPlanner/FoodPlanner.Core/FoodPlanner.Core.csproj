@@ -7,9 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Services\" />
+    <Compile Remove="Abstractions\**" />
+    <Compile Remove="Entities\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Abstractions\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Abstractions\**" />
+    <None Remove="Entities\**" />
+    <None Remove="Services\**" />
   </ItemGroup>
 
 </Project>
