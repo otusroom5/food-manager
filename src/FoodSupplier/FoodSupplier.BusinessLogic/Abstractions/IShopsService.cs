@@ -1,11 +1,12 @@
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 
 namespace FoodSupplier.BusinessLogic.Abstractions;
 
 public interface IShopsService
 {
-    Guid Create(ShopDto shop);
-    ShopDto Get(Guid shopId);
-    void Update(ShopDto shop);
+    Guid Create(Shop shop);
+    Shop Get(Guid shopId);
+    IEnumerable<Shop> GetAll(bool onlyActive = false);
+    void Update(Shop shop);
     void Delete(Guid shopId);
 }

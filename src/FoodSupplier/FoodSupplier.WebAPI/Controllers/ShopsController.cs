@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FoodSupplier.BusinessLogic.Abstractions;
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 using FoodSupplier.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,13 +20,18 @@ public class ShopsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("Get")]
+    [HttpGet]
     public ActionResult<ShopModel> Get([FromQuery] ShopGetModel model)
     {
         try
         {
             var candidate = _shopsService.Get(model.Id);
             var result = _mapper.Map<ShopModel>(candidate);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }
@@ -36,12 +41,33 @@ public class ShopsController : ControllerBase
         }
     }
 
-    [HttpPost("Create")]
+    [HttpGet("GetAll")]
+    public ActionResult<IEnumerable<ShopModel>> GetAll([FromQuery] bool onlyActive)
+    {
+        try
+        {
+            var candidates = _shopsService.GetAll(onlyActive);
+            var result = _mapper.Map<IEnumerable<Shop>, IEnumerable<ShopModel>>(candidates);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost]
     public ActionResult<Guid> Create([FromQuery] ShopCreateModel model)
     {
         try
         {
-            var shopDto = _mapper.Map<ShopDto>(model);
+            var shopDto = _mapper.Map<Shop>(model);
             var result = _shopsService.Create(shopDto);
 
             return Ok(result);
@@ -52,12 +78,12 @@ public class ShopsController : ControllerBase
         }
     }
 
-    [HttpPut("Update")]
+    [HttpPut]
     public ActionResult Update([FromQuery] ShopModel model)
     {
         try
         {
-            var shopDto = _mapper.Map<ShopDto>(model);
+            var shopDto = _mapper.Map<Shop>(model);
             _shopsService.Update(shopDto);
 
             return Ok();
@@ -68,7 +94,7 @@ public class ShopsController : ControllerBase
         }
     }
 
-    [HttpDelete("Delete")]
+    [HttpDelete]
     public ActionResult Delete([FromQuery] ShopDeleteModel model)
     {
         try

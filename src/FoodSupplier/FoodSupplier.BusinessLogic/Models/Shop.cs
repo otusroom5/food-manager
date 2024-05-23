@@ -1,6 +1,6 @@
-namespace FoodSupplier.BusinessLogic.Dto;
+namespace FoodSupplier.BusinessLogic.Models;
 
-public class ShopDto
+public class Shop
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

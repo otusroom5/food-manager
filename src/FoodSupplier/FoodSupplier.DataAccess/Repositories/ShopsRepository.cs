@@ -13,9 +13,11 @@ public class ShopsRepository : IShopsRepository
         _context = context;
     }
 
-    public void Create(ShopEntity shopEntity)
+    public Guid Create(ShopEntity shopEntity)
     {
-        _context.Shops.Add(shopEntity);
+        var result = _context.Shops.Add(shopEntity);
+
+        return result.Entity.Id;
     }
 
     public ShopEntity Get(Guid shopId)
@@ -23,6 +25,15 @@ public class ShopsRepository : IShopsRepository
         var candidate = _context.Shops.Find(shopId);
 
         return candidate;
+    }
+
+    public IEnumerable<ShopEntity> GetAll(bool onlyActive = false)
+    {
+        var entities = _context.Shops
+            .Where(x => !onlyActive || x.IsActive == true)
+            .ToList();
+
+        return entities;
     }
 
     public void Update(ShopEntity shopEntity)

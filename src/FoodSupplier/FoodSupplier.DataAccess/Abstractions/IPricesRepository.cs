@@ -4,10 +4,10 @@ namespace FoodSupplier.DataAccess.Abstractions;
 
 public interface IPricesRepository
 {
-    void Create(PriceEntryEntity priceEntryEntity);
+    Guid Create(PriceEntryEntity priceEntryEntity);
     PriceEntryEntity Get(Guid priceEntryId);
     PriceEntryEntity GetLast(Guid productId);
-    PriceEntryEntity[] GetAll();
+    IEnumerable<PriceEntryEntity> GetAll(Guid productId);
     void Update(PriceEntryEntity priceEntryEntity);
     void Delete(Guid priceEntryId);
     void Save();

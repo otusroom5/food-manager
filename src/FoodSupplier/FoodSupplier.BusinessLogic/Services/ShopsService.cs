@@ -1,27 +1,58 @@
+using AutoMapper;
 using FoodSupplier.BusinessLogic.Abstractions;
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
+using FoodSupplier.DataAccess.Abstractions;
+using FoodSupplier.DataAccess.Entities;
 
 namespace FoodSupplier.BusinessLogic.Services;
 
 public class ShopsService : IShopsService
 {
-    public Guid Create(ShopDto shop)
+    private readonly IShopsRepository _repository;
+    private readonly IMapper _mapper;
+
+    public ShopsService(IShopsRepository repository,
+        IMapper mapper)
     {
-        throw new NotImplementedException();
+        _repository = repository;
+        _mapper = mapper;
     }
 
-    public ShopDto Get(Guid shopId)
+    public Guid Create(Shop shop)
     {
-        throw new NotImplementedException();
+        var shopEntity = _mapper.Map<ShopEntity>(shop);
+        var result = _repository.Create(shopEntity);
+        _repository.Save();
+
+        return result;
     }
 
-    public void Update(ShopDto shop)
+    public Shop Get(Guid shopId)
     {
-        throw new NotImplementedException();
+        var shopEntity = _repository.Get(shopId);
+        var result = _mapper.Map<Shop>(shopEntity);
+
+        return result;
+    }
+
+    public IEnumerable<Shop> GetAll(bool onlyActive = false)
+    {
+        var entities = _repository.GetAll(onlyActive);
+        var result = _mapper.Map<IEnumerable<ShopEntity>, IEnumerable<Shop>>(entities);
+
+        return result;
+    }
+
+    public void Update(Shop shop)
+    {
+        var shopEntity = _mapper.Map<ShopEntity>(shop);
+        _repository.Update(shopEntity);
+        _repository.Save();
     }
 
     public void Delete(Guid shopId)
     {
-        throw new NotImplementedException();
+        _repository.Delete(shopId);
+        _repository.Save();
     }
 }

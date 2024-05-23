@@ -13,9 +13,11 @@ public class PricesRepository : IPricesRepository
         _context = context;
     }
 
-    public void Create(PriceEntryEntity priceEntryEntity)
+    public Guid Create(PriceEntryEntity priceEntryEntity)
     {
-        _context.PriceEntries.Add(priceEntryEntity);
+        var result = _context.PriceEntries.Add(priceEntryEntity);
+
+        return result.Entity.Id;
     }
 
     public PriceEntryEntity Get(Guid priceEntryId)
@@ -28,16 +30,16 @@ public class PricesRepository : IPricesRepository
     public PriceEntryEntity GetLast(Guid productId)
     {
         var candidate = _context.PriceEntries
-            .Where(p => p.Id == productId)
+            .Where(p => p.ProductId == productId)
             .OrderByDescending(p => p.Date)
             .FirstOrDefault();
 
         return candidate;
     }
 
-    public PriceEntryEntity[] GetAll()
+    public IEnumerable<PriceEntryEntity> GetAll(Guid productId)
     {
-        return _context.PriceEntries.ToArray();
+        return _context.PriceEntries.Where(x => x.ProductId == productId).ToList();
     }
 
     public void Update(PriceEntryEntity priceEntryEntity)
