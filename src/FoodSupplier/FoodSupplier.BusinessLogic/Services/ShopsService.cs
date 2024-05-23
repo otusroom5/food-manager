@@ -35,6 +35,14 @@ public class ShopsService : IShopsService
         return result;
     }
 
+    public IEnumerable<Shop> GetAll(bool onlyActive = false)
+    {
+        var entities = _repository.GetAll(onlyActive);
+        var result = _mapper.Map<IEnumerable<ShopEntity>, IEnumerable<Shop>>(entities);
+
+        return result;
+    }
+
     public void Update(Shop shop)
     {
         var shopEntity = _mapper.Map<ShopEntity>(shop);

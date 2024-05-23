@@ -9,9 +9,13 @@ public class SupplierMappingProfile : Profile
 {
     public SupplierMappingProfile()
     {
+        //webAPI maps
         CreateMap<Shop, ShopModel>().ReverseMap();
+        CreateMap<PriceEntry, PriceModel>();
         CreateMap<ShopCreateModel, Shop>();
 
+        //BL maps
         CreateMap<Shop, ShopEntity>().ReverseMap();
+        CreateMap<PriceEntry, PriceEntryEntity>().ReverseMap();
     }
 }
