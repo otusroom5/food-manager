@@ -1,6 +1,6 @@
-namespace FoodSupplier.BusinessLogic.Dto;
+namespace FoodSupplier.BusinessLogic.Models;
 
-public class PriceEntryDto
+public class PriceEntry
 {
     public Guid Id { get; set; }
     public Guid ProductId { get; set; }

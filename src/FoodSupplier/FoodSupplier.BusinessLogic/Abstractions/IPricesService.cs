@@ -1,10 +1,10 @@
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 
 namespace FoodSupplier.BusinessLogic.Abstractions;
 
 public interface IPricesService
 {
-    Guid Create(PriceEntryDto priceEntry);
-    PriceEntryDto Get(Guid priceEntryId);
-    PriceEntryDto GetLast(Guid productId);
+    Guid Create(PriceEntry priceEntry);
+    PriceEntry Get(Guid priceEntryId);
+    PriceEntry GetLast(Guid productId);
 }

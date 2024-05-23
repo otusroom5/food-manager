@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FoodSupplier.BusinessLogic.Abstractions;
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 using FoodSupplier.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +28,11 @@ public class ShopsController : ControllerBase
             var candidate = _shopsService.Get(model.Id);
             var result = _mapper.Map<ShopModel>(candidate);
 
+            if (result is null)
+            {
+                return NotFound();
+            }
+
             return Ok(result);
         }
         catch (Exception e)
@@ -41,7 +46,7 @@ public class ShopsController : ControllerBase
     {
         try
         {
-            var shopDto = _mapper.Map<ShopDto>(model);
+            var shopDto = _mapper.Map<Shop>(model);
             var result = _shopsService.Create(shopDto);
 
             return Ok(result);
@@ -57,7 +62,7 @@ public class ShopsController : ControllerBase
     {
         try
         {
-            var shopDto = _mapper.Map<ShopDto>(model);
+            var shopDto = _mapper.Map<Shop>(model);
             _shopsService.Update(shopDto);
 
             return Ok();

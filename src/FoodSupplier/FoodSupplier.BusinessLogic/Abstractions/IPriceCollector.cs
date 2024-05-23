@@ -1,8 +1,8 @@
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 
 namespace FoodSupplier.BusinessLogic.Abstractions;
 
 public interface IPriceCollector
 {
-    PriceEntryDto Collect(Guid shopId, Guid productId);
+    PriceEntry Collect(Guid shopId, Guid productId);
 }

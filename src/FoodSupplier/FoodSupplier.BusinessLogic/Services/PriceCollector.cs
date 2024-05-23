@@ -1,11 +1,11 @@
 using FoodSupplier.BusinessLogic.Abstractions;
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 
 namespace FoodSupplier.BusinessLogic.Services;
 
 public class PriceCollector : IPriceCollector
 {
-    public PriceEntryDto Collect(Guid shopId, Guid productId)
+    public PriceEntry Collect(Guid shopId, Guid productId)
     {
         throw new NotImplementedException();
     }
