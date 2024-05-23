@@ -1,4 +1,5 @@
 ﻿using FoodSupplier.DataAccess;
+using FoodSupplier.WebAPI.MapperProfiles;
 using FoodSupplier.WebAPI.Modules;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +29,10 @@ public class Startup
 
         ConfigureDatabase(services, Configuration);
 
+        services.AddAutoMapper(typeof(SupplierMappingProfile));
+
         services.AddRepositories();
+        services.AddServices();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
