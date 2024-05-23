@@ -7,6 +7,7 @@ using FoodUserAuth.DataAccess.Interfaces;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -16,15 +17,18 @@ public class UsersService : IUsersService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IPasswordGenerator _passwordGenerator;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<UsersService> _logger;
 
     private readonly User _predefinedUser;
 
     public UsersService(IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
         IPasswordGenerator passwordGenerator,
-        IHttpContextAccessor httpContextAccessor
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<UsersService> logger
         )
     {
+        _logger = logger;
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _httpContextAccessor = httpContextAccessor;
@@ -175,9 +179,9 @@ public class UsersService : IUsersService
 
         User item = await InternalGetAsync(user.Id);
 
-
         item.FirstName = user.FirstName;
         item.LastName = user.LastName;
+        item.Role = user.Role;
         item.Email = user.Email;
 
         await _unitOfWork.SaveChangesAsync();

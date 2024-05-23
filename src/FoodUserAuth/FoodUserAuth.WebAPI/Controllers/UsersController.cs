@@ -104,7 +104,7 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPost]
-    public async Task<ActionResult> Update([FromBody] UserModel model)
+    public async Task<ActionResult> Update([FromBody] UserUpdateModel model)
     {
         try
         {

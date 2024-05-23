@@ -1,24 +1,22 @@
 ﻿using FoodUserAuth.BusinessLogic.Dto;
-using FoodUserAuth.DataAccess.Types;
 using FoodUserAuth.WebApi.Models;
 using System;
 
-namespace FoodUserAuth.WebApi.Extensions
+namespace FoodUserAuth.WebApi.Extensions;
+
+public static class UserModelExtensions
 {
-    public static class UserModelExtensions
+    public static UserDto ToDto(this UserModel model)
     {
-        public static UserDto ToDto(this UserModel model)
+        return new UserDto()
         {
-            return new UserDto()
-            {
-                Id = Guid.Parse(model.Id),
-                LoginName = model.LoginName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                IsDisabled = model.IsDisabled,
-                Role = model.Role
-            };
-        }
+            Id = Guid.Parse(model.Id),
+            LoginName = model.LoginName,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email,
+            IsDisabled = model.IsDisabled,
+            Role = model.Role
+        };
     }
 }
