@@ -1,21 +1,21 @@
 using FoodSupplier.BusinessLogic.Abstractions;
-using FoodSupplier.BusinessLogic.Dto;
+using FoodSupplier.BusinessLogic.Models;
 
 namespace FoodSupplier.BusinessLogic.Services;
 
 public class PricesService : IPricesService
 {
-    public Guid Create(PriceEntryDto priceEntry)
+    public Guid Create(PriceEntry priceEntry)
     {
         throw new NotImplementedException();
     }
 
-    public PriceEntryDto Get(Guid priceEntryId)
+    public PriceEntry Get(Guid priceEntryId)
     {
         throw new NotImplementedException();
     }
 
-    public PriceEntryDto GetLast(Guid productId)
+    public PriceEntry GetLast(Guid productId)
     {
         throw new NotImplementedException();
     }

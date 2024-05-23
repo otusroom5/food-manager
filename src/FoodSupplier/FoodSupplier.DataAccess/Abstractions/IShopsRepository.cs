@@ -4,7 +4,7 @@ namespace FoodSupplier.DataAccess.Abstractions;
 
 public interface IShopsRepository
 {
-    void Create(ShopEntity shopEntity);
+    Guid Create(ShopEntity shopEntity);
     ShopEntity Get(Guid shopId);
     void Update(ShopEntity shopEntity);
     void Delete(Guid shopId);
