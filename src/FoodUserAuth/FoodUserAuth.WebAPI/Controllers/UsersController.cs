@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPut]
-    public async Task<ActionResult> Create(UserCreateModel model)
+    public async Task<ActionResult> Create([FromBody] UserCreateModel model)
     {
         try
         {
@@ -83,7 +83,7 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPost]
-    public async Task<ActionResult> Update(UserModel model)
+    public async Task<ActionResult> Update([FromBody] UserModel model)
     {
         try
         {
@@ -113,7 +113,7 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpDelete]
-    public async Task<ActionResult> Delete(UserDeleteModel item)
+    public async Task<ActionResult> Delete([FromBody] UserDeleteModel item)
     {
         try
         {

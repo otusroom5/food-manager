@@ -1,5 +1,4 @@
 ﻿using FoodUserAuth.DataAccess.Types;
-using System.Text.Json.Serialization;
 
 namespace FoodUserAuth.WebApi.Models;
 public class UserModel
