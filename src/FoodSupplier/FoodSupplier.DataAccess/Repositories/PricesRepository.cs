@@ -13,9 +13,11 @@ public class PricesRepository : IPricesRepository
         _context = context;
     }
 
-    public void Create(PriceEntryEntity priceEntryEntity)
+    public Guid Create(PriceEntryEntity priceEntryEntity)
     {
-        _context.PriceEntries.Add(priceEntryEntity);
+        var result = _context.PriceEntries.Add(priceEntryEntity);
+
+        return result.Entity.Id;
     }
 
     public PriceEntryEntity Get(Guid priceEntryId)
