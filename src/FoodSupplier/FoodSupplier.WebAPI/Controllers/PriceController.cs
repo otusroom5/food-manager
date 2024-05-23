@@ -1,4 +1,5 @@
-﻿using FoodSupplier.BusinessLogic.Abstractions;
+﻿using AutoMapper;
+using FoodSupplier.BusinessLogic.Abstractions;
 using FoodSupplier.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,12 @@ namespace FoodSupplier.WebAPI.Controllers;
 public class PriceController : ControllerBase
 {
     private readonly IPricesService _pricesService;
+    private readonly IMapper _mapper;
 
-    public PriceController(IPricesService pricesService)
+    public PriceController(IPricesService pricesService, IMapper mapper)
     {
         _pricesService = pricesService;
+        _mapper = mapper;
     }
 
     [HttpGet("Get")]
@@ -21,8 +24,9 @@ public class PriceController : ControllerBase
         try
         {
             var candidate = _pricesService.Get(model.Id);
+            var result = _mapper.Map<PriceModel>(candidate);
 
-            return Ok(candidate);
+            return Ok(result);
         }
         catch (Exception e)
         {
@@ -36,8 +40,9 @@ public class PriceController : ControllerBase
         try
         {
             var candidate = _pricesService.GetLast(model.Id);
+            var result = _mapper.Map<PriceModel>(candidate);
 
-            return Ok(candidate);
+            return Ok(result);
         }
         catch (Exception e)
         {

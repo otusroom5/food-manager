@@ -27,6 +27,15 @@ public class ShopsRepository : IShopsRepository
         return candidate;
     }
 
+    public IEnumerable<ShopEntity> GetAll(bool onlyActive = false)
+    {
+        var entities = _context.Shops
+            .Where(x => !onlyActive || x.IsActive == true)
+            .ToList();
+
+        return entities;
+    }
+
     public void Update(ShopEntity shopEntity)
     {
         _context.Entry(shopEntity).State = EntityState.Modified;

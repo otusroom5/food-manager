@@ -41,6 +41,27 @@ public class ShopsController : ControllerBase
         }
     }
 
+    [HttpGet("GetAll")]
+    public ActionResult<IEnumerable<ShopModel>> GetAll([FromQuery] bool onlyActive)
+    {
+        try
+        {
+            var candidates = _shopsService.GetAll(onlyActive);
+            var result = _mapper.Map<IEnumerable<Shop>, IEnumerable<ShopModel>>(candidates);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     [HttpPost("Create")]
     public ActionResult<Guid> Create([FromQuery] ShopCreateModel model)
     {
