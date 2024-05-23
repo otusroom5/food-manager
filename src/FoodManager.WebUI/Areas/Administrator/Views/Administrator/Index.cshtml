@@ -1,0 +1,89 @@
+﻿@using FoodManager.WebUI.Areas.Administrator.Contracts;
+@using FoodManager.WebUI.Areas.Administrator.Models;
+@using FoodManager.WebUI.Extensions;
+@model UserIndexModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Accounts";
+    var isUpdateMode = Model.User != null;
+}
+
+@if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+{
+    if (@TempData["IsError"].Equals(true))
+    {
+        <div id="alert-message" class="alert alert-danger" role="alert">@TempData["Message"]</div>
+    }
+}
+
+@(
+    Html.TableFor<UserModel>(@Model.Users, (key) =>
+        {
+            return Html.ActionLink("disable", "Disable", "Administrator", new { id = key });
+        },
+        (key) =>
+        {
+            return Html.ActionLink("edit", "Update", "Administrator", new { id = key });
+        })
+)
+
+
+@using (Html.BeginForm(actionName: (isUpdateMode ? "Update" : "Create"), controllerName: "Administrator", FormMethod.Post))
+{
+    <input type="hidden" name="Id" value="@Model.User?.Id">
+    <div class="row">
+        <div class="col">
+            Login:
+        </div>
+        <div class="col">
+            @if (isUpdateMode)
+            {
+                <input name="LoginName" type="text" class="form-control" value="@Model.User?.LoginName" disabled>
+            }
+            else
+            {
+                <input name="LoginName" type="text" class="form-control" value="@Model.User?.LoginName">
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">First Name:</div>
+        <div class="col">
+            <input name="FirstName" type="text" class="form-control" value="@Model.User?.FirstName">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Last Name:</div>
+        <div class="col">
+            <input name="LastName" type="text" class="form-control" value="@Model.User?.LastName">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Role:</div>
+        <div class="col">
+            <select class="form-select" value="@Model.User?.Role" name="Role">
+                <option>
+                    Administrator
+                </option>
+                <option>
+                    Cooker
+                </option>
+                <option>
+                    Manager
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Email:</div>
+        <div class="col">
+            <input name="Email" type="email" class="form-control" value="@Model.User?.Email">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" type="submit">Save</button>
+    </div>
+}
+
+

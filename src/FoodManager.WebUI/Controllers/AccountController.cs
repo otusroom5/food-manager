@@ -3,25 +3,25 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using FoodManager.WebUI.Services.Interfaces;
 using System.Diagnostics;
 using FoodManager.WebUI.Exceptions;
+using FoodManager.WebUI.Contracts;
+using FoodManager.WebUI.Extensions;
+using System.Net;
 
 namespace FoodManager.WebUI.Controllers;
 
-public class AccountController : Controller
+public class AccountController : Abstractions.ControllerBase
 {
     private readonly ILogger<AccountController> _logger;
-    private readonly IAccountService _accountService;
     private readonly IAuthenticationService _authService;
 
-    public AccountController(IAuthenticationService authService,
-        ILogger<AccountController> logger,
-        IAccountService accountService)
+    public AccountController(IHttpClientFactory httpClientFactory,
+        IAuthenticationService authService,
+        ILogger<AccountController> logger) : base(httpClientFactory)
     {
         _logger = logger;
         _authService = authService;
-        _accountService = accountService;
     }
 
     [HttpGet]
@@ -35,7 +35,7 @@ public class AccountController : Controller
     {
         try
         {
-            var acceptedData = await _accountService.LogInAsync(model.Login, model.Password);
+            var acceptedData = await GetAuthTokenAsync(model.Login, model.Password);
 
             _logger.LogInformation("Account ({Login}) is accepted. Assigned following role: {Role}", model.Login, acceptedData.Role);
 
@@ -69,6 +69,33 @@ public class AccountController : Controller
         {
             throw ex;
         }
+    }
+
+    private async Task<(string Token, string Role)> GetAuthTokenAsync(string login, string password)
+    {
+        HttpClient client = CreateServiceHttpClient(HttpClientWebApplicationExtensions.AuthServiceName, false);
+
+        Uri requestUri = new UriBuilder(client.BaseAddress)
+        {
+            Path = $"/api/v1/Accounts/Login"
+        }.Uri;
+
+        var responseMessage = await client.PostAsync(requestUri, JsonContent.Create(new { LoginName = login, Password = password }));
+
+        if ((responseMessage.StatusCode != HttpStatusCode.BadRequest) &&
+            !responseMessage.IsSuccessStatusCode)
+        {
+            responseMessage.EnsureSuccessStatusCode();
+        }
+
+        var response = await responseMessage.Content.ReadFromJsonAsync<AuthenticationResponse>();
+
+        if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+        {
+            throw new InvalidAccountException(response.Message);
+        }
+
+        return (response.Data.Token, response.Data.Role);
     }
 
     [HttpPost]

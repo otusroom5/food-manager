@@ -1,7 +1,5 @@
 using FoodManager.WebUI.Extensions;
 using FoodManager.WebUI.Options;
-using FoodManager.WebUI.Services.Implementations;
-using FoodManager.WebUI.Services.Interfaces;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -16,14 +14,14 @@ try
     builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection(AuthenticationOptions.Authentication));
     builder.Services.AddSerilog();
     builder.Services.AddControllersWithViews();
-    builder.Services.AddTransient<IAccountService, AccountService>();
     builder.Services.AddCookieAuthentication(options =>
     {
         options.LoadFromConfiguration(builder.Configuration);
     }, "Account/Login");
 
-    var app = builder.Build();
+    builder.Services.AddAuthenticationHttpClient(builder.Configuration.GetConnectionString("UserAuthApi"));
 
+    var app = builder.Build();
 
     if (!app.Environment.IsDevelopment())
     {
@@ -39,7 +37,7 @@ try
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Account}/{action=Login}/{id?}");
+        pattern: "{controller=Account}/{action=Login}");
     app.MapAreaControllerRoute(
         name: "administrator_area",
         areaName: "Administrator",
