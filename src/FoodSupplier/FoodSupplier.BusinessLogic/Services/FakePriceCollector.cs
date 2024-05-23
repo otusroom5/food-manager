@@ -24,7 +24,7 @@ public class FakePriceCollector : IPriceCollector
             date: DateTimeOffset.UtcNow,
             price: price);
 
-        _logger.LogDebug("Fake PriceEndtry generated for ProductId: {ProductId}, price: {Price}", productId, price);
+        _logger.LogDebug("Fake PriceEntry generated for ProductId: {ProductId}, price: {Price}", productId, price);
 
         return priceEntry;
     }
