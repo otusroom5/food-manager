@@ -1,11 +1,18 @@
 using FoodSupplier.BusinessLogic.Abstractions;
 using FoodSupplier.BusinessLogic.Models;
+using Microsoft.Extensions.Logging;
 
 namespace FoodSupplier.BusinessLogic.Services;
 
 public class FakePriceCollector : IPriceCollector
 {
     private readonly Random _random = new();
+    private readonly ILogger<PriceEntry> _logger;
+
+    public FakePriceCollector(ILogger<PriceEntry> logger)
+    {
+        _logger = logger;
+    }
 
     public PriceEntry Collect(Guid shopId, Guid productId)
     {
@@ -16,6 +23,8 @@ public class FakePriceCollector : IPriceCollector
             shopId: shopId,
             date: DateTimeOffset.UtcNow,
             price: price);
+
+        _logger.LogDebug("Fake PriceEndtry generated for ProductId: {ProductId}, price: {Price}", productId, price);
 
         return priceEntry;
     }

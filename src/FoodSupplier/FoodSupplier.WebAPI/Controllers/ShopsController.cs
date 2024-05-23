@@ -20,7 +20,7 @@ public class ShopsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("Get")]
+    [HttpGet]
     public ActionResult<ShopModel> Get([FromQuery] ShopGetModel model)
     {
         try
@@ -62,7 +62,7 @@ public class ShopsController : ControllerBase
         }
     }
 
-    [HttpPost("Create")]
+    [HttpPost]
     public ActionResult<Guid> Create([FromQuery] ShopCreateModel model)
     {
         try
@@ -78,7 +78,7 @@ public class ShopsController : ControllerBase
         }
     }
 
-    [HttpPut("Update")]
+    [HttpPut]
     public ActionResult Update([FromQuery] ShopModel model)
     {
         try
@@ -94,7 +94,7 @@ public class ShopsController : ControllerBase
         }
     }
 
-    [HttpDelete("Delete")]
+    [HttpDelete]
     public ActionResult Delete([FromQuery] ShopDeleteModel model)
     {
         try
