@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FoodSupplier.BusinessLogic.Abstractions;
+using FoodSupplier.BusinessLogic.Models;
 using FoodSupplier.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,22 @@ public class PriceController : ControllerBase
         {
             var candidate = _pricesService.GetLast(model.Id);
             var result = _mapper.Map<PriceModel>(candidate);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("GetAllByProduct")]
+    public ActionResult<IEnumerable<PriceModel>> GetAllByProduct([FromQuery] ProductGetModel model)
+    {
+        try
+        {
+            var candidate = _pricesService.GetAll(model.Id);
+            var result = _mapper.Map<IEnumerable<PriceEntry>, IEnumerable<PriceModel>>(candidate);
 
             return Ok(result);
         }

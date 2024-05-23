@@ -41,4 +41,12 @@ public class PricesService : IPricesService
 
         return result;
     }
+
+    public IEnumerable<PriceEntry> GetAll(Guid productId)
+    {
+        var priceEntities = _repository.GetAll(productId);
+        var result = _mapper.Map<IEnumerable<PriceEntryEntity>, IEnumerable<PriceEntry>>(priceEntities);
+
+        return result;
+    }
 }

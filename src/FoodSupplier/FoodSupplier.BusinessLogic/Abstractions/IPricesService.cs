@@ -7,4 +7,5 @@ public interface IPricesService
     Guid Create(PriceEntry priceEntry);
     PriceEntry Get(Guid priceEntryId);
     PriceEntry GetLast(Guid productId);
+    IEnumerable<PriceEntry> GetAll(Guid productId);
 }
