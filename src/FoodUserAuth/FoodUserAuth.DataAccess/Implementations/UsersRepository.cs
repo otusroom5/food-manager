@@ -50,7 +50,7 @@ public class UsersRepository : IUsersRepository, IDisposable
     /// <returns>IEnumerable<User></returns>
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _dbContext.Users.ToListAsync();
+        return await _dbContext.Users.OrderBy(f => f.Id).ToListAsync();
     }
 
     /// <summary>
@@ -61,8 +61,8 @@ public class UsersRepository : IUsersRepository, IDisposable
     public async Task<User> FindByLoginNameAsync(string loginName)
     {
         return await (from users in _dbContext.Users
-                where users.LoginName == loginName
-                select users).FirstOrDefaultAsync();
+                      where users.LoginName == loginName
+                      select users).FirstOrDefaultAsync();
     }
 
     /// <summary>

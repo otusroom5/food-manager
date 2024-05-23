@@ -114,7 +114,7 @@ public class AdministratorController : Abstractions.ControllerBase
             response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
 
             TempData["IsError"] = false;
-            TempData["Message"] = response.Data.Password;
+            TempData["Message"] = $"User is created. Generated password: {response.Data.Password}";
         }
         catch (HttpRequestException ex)
         {

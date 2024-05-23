@@ -9,14 +9,31 @@
     var isUpdateMode = Model.User != null;
 }
 
-@if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+@functions
 {
-    if (@TempData["IsError"].Equals(true))
+    string GetSelectedIfEqual(string val1, string val2)
     {
-        <div id="alert-message" class="alert alert-danger" role="alert">@TempData["Message"]</div>
+        if ((val1 != null) && (val1.Equals(val2)))
+        {
+            return "selected";
+        }
+
+        return string.Empty;
+    }
+
+    string GetSuccessAlertClassIfTrue(bool isError)
+    {
+        if (isError)
+        {
+            return "alert-danger";
+        }
+        return "alert-success";
     }
 }
-
+@if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+{
+    <div id="alert-message" class="alert @GetSuccessAlertClassIfTrue(bool.Equals(true, @TempData["IsError"]))" role="alert">@TempData["Message"]</div>
+}
 @(
     Html.TableFor<UserModel>(@Model.Users, (key) =>
         {
@@ -27,8 +44,6 @@
             return Html.ActionLink("edit", "Update", "Administrator", new { id = key });
         })
 )
-
-
 @using (Html.BeginForm(actionName: (isUpdateMode ? "Update" : "Create"), controllerName: "Administrator", FormMethod.Post))
 {
     <input type="hidden" name="Id" value="@Model.User?.Id">
@@ -62,16 +77,13 @@
     <div class="row">
         <div class="col">Role:</div>
         <div class="col">
-            <select class="form-select" value="@Model.User?.Role" name="Role">
-                <option>
-                    Administrator
-                </option>
-                <option>
-                    Cooker
-                </option>
-                <option>
-                    Manager
-                </option>
+            <select class="form-select" value="" name="Role">
+                @foreach (string optionName in new[] { "Administrator", "Cooker", "Manager" })
+                {
+                    <option @GetSelectedIfEqual(optionName, @Model.User?.Role)>
+                        @optionName
+                    </option>
+                }
             </select>
         </div>
     </div>
@@ -82,7 +94,15 @@
         </div>
     </div>
     <div>
-        <button class="btn btn-primary" type="submit">Save</button>
+        @if (isUpdateMode)
+        {
+            <button class="btn btn-primary" type="submit">Update</button>
+            <button class="btn btn-secondary" type="button" onclick="location.href='@Url.ActionLink("Index","Administrator")'">Cancel</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" type="submit">Create</button>
+        }
     </div>
 }
 

@@ -37,6 +37,10 @@
             <input class="btn btn-primary w-100 py-2" type="submit" value="Sign in"/>
             <p class="mt-5 mb-3 text-body-secondary">©Food Manager @DateTime.Now.Date.Year</p>
         }
+        @if (!string.IsNullOrWhiteSpace(@ViewBag.ErrorMessage))
+        {
+            <div id="alert-message" class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
+        }
     </main>
 </body>
 </html>
