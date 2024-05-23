@@ -9,12 +9,9 @@ namespace FoodSupplier.WebAPI.Controllers;
 public class SupplierController : ControllerBase
 {
     private readonly ISupplierService _supplierService;
-    private readonly ILogger<SupplierController> _logger;
 
-    public SupplierController(ILogger<SupplierController> logger,
-        ISupplierService supplierService)
+    public SupplierController(ISupplierService supplierService)
     {
-        _logger = logger;
         _supplierService = supplierService;
     }
 

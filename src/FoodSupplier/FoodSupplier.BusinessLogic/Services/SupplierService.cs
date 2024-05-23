@@ -1,4 +1,6 @@
+using System.Security.AccessControl;
 using FoodSupplier.BusinessLogic.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace FoodSupplier.BusinessLogic.Services;
 
@@ -7,12 +9,17 @@ public class SupplierService : ISupplierService
     private readonly IPriceCollector _priceCollector;
     private readonly IPricesService _pricesService;
     private readonly IShopsService _shopsService;
+    private readonly ILogger<SupplierService> _logger;
 
-    public SupplierService(IPriceCollector priceCollector, IPricesService pricesService, IShopsService shopsService)
+    public SupplierService(IPriceCollector priceCollector,
+        IPricesService pricesService,
+        IShopsService shopsService,
+        ILogger<SupplierService> logger)
     {
         _priceCollector = priceCollector;
         _pricesService = pricesService;
         _shopsService = shopsService;
+        _logger = logger;
     }
 
     public void Produce()
@@ -32,6 +39,8 @@ public class SupplierService : ISupplierService
     public void Produce(Guid shopId, Guid productId)
     {
         var priceEntry = _priceCollector.Collect(shopId, productId);
-        _pricesService.Create(priceEntry);
+        var result = _pricesService.Create(priceEntry);
+
+        _logger.LogInformation("PriceEntry created: {PriceEntryId}", result);
     }
 }

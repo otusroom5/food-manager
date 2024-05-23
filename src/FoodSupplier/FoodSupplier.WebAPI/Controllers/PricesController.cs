@@ -8,18 +8,18 @@ namespace FoodSupplier.WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PriceController : ControllerBase
+public class PricesController : ControllerBase
 {
     private readonly IPricesService _pricesService;
     private readonly IMapper _mapper;
 
-    public PriceController(IPricesService pricesService, IMapper mapper)
+    public PricesController(IPricesService pricesService, IMapper mapper)
     {
         _pricesService = pricesService;
         _mapper = mapper;
     }
 
-    [HttpGet("Get")]
+    [HttpGet]
     public ActionResult<PriceModel> Get([FromQuery] PriceEntryGetModel model)
     {
         try
