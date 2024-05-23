@@ -60,21 +60,21 @@ public class AccountsController : ControllerBase
 
             _logger.LogDebug("Generated token: {Token}", token);
             
-            return Ok(new LoginActionResponse()
+            return Ok(new GenericResponse<AuthenticationModel>()
             {
-                Token = token,
-                Role = user.Role.ToString(),
+                Data = new AuthenticationModel()
+                {
+                    Token = token,
+                    Role = user.Role.ToString(),
+                },
+
                 Message = "Success"
             });
         } 
         catch (Exception ex) 
         {
             _logger.LogError(ex, ex.Message);
-
-            return BadRequest(new LoginActionResponse()
-            {
-                Message = ex.Message
-            });
+            return BadRequest(ResponseBase.Create(ex));
         }
     }
 
@@ -108,10 +108,7 @@ public class AccountsController : ControllerBase
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(new MessageResponse()
-            {
-                Message = ex.Message
-            });
+            return BadRequest(ResponseBase.Create(ex));
         }
     }
 }

@@ -5,6 +5,8 @@ using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.DataAccess.Interfaces;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -13,14 +15,19 @@ public class UsersService : IUsersService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IPasswordGenerator _passwordGenerator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
     private readonly User _predefinedUser;
 
     public UsersService(IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
-        IPasswordGenerator passwordGenerator)
+        IPasswordGenerator passwordGenerator,
+        IHttpContextAccessor httpContextAccessor
+        )
     {
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
+        _httpContextAccessor = httpContextAccessor;
         _passwordGenerator = passwordGenerator;
         _predefinedUser = CreatePredefinedUser(unitOfWork.GetUsersRepository(), passwordHasher);
     }
@@ -133,6 +140,13 @@ public class UsersService : IUsersService
     /// </summary>
     public async Task DisableUserAsync(Guid id)
     {
+        User currentUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(GetCurrentLoginName());
+       
+        if (id.Equals(currentUser?.Id))
+        {
+            throw new NotValidUserException("You can not possibility you disabled this user");
+        }
+
         User item = await InternalGetAsync(id);
         item.IsDisabled = true;
         _unitOfWork.GetUsersRepository().Update(item);
@@ -161,10 +175,10 @@ public class UsersService : IUsersService
 
         User item = await InternalGetAsync(user.Id);
 
+
         item.FirstName = user.FirstName;
         item.LastName = user.LastName;
         item.Email = user.Email;
-        item.LoginName = user.LoginName;
 
         await _unitOfWork.SaveChangesAsync();
     }
@@ -179,5 +193,16 @@ public class UsersService : IUsersService
         }
 
         return item;
+    }
+
+    private string GetCurrentLoginName()
+    {
+        return _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.Name))?.Value ?? string.Empty;
+    }
+
+    public async Task<UserDto> GetAsync(Guid id)
+    {
+        User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(id);
+        return foundUser?.ToDto();
     }
 }
