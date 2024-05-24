@@ -6,21 +6,21 @@ using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductHistoryEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 
-namespace FoodStorage.Application.Implementations;
+namespace FoodStorage.Application.Implementations.Services;
 
 public class ProductItemService : IProductItemService
 {
     private readonly IProductItemRepository _productItemRepository;
     private readonly IProductRepository _productRepository;
-    private readonly IProductHistoryRepository _productHistoryRepository;
+    //private readonly IProductHistoryRepository _productHistoryRepository;
 
-    public ProductItemService(IProductItemRepository productItemRepository, 
-        IProductRepository productRepository, 
-        IProductHistoryRepository productHistoryRepository)
+    public ProductItemService(IProductItemRepository productItemRepository,
+        IProductRepository productRepository)//, 
+                                             //IProductHistoryRepository productHistoryRepository)
     {
         _productItemRepository = productItemRepository;
         _productRepository = productRepository;
-        _productHistoryRepository = productHistoryRepository;
+        //_productHistoryRepository = productHistoryRepository;
     }
 
     public ProductItemId Create(ProductItem productItem)
@@ -33,7 +33,7 @@ public class ProductItemService : IProductItemService
             throw new EntityNotFoundException(nameof(Product), productItem.ProductId.ToString());
         }
 
-        _productItemRepository.Create(productItem);
+        _productItemRepository.CreateAsync(productItem);
 
         return productItem.Id;
     }
@@ -61,7 +61,7 @@ public class ProductItemService : IProductItemService
         return result.Where(r => r.ExpiryDate < DateTime.UtcNow);
     }
 
-    public void TakePartOf(ProductId productId, int count)
+    public void TakePartOf(ProductId productId, int count, UserId userId)
     {
         Product product = _productRepository.FindById(productId);
 
@@ -93,53 +93,56 @@ public class ProductItemService : IProductItemService
         {
             if (productItem.Amount >= count)
             {
-                productItem.ReduceAmount(count);
+                productItem.ReduceAmount(count, userId);
                 break;
             }
             else
             {
-                productItem.ReduceAmount(productItem.Amount);
+                productItem.ReduceAmount(productItem.Amount, userId);
                 count -= productItem.Amount;
             }
         }
     }
 
-    public void WriteOff(IEnumerable<ProductItemId> productItemIds)
+    public void WriteOff(IEnumerable<ProductItemId> productItemIds, UserId userId)
     {
         // получаем все указанные единицы продукта из холодильника
         var productItems = _productItemRepository.GetByIds(productItemIds);
 
-        // формируем словарь Продукт - количество продукта, для записи в историю
-        Dictionary<ProductId, int> productCountDict = new Dictionary<ProductId, int>();
+        //---------------------------------
+        //// формируем словарь Продукт - количество продукта, для записи в историю
+        //Dictionary<ProductId, int> productCountDict = new Dictionary<ProductId, int>();
 
         foreach (var productItem in productItems)
         {
-            if (productCountDict.ContainsKey(productItem.ProductId))
-            {
-                productCountDict[productItem.ProductId] += productItem.Amount;
-            }
-            else
-            {
-                productCountDict.Add(productItem.ProductId, productItem.Amount);
-            }
+            //    if (productCountDict.ContainsKey(productItem.ProductId))
+            //    {
+            //        productCountDict[productItem.ProductId] += productItem.Amount;
+            //    }
+            //    else
+            //    {
+            //        productCountDict.Add(productItem.ProductId, productItem.Amount);
+            //    }
+
+            productItem.WriteOff(userId);
 
             // Удаление продукта
-            _productItemRepository.Delete(productItem);
+            _productItemRepository.DeleteAsync(productItem);
         }
 
-        // запись в историю о списании продукта
-        foreach (var productCountItem in productCountDict)
-        {
-            ProductHistory productHistoryItem = ProductHistory.CreateNew(
-                id: ProductHistoryId.CreateNew(),
-                productId: productCountItem.Key,
-                state: ProductState.WriteOff,
-                count: productCountItem.Value,
-                createdBy: UserId.FromGuid(Guid.NewGuid()),
-                createdAt: DateTime.UtcNow);
+        //// запись в историю о списании продукта
+        //foreach (var productCountItem in productCountDict)
+        //{
+        //    ProductHistory productHistoryItem = ProductHistory.CreateNew(
+        //        id: ProductHistoryId.CreateNew(),
+        //        productId: productCountItem.Key,
+        //        state: ProductState.WriteOff,
+        //        count: productCountItem.Value,
+        //        createdBy: UserId.FromGuid(Guid.NewGuid()),
+        //        createdAt: DateTime.UtcNow);
 
-            _productHistoryRepository.Create(productHistoryItem);
-        }
+        //    _productHistoryRepository.Create(productHistoryItem);
+        //}
     }
 
     public void Delete(ProductItemId productItemId)
@@ -151,6 +154,6 @@ public class ProductItemService : IProductItemService
             throw new EntityNotFoundException(nameof(ProductItem), productItemId.ToString());
         }
 
-        _productItemRepository.Delete(productItem);
+        _productItemRepository.DeleteAsync(productItem);
     }
 }

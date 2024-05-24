@@ -4,7 +4,7 @@ using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 
-namespace FoodStorage.Application.Implementations;
+namespace FoodStorage.Application.Implementations.Services;
 
 public class ProductService : IProductService
 {

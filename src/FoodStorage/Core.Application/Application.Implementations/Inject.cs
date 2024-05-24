@@ -1,4 +1,5 @@
-﻿using FoodStorage.Application.Services;
+﻿using FoodStorage.Application.Implementations.Services;
+using FoodStorage.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodStorage.Application.Implementations;
