@@ -1,4 +1,5 @@
 ﻿using FoodStorage.Application.Services;
+using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 using FoodStorage.WebApi.Models.Extensions;
@@ -96,7 +97,8 @@ public class ProductItemController : ControllerBase
     [HttpPost("TakePartOf/{productId}/{count}")]
     public ActionResult TakePartOf(Guid productId, int count)
     {
-        _productItemService.TakePartOf(ProductId.FromGuid(productId), count);
+        UserId userId = UserId.FromGuid(Guid.NewGuid()); //--------------
+        _productItemService.TakePartOf(ProductId.FromGuid(productId), count, userId);
 
         return Ok();
     }
@@ -109,8 +111,9 @@ public class ProductItemController : ControllerBase
     [HttpPost("WriteOff")]
     public ActionResult WriteOff(List<Guid> productItemIds)
     {
+        UserId userId = UserId.FromGuid(Guid.NewGuid()); //--------------
         IEnumerable<ProductItemId> ids = productItemIds.Select(ProductItemId.FromGuid);
-        _productItemService.WriteOff(ids);
+        _productItemService.WriteOff(ids, userId);
 
         return Ok();
     }
