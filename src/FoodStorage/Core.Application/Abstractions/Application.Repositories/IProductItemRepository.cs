@@ -5,11 +5,11 @@ namespace FoodStorage.Application.Repositories;
 
 public interface IProductItemRepository
 {
-    public void Create(ProductItem productItem);
+    public Task CreateAsync(ProductItem productItem);
     public ProductItem FindById(ProductItemId productItemId);
     public IEnumerable<ProductItem> GetByProductId(ProductId productId);
     public IEnumerable<ProductItem> GetByIds(IEnumerable<ProductItemId> productItemIds);
     public IEnumerable<ProductItem> GetAll();
-    public void Change(ProductItem productItem);
-    public void Delete(ProductItem productItem);
+    public Task ChangeAsync(ProductItem productItem);
+    public Task DeleteAsync(ProductItem productItem);
 }

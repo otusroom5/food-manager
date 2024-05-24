@@ -5,6 +5,7 @@ using FoodStorage.Infrastructure.EntityFramework;
 using FoodStorage.Infrastructure.EntityFramework.Common.Exceptions;
 using FoodStorage.Infrastructure.EntityFramework.Contracts;
 using FoodStorage.Infrastructure.EntityFramework.Contracts.Extensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodStorage.Infrastructure.Implementations;
@@ -12,14 +13,16 @@ namespace FoodStorage.Infrastructure.Implementations;
 internal class ProductItemRepository : IProductItemRepository
 {
     private readonly DatabaseContext _databaseContext;
+    private readonly IMediator _mediator;
 
-    public ProductItemRepository(DatabaseContext databaseContext)
+    public ProductItemRepository(DatabaseContext databaseContext, IMediator mediator)
     {
+        _mediator = mediator;
         _databaseContext = databaseContext;
         _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
-    public void Create(ProductItem productItem)
+    public async Task CreateAsync(ProductItem productItem)
     {
         if (productItem is null)
         {
@@ -28,7 +31,8 @@ internal class ProductItemRepository : IProductItemRepository
 
         ProductItemDto productItemDto = productItem.ToDto();
         _databaseContext.ProductItems.Add(productItemDto);
-        _databaseContext.SaveChanges();
+
+        await SaveChangesAsync(productItem);
     }
 
     public ProductItem FindById(ProductItemId productItemId)
@@ -53,7 +57,7 @@ internal class ProductItemRepository : IProductItemRepository
 
     public IEnumerable<ProductItem> GetAll() => _databaseContext.ProductItems.Include(pi => pi.Product).Select(pi => pi.ToEntity()).ToList();
 
-    public void Change(ProductItem productItem)
+    public async Task ChangeAsync(ProductItem productItem)
     {
         if (productItem is null)
         {
@@ -63,11 +67,11 @@ internal class ProductItemRepository : IProductItemRepository
         ProductItemDto productItemDto = productItem.ToDto();
         _databaseContext.ProductItems.Update(productItemDto);
 
-        _databaseContext.SaveChanges();
+        await SaveChangesAsync(productItem);
     }
 
 
-    public void Delete(ProductItem productItem)
+    public async Task DeleteAsync(ProductItem productItem)
     {
         if (productItem is null)
         {
@@ -76,6 +80,15 @@ internal class ProductItemRepository : IProductItemRepository
 
         ProductItemDto productItemDto = productItem.ToDto();
         _databaseContext.ProductItems.Remove(productItemDto);
+
+        await SaveChangesAsync(productItem);
+    }
+
+    private async Task SaveChangesAsync(ProductItem productItem)
+    {
+        // публикация(вызов обработчиков) всех зарегистрированных событий
+        IEnumerable<Task> publishTasks = productItem.DomainEvents.Select(e => _mediator.Publish(e));
+        await Task.WhenAll(publishTasks); 
 
         _databaseContext.SaveChanges();
     }
