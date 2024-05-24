@@ -132,9 +132,9 @@ public class UsersController : ControllerBase
     {
         try
         {
-            await _usersService.DisableUserAsync(Guid.Parse(item.Id));
+            await _usersService.DisableUserAsync(Guid.Parse(item.UserId));
 
-            _logger.LogDebug("User ({Id}) was disabled", item.Id);
+            _logger.LogDebug("User ({Id}) was disabled", item.UserId);
             return Ok(ResponseBase.Create("Success"));
         }
         catch (Exception ex)

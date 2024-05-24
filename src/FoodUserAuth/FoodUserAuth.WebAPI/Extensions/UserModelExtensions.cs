@@ -10,7 +10,7 @@ public static class UserModelExtensions
     {
         return new UserDto()
         {
-            Id = Guid.Parse(model.Id),
+            Id = Guid.Parse(model.UserId),
             LoginName = model.LoginName,
             FirstName = model.FirstName,
             LastName = model.LastName,

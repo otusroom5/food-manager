@@ -9,9 +9,10 @@ namespace FoodManager.WebUI.Areas.Administrator.Controllers;
 
 [Area("Administrator")]
 [Authorize(Roles = "Administrator")]
-public class AdministratorController : Abstractions.ControllerBase
+public sealed class AdministratorController : Abstractions.ControllerBase
 {
     private static readonly string UsersRESTEndPoint = "/api/v1/Users";
+    private static readonly string ResetPasswordRESTEndPoint = "/api/v1/Accounts/ResetPassword";
     private readonly ILogger<AdministratorController> _logger;
 
     public AdministratorController(IHttpClientFactory httpClientFactory, ILogger<AdministratorController> logger) : base(httpClientFactory)
@@ -35,8 +36,9 @@ public class AdministratorController : Abstractions.ControllerBase
         try
         {
             HttpResponseMessage responseMessage = await httpClient.GetAsync(requestUri);
-            responseMessage.EnsureSuccessStatusCode();
+
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
+            responseMessage.EnsureSuccessStatusCode();
             
             if (!TempData.Keys.Contains("IsError"))
             {
@@ -61,21 +63,23 @@ public class AdministratorController : Abstractions.ControllerBase
             });
     }
 
-    [Route("{area}/{controller}/{action}/{id}")]
-    public async Task<IActionResult> Disable(UserDeleteModel model)
+    [HttpGet]
+    [Route("{area}/{controller}/{action}")]
+    public async Task<IActionResult> Disable(string userId)
     {
         var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
 
         Uri requestUri = new UriBuilder(httpClient.BaseAddress)
         {
             Path =  UsersRESTEndPoint,
-            Query = $"Id={model.Id}"
+            Query = QueryString.Create("UserId", userId).Value
         }.Uri;
 
         ResponseBase response = null;
         try
         {
             HttpResponseMessage responseMessage = await httpClient.DeleteAsync(requestUri);
+            
             response = await responseMessage.Content.ReadFromJsonAsync<ResponseBase>();
             responseMessage.EnsureSuccessStatusCode();
 
@@ -110,9 +114,10 @@ public class AdministratorController : Abstractions.ControllerBase
         try
         {
             HttpResponseMessage responseMessage = await httpClient.PutAsync(requestUri, JsonContent.Create(model));
-            responseMessage.EnsureSuccessStatusCode();
-            response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
 
+            response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
+            responseMessage.EnsureSuccessStatusCode();
+            
             TempData["IsError"] = false;
             TempData["Message"] = $"User is created. Generated password: {response.Data.Password}";
         }
@@ -131,9 +136,9 @@ public class AdministratorController : Abstractions.ControllerBase
 
     [HttpGet]
     [Route("{area}/{controller}/{action}")]
-    public async Task<IActionResult> Update(string id)
+    public async Task<IActionResult> Update(string userId)
     {
-        if (!Guid.TryParse(id, out _))
+        if (!Guid.TryParse(userId, out _))
         {
             throw new ArgumentException("Id is not correct");
         }
@@ -149,9 +154,10 @@ public class AdministratorController : Abstractions.ControllerBase
         try
         {
             HttpResponseMessage responseMessage = await httpClient.GetAsync(requestUri);
-            responseMessage.EnsureSuccessStatusCode();
-            response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
 
+            response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
+            responseMessage.EnsureSuccessStatusCode();
+            
             if (!TempData.Keys.Contains("IsError"))
             {
                 TempData["IsError"] = false;
@@ -172,7 +178,7 @@ public class AdministratorController : Abstractions.ControllerBase
             new UserIndexModel()
             {
                 Users = response?.Data.Select(f => f.ToModel()).ToArray(),
-                User = response?.Data.FirstOrDefault(f => f.Id.Equals(id))?.ToModel()
+                User = response?.Data.FirstOrDefault(f => f.UserId.Equals(userId))?.ToModel()
             });
     }
 
@@ -181,7 +187,7 @@ public class AdministratorController : Abstractions.ControllerBase
     [Route("{area}/{controller}/{action}")]
     public async Task<IActionResult> Update(UserUpdateModel model)
     {
-        if (!Guid.TryParse(model.Id, out _))
+        if (!Guid.TryParse(model.UserId, out _))
         {
             throw new ArgumentException("Id is not correct");
         }
@@ -207,6 +213,49 @@ public class AdministratorController : Abstractions.ControllerBase
                 TempData["IsError"] = false;
                 TempData["Message"] = response.Message;
             }
+        }
+        catch (HttpRequestException ex)
+        {
+            TempData["IsError"] = true;
+            TempData["Message"] = response?.Message ?? ex.Message;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Route("{area}/{controller}/{action}")]
+    public async Task<IActionResult> ResetPassword(string userId)
+    {
+        if (!Guid.TryParse(userId, out _))
+        {
+            throw new ArgumentException("Id is not correct");
+        }
+
+        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
+
+        Uri requestUri = new UriBuilder(httpClient.BaseAddress)
+        {
+            Path = ResetPasswordRESTEndPoint
+        }.Uri;
+
+        UserResetPasswordResponse response = null;
+        try
+        {
+            HttpResponseMessage responseMessage = await httpClient.PostAsync(requestUri, JsonContent.Create(new
+            {
+                UserId = userId
+            }));
+
+            response = await responseMessage.Content.ReadFromJsonAsync<UserResetPasswordResponse>();
+            responseMessage.EnsureSuccessStatusCode();
+
+            TempData["IsError"] = false;
+            TempData["Message"] = $"Password is reseted. Password: {response.Data.Password}";
         }
         catch (HttpRequestException ex)
         {

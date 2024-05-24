@@ -24,6 +24,8 @@ public static class CookieAuthenticationServiceCollectionExtensions
                     authOptions.ExpireTimeSpan = TimeSpan.FromMinutes(options.ExpireTimeMin == default ? DefaultExpiryTimeMin : options.ExpireTimeMin);
                     authOptions.SlidingExpiration = true;
                     authOptions.AccessDeniedPath = "/Forbidden/";
+                    authOptions.LogoutPath = "/Account/SignOut";
+                    authOptions.LoginPath = "/Account/SignIn";
                 });
     }
 }

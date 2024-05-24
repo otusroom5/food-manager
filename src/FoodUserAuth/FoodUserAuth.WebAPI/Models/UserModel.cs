@@ -4,7 +4,7 @@ namespace FoodUserAuth.WebApi.Models;
 
 public class UserModel
 {
-    public string Id { get; set; }
+    public string UserId { get; set; }
     
     public string LoginName { get; set; }
     

@@ -1,6 +1,7 @@
 ﻿@using FoodManager.WebUI.Areas.Administrator.Contracts;
 @using FoodManager.WebUI.Areas.Administrator.Models;
 @using FoodManager.WebUI.Extensions;
+@using Microsoft.AspNetCore.Html;
 @model UserIndexModel
 
 @{
@@ -30,23 +31,28 @@
         return "alert-success";
     }
 }
+
 @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
 {
     <div id="alert-message" class="alert @GetSuccessAlertClassIfTrue(bool.Equals(true, @TempData["IsError"]))" role="alert">@TempData["Message"]</div>
 }
-@(
-    Html.TableFor<UserModel>(@Model.Users, (key) =>
-        {
-            return Html.ActionLink("disable", "Disable", "Administrator", new { id = key });
-        },
-        (key) =>
-        {
-            return Html.ActionLink("edit", "Update", "Administrator", new { id = key });
-        })
-)
+
+
+@(Html.TableFor<UserModel>(@Model.Users, key =>
+{
+    var builder = new HtmlContentBuilder();
+    builder.AppendHtml(Html.ActionLink("disable", "Disable", "Administrator", new { UserId = key }));
+    builder.AppendHtml("&nbsp");
+    builder.AppendHtml(Html.ActionLink("edit", "Update", "Administrator", new { UserId = key }));
+    builder.AppendHtml("&nbsp");
+    builder.AppendHtml(Html.ActionLink("reset", "ResetPassword", "Administrator", new { UserId = key }));
+    return builder;
+}))
+
+
 @using (Html.BeginForm(actionName: (isUpdateMode ? "Update" : "Create"), controllerName: "Administrator", FormMethod.Post))
 {
-    <input type="hidden" name="Id" value="@Model.User?.Id">
+    <input type="hidden" name="UserId" value="@Model.User?.UserId">
     <div class="row">
         <div class="col">
             Login:

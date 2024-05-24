@@ -1,11 +1,6 @@
-﻿using FoodManager.WebUI.Contracts;
-using FoodManager.WebUI.Exceptions;
-using FoodManager.WebUI.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace FoodManager.WebUI.Abstractions;
 
@@ -31,5 +26,10 @@ public abstract class ControllerBase : Controller
     private string GetToken()
     {
         return HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.UserData))?.Value ?? string.Empty;
+    }
+
+    protected Guid GetCurrentUserId()
+    {
+        return Guid.Parse(HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
     }
 }

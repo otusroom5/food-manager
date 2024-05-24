@@ -9,7 +9,7 @@ namespace FoodManager.WebUI.Extensions
         {
             return new UserModel()
             {
-                Id = user.Id,
+                UserId = user.UserId,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,

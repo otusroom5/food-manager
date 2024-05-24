@@ -12,7 +12,7 @@ public class UserIndexModel
 public class UserModel
 {
     [HttpTableColumnKey]
-    public string Id { get; set; }
+    public string UserId { get; set; }
 
     [HttpTableColumn("Login")]
     public string LoginName { get; set; }

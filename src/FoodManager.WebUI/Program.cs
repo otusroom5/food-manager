@@ -17,7 +17,7 @@ try
     builder.Services.AddCookieAuthentication(options =>
     {
         options.LoadFromConfiguration(builder.Configuration);
-    }, "Account/Login");
+    }, "Account/SignIn");
 
     builder.Services.AddAuthenticationHttpClient(builder.Configuration.GetConnectionString("UserAuthApi"));
 
@@ -37,19 +37,19 @@ try
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Account}/{action=Login}");
+        pattern: "{controller=Account}/{action=SignIn}");
     app.MapAreaControllerRoute(
         name: "administrator_area",
         areaName: "Administrator",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        pattern: "{area:exists}/{controller=Administrator}/{action=Index}/{id?}");
     app.MapAreaControllerRoute(
         name: "cooker_area",
         areaName: "Cooker",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        pattern: "{area:exists}/{controller=Cooker}/{action=Index}/{id?}");
     app.MapAreaControllerRoute(
         name: "manager_area",
-        areaName: "Cooker",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        areaName: "Manager",
+        pattern: "{area:exists}/{controller=Manager}/{action=Index}/{id?}");
 
     app.Run();
 }

@@ -2,5 +2,5 @@
 
 public class ResetPasswordModel
 {
-    public string Password { get; set; }
+    public string UserId { get; set; }
 }

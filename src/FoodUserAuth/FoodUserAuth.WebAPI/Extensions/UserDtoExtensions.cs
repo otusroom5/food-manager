@@ -9,7 +9,7 @@ public static class UserDtoExtensions
     {
         return new UserModel()
         {
-            Id = dto.Id.ToString(),
+            UserId = dto.Id.ToString(),
             LoginName = dto.LoginName,
             FirstName = dto.FirstName,
             LastName = dto.LastName,

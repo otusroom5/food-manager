@@ -10,7 +10,7 @@ namespace FoodUserAuth.WebApi.Extensions
         {
             return new UserDto()
             {
-                Id = Guid.Parse(model.Id),
+                Id = Guid.Parse(model.UserId),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,

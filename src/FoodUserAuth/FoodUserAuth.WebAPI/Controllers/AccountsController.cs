@@ -115,20 +115,20 @@ public class AccountsController : ControllerBase
 
     [Authorize(Roles = UserRole.Administration)]
     [HttpPost("ResetPassword")]
-    public async Task<IActionResult> ResetPassword(string userId)
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
     {
         try
         {
-            if (!Guid.TryParse(userId, out Guid id))
+            if (!Guid.TryParse(model.UserId, out Guid userId))
             {
                 throw new FormatException("Id identified is not valid");
             }
 
-            string newPassword = await _userService.ResetPasswordAsync(id);
+            string newPassword = await _userService.ResetPasswordAsync(userId);
 
-            return Ok(new GenericResponse<ResetPasswordModel>()
+            return Ok(new GenericResponse<ResetPasswordResultModel>()
             { 
-                Data = new ResetPasswordModel()
+                Data = new ResetPasswordResultModel()
                 {
                     Password = newPassword
                 },
