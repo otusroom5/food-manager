@@ -18,11 +18,12 @@ public static class JwtTokenUtils
     /// <param name="userName"></param>
     /// <param name="role"></param>
     /// <returns>string</returns>
-    public static string GenerateToken(JwtAuthenticationOptions options, string userName, UserRole role)
+    public static string GenerateToken(JwtAuthenticationOptions options, string loginName, Guid id, UserRole role)
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, userName),
+            new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+            new Claim(ClaimTypes.Name, loginName),
             new Claim(ClaimTypes.Role, role.ToString()),
         };
 

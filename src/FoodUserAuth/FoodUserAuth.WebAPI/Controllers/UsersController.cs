@@ -10,6 +10,11 @@ using FoodUserAuth.WebApi.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using FoodManager.Shared.Types;
+using System.Security.Claims;
+using FoodUserAuth.BusinessLogic.Services;
+using FoodUserAuth.BusinessLogic.Dto;
+using Microsoft.Extensions.FileProviders;
+using System.Diagnostics;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -36,10 +41,25 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
+    public async Task<ActionResult<IEnumerable<UserModel>>> Get(string id = "")
     {
+        if (!string.IsNullOrWhiteSpace(id)) 
+        {
+            if (Guid.TryParse(id, out Guid employeeId))
+            {
+                UserDto foundUser = await _usersService.GetAsync(employeeId);
+                return new UserModel[] { foundUser.ToModel() };
+            }
+
+            throw new ArgumentException(nameof(id));
+        }
+
         var items = await _usersService.GetAllAsync();
-        return Ok(items.Select(f => f.ToModel()));
+        return Ok(new GenericResponse<UserModel[]>()
+        {
+            Data = items.Select(f => f.ToModel()).ToArray(),
+            Message = "Ok"
+        });
     }
 
     /// <summary>
@@ -50,28 +70,29 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPut]
-    public async Task<ActionResult> Create(UserCreateModel model)
+    public async Task<ActionResult> Create([FromBody] UserCreateModel model)
     {
         try
         {
             var result = await _usersService.CreateUserAsync(model.ToDto());
 
-            _logger.LogDebug($"Create user ({result.User.Id}) was create");
+            _logger.LogDebug("Create user ({Id}) was create", result.User.Id);
 
-            return Ok(new CreateUserResponse()
+            return Ok(new GenericResponse<UserCreatedModel>()
             {
-                UserId = result.User.Id,
-                Password = result.Password
+                Data = new UserCreatedModel()
+                {
+                    UserId = result.User.Id,
+                    Password = result.Password
+                },
+                Message = "Ok"
             });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(new MessageResponse()
-            {
-                Message = ex.Message
-            });
+            return BadRequest(ResponseBase.Create(ex));
         }
     }
 
@@ -83,25 +104,19 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPost]
-    public async Task<ActionResult> Update(UserModel model)
+    public async Task<ActionResult> Update([FromBody] UserUpdateModel model)
     {
         try
         {
             await _usersService.UpdateUserAsync(model.ToDto());
 
             _logger.LogDebug("User was updated");
-            return Ok(new MessageResponse()
-            {
-                Message = "Success"
-            });
+            return Ok(ResponseBase.Create("Success"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return BadRequest(new MessageResponse()
-            {
-                Message = ex.Message
-            });
+            return BadRequest(ResponseBase.Create(ex));
         }
     }
 
@@ -117,22 +132,16 @@ public class UsersController : ControllerBase
     {
         try
         {
-            await _usersService.DisableUserAsync(Guid.Parse(item.Id));
+            await _usersService.DisableUserAsync(Guid.Parse(item.UserId));
 
-            _logger.LogDebug($"User ({item.Id}) was disabled");
-            return Ok(new MessageResponse()
-            {
-                Message = "Success"
-            });
+            _logger.LogDebug("User ({Id}) was disabled", item.UserId);
+            return Ok(ResponseBase.Create("Success"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(new MessageResponse()
-            {
-                Message = ex.Message
-            });
+            return BadRequest(ResponseBase.Create(ex));
         }
     }
 }

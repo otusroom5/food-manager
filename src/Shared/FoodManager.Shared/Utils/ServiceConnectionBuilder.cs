@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Text;
+﻿using System.Text;
 
 namespace FoodManager.Shared.Utils;
 
@@ -7,7 +6,6 @@ public class ServiceConnectionBuilder : IServiceConnection
 {
     private const string HostArg = "host";
     private const string PortArg = "port";
-    private const string ProtocolVersionArg = "protocolversion";
     private const string SchemaArg = "schema";
 
     private readonly Dictionary<string, string> _dict;
@@ -52,22 +50,6 @@ public class ServiceConnectionBuilder : IServiceConnection
         }
 
         return int.Parse(port);
-    }
-
-    public ServiceConnectionBuilder SetVersionProtocol(int version)
-    {
-        _dict[ProtocolVersionArg] = version.ToString();
-        return this;
-    }
-
-    public int GetVersionProtocol(int defaultVersionProtocol = 1)
-    {
-        if (!_dict.TryGetValue(ProtocolVersionArg, out var protocolVersion))
-        {
-            return defaultVersionProtocol;
-        }
-
-        return int.Parse(protocolVersion);
     }
 
     public string GetSchema(string defaultSchema = "")

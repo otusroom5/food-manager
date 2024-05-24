@@ -5,6 +5,9 @@ using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.DataAccess.Interfaces;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -13,14 +16,22 @@ public class UsersService : IUsersService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IPasswordGenerator _passwordGenerator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<UsersService> _logger;
+
     private readonly User _predefinedUser;
 
     public UsersService(IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
-        IPasswordGenerator passwordGenerator)
+        IPasswordGenerator passwordGenerator,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<UsersService> logger
+        )
     {
+        _logger = logger;
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
+        _httpContextAccessor = httpContextAccessor;
         _passwordGenerator = passwordGenerator;
         _predefinedUser = CreatePredefinedUser(unitOfWork.GetUsersRepository(), passwordHasher);
     }
@@ -41,13 +52,15 @@ public class UsersService : IUsersService
     /// <summary>
     /// This method change user password
     /// </summary>
-    public async Task ChangePasswordAsync(string loginName, string password)
+    public async Task ChangePasswordAsync(string oldPassword, string newPassword)
     {
-        User user = await InternalFindUserByLoginNameAsync(loginName);
+        User currentUser = await GetCurrentUserAsync();
 
-        user.Password = _passwordHasher.ComputeHash(password);
+        await VerifyAndGetUserIfSuccessAsync(currentUser.LoginName, oldPassword);
 
-        _unitOfWork.GetUsersRepository().Update(user);
+        currentUser.Password = _passwordHasher.ComputeHash(newPassword);
+
+        _unitOfWork.GetUsersRepository().Update(currentUser);
         
         await _unitOfWork.SaveChangesAsync();
     }
@@ -133,6 +146,13 @@ public class UsersService : IUsersService
     /// </summary>
     public async Task DisableUserAsync(Guid id)
     {
+        User currentUser = await GetCurrentUserAsync();
+       
+        if (id.Equals(currentUser?.Id))
+        {
+            throw new NotValidUserException("You can not possibility you disabled this user");
+        }
+
         User item = await InternalGetAsync(id);
         item.IsDisabled = true;
         _unitOfWork.GetUsersRepository().Update(item);
@@ -163,8 +183,8 @@ public class UsersService : IUsersService
 
         item.FirstName = user.FirstName;
         item.LastName = user.LastName;
+        item.Role = user.Role;
         item.Email = user.Email;
-        item.LoginName = user.LoginName;
 
         await _unitOfWork.SaveChangesAsync();
     }
@@ -179,5 +199,31 @@ public class UsersService : IUsersService
         }
 
         return item;
+    }
+
+    private async Task<User> GetCurrentUserAsync()
+    {
+        Guid currentId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
+        return await _unitOfWork.GetUsersRepository().GetByIdAsync(currentId);
+    }
+
+    public async Task<UserDto> GetAsync(Guid id)
+    {
+        User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(id);
+        return foundUser?.ToDto();
+    }
+
+    public async Task<string> ResetPasswordAsync(Guid userId)
+    {
+        User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(userId);
+
+        string newPassword = _passwordGenerator.GeneratePassword(foundUser.LoginName);
+        foundUser.Password = _passwordHasher.ComputeHash(newPassword);
+
+        _unitOfWork.GetUsersRepository().Update(foundUser);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return newPassword;
     }
 }
