@@ -56,7 +56,7 @@ public class AccountsController : ControllerBase
         {
             var user = await _userService.VerifyAndGetUserIfSuccessAsync(userModel.LoginName, userModel.Password);
             
-            string token = JwtTokenUtils.GenerateToken(_options, user.LoginName, user.Role);
+            string token = JwtTokenUtils.GenerateToken(_options, user.LoginName, user.Id, user.Role);
 
             _logger.LogDebug("Generated token: {Token}", token);
             
@@ -64,6 +64,7 @@ public class AccountsController : ControllerBase
             {
                 Data = new AuthenticationModel()
                 {
+                    UserId = user.Id.ToString(),
                     Token = token,
                     Role = user.Role.ToString(),
                 },
@@ -97,13 +98,43 @@ public class AccountsController : ControllerBase
 
     [Authorize(Roles = UserRole.Administration)]
     [HttpPost("ChangePassword")]
-    public async Task<IActionResult> ChangePassword(UserLoginModel userModel)
+    public async Task<IActionResult> ChangePassword(UserChangePasswordModel userModel)
     {
         try
         {
-            await _userService.ChangePasswordAsync(userModel.LoginName, userModel.Password);
-            return Ok();
+            await _userService.ChangePasswordAsync(userModel.OldPassword, userModel.Password);
+            return Ok(ResponseBase.Create("Success"));
         } 
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.Create(ex));
+        }
+    }
+
+    [Authorize(Roles = UserRole.Administration)]
+    [HttpPost("ResetPassword")]
+    public async Task<IActionResult> ResetPassword(string userId)
+    {
+        try
+        {
+            if (!Guid.TryParse(userId, out Guid id))
+            {
+                throw new FormatException("Id identified is not valid");
+            }
+
+            string newPassword = await _userService.ResetPasswordAsync(id);
+
+            return Ok(new GenericResponse<ResetPasswordModel>()
+            { 
+                Data = new ResetPasswordModel()
+                {
+                    Password = newPassword
+                },
+                Message = "Success"
+            });
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);

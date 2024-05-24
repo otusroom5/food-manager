@@ -52,13 +52,15 @@ public class UsersService : IUsersService
     /// <summary>
     /// This method change user password
     /// </summary>
-    public async Task ChangePasswordAsync(string loginName, string password)
+    public async Task ChangePasswordAsync(string oldPassword, string newPassword)
     {
-        User user = await InternalFindUserByLoginNameAsync(loginName);
+        User currentUser = await GetCurrentUserAsync();
 
-        user.Password = _passwordHasher.ComputeHash(password);
+        await VerifyAndGetUserIfSuccessAsync(currentUser.LoginName, oldPassword);
 
-        _unitOfWork.GetUsersRepository().Update(user);
+        currentUser.Password = _passwordHasher.ComputeHash(newPassword);
+
+        _unitOfWork.GetUsersRepository().Update(currentUser);
         
         await _unitOfWork.SaveChangesAsync();
     }
@@ -144,7 +146,7 @@ public class UsersService : IUsersService
     /// </summary>
     public async Task DisableUserAsync(Guid id)
     {
-        User currentUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(GetCurrentLoginName());
+        User currentUser = await GetCurrentUserAsync();
        
         if (id.Equals(currentUser?.Id))
         {
@@ -199,14 +201,29 @@ public class UsersService : IUsersService
         return item;
     }
 
-    private string GetCurrentLoginName()
+    private async Task<User> GetCurrentUserAsync()
     {
-        return _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.Name))?.Value ?? string.Empty;
+        Guid currentId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
+        return await _unitOfWork.GetUsersRepository().GetByIdAsync(currentId);
     }
 
     public async Task<UserDto> GetAsync(Guid id)
     {
         User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(id);
         return foundUser?.ToDto();
+    }
+
+    public async Task<string> ResetPasswordAsync(Guid userId)
+    {
+        User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(userId);
+
+        string newPassword = _passwordGenerator.GeneratePassword(foundUser.LoginName);
+        foundUser.Password = _passwordHasher.ComputeHash(newPassword);
+
+        _unitOfWork.GetUsersRepository().Update(foundUser);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return newPassword;
     }
 }
