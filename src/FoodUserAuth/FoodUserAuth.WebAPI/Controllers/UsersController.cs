@@ -10,11 +10,7 @@ using FoodUserAuth.WebApi.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using FoodManager.Shared.Types;
-using System.Security.Claims;
-using FoodUserAuth.BusinessLogic.Services;
 using FoodUserAuth.BusinessLogic.Dto;
-using Microsoft.Extensions.FileProviders;
-using System.Diagnostics;
 
 namespace FoodUserAuth.WebApi.Controllers;
 

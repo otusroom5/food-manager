@@ -4,7 +4,7 @@ using System;
 
 namespace FoodUserAuth.WebApi.Extensions;
 
-public static class UserModelExtensions
+internal static class UserModelExtensions
 {
     public static UserDto ToDto(this UserModel model)
     {

@@ -2,10 +2,9 @@
 
 namespace FoodUserAuth.WebApi.Contracts;
 
-public abstract class ResponseBase
+internal abstract class ResponseBase
 {
     public string Message { get; set; }
-
 
     public static ResponseBase Create(string message)
     {

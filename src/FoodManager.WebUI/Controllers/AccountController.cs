@@ -6,12 +6,8 @@ using System.Security.Claims;
 using System.Diagnostics;
 using FoodManager.WebUI.Exceptions;
 using FoodManager.WebUI.Contracts;
-using FoodManager.WebUI.Extensions;
 using System.Net;
-using Serilog;
-using System.ComponentModel.DataAnnotations;
 using FoodManager.WebUI.Areas.Administrator.Contracts.Responses;
-using System.Net.Http;
 
 namespace FoodManager.WebUI.Controllers;
 
@@ -80,7 +76,7 @@ public class AccountController : Abstractions.ControllerBase
 
     private async Task<AuthenticationResponse> GetAuthTokenAsync(string login, string password)
     {
-        HttpClient client = CreateServiceHttpClient(HttpClientWebApplicationExtensions.AuthServiceName, false);
+        HttpClient client = CreateUserAuthServiceClient(false);
 
         Uri requestUri = new UriBuilder(client.BaseAddress)
         {
@@ -114,7 +110,7 @@ public class AccountController : Abstractions.ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> ChangePassword()
+    public IActionResult ChangePassword()
     {
         return View();
     }
@@ -123,19 +119,12 @@ public class AccountController : Abstractions.ControllerBase
     [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
     {
-        HttpClient client = CreateServiceHttpClient(HttpClientWebApplicationExtensions.AuthServiceName);
-
-        Uri requestUri = new UriBuilder(client.BaseAddress)
-        {
-            Path = $"/api/v1/Accounts/ChangePassword"
-        }.Uri;
-
-
-
+        HttpClient client = CreateUserAuthServiceClient();
         UsersResponse response = null;
+
         try
         {
-            var responseMessage = await client.PostAsync(requestUri, JsonContent.Create(new ChangePasswordRequest()
+            var responseMessage = await client.PostAsync("/api/v1/Accounts/ChangePassword", JsonContent.Create(new ChangePasswordRequest()
             {
                 OldPassword = model.OldPassword,
                 Password = model.Password

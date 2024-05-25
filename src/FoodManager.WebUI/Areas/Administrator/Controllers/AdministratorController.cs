@@ -11,7 +11,7 @@ namespace FoodManager.WebUI.Areas.Administrator.Controllers;
 [Authorize(Roles = "Administrator")]
 public sealed class AdministratorController : Abstractions.ControllerBase
 {
-    private static readonly string UsersRESTEndPoint = "/api/v1/Users";
+    private static readonly string UsersApiUrl = "/api/v1/Users";
     private static readonly string ResetPasswordRESTEndPoint = "/api/v1/Accounts/ResetPassword";
     private readonly ILogger<AdministratorController> _logger;
 
@@ -24,18 +24,12 @@ public sealed class AdministratorController : Abstractions.ControllerBase
     [Route("{area}/{controller}")]
     public async Task<IActionResult> Index()
     {
-        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
-
-        Uri requestUri = new UriBuilder(httpClient.BaseAddress)
-        {
-            Path = UsersRESTEndPoint
-        }.Uri;
-
+        var httpClient = CreateUserAuthServiceClient();
 
         UsersResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(requestUri);
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(UsersApiUrl);
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();
@@ -67,11 +61,11 @@ public sealed class AdministratorController : Abstractions.ControllerBase
     [Route("{area}/{controller}/{action}")]
     public async Task<IActionResult> Disable(string userId)
     {
-        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
+        var httpClient = CreateUserAuthServiceClient();
 
         Uri requestUri = new UriBuilder(httpClient.BaseAddress)
         {
-            Path =  UsersRESTEndPoint,
+            Path =  UsersApiUrl,
             Query = QueryString.Create("UserId", userId).Value
         }.Uri;
 
@@ -103,17 +97,12 @@ public sealed class AdministratorController : Abstractions.ControllerBase
     [Route("{area}/{controller}/{action}")]
     public async Task<IActionResult> Create(UserCreateModel model)
     {
-        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
-
-        Uri requestUri = new UriBuilder(httpClient.BaseAddress)
-        {
-            Path = UsersRESTEndPoint
-        }.Uri;
+        var httpClient = CreateUserAuthServiceClient();
 
         UserCreatedResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.PutAsync(requestUri, JsonContent.Create(model));
+            HttpResponseMessage responseMessage = await httpClient.PutAsync(UsersApiUrl, JsonContent.Create(model));
 
             response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
             responseMessage.EnsureSuccessStatusCode();
@@ -143,17 +132,12 @@ public sealed class AdministratorController : Abstractions.ControllerBase
             throw new ArgumentException("Id is not correct");
         }
 
-        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
-
-        Uri requestUri = new UriBuilder(httpClient.BaseAddress)
-        {
-            Path = UsersRESTEndPoint
-        }.Uri;
+        var httpClient = CreateUserAuthServiceClient();
 
         UsersResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(requestUri);
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(UsersApiUrl);
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();
@@ -192,17 +176,12 @@ public sealed class AdministratorController : Abstractions.ControllerBase
             throw new ArgumentException("Id is not correct");
         }
 
-        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
-
-        Uri requestUri = new UriBuilder(httpClient.BaseAddress)
-        {
-            Path = UsersRESTEndPoint
-        }.Uri;
+        var httpClient = CreateUserAuthServiceClient();
 
         UsersResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.PostAsync(requestUri, JsonContent.Create(model));
+            HttpResponseMessage responseMessage = await httpClient.PostAsync(UsersApiUrl, JsonContent.Create(model));
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();
@@ -236,17 +215,12 @@ public sealed class AdministratorController : Abstractions.ControllerBase
             throw new ArgumentException("Id is not correct");
         }
 
-        var httpClient = CreateServiceHttpClient(serviceName: HttpClientWebApplicationExtensions.AuthServiceName);
-
-        Uri requestUri = new UriBuilder(httpClient.BaseAddress)
-        {
-            Path = ResetPasswordRESTEndPoint
-        }.Uri;
+        var httpClient = CreateUserAuthServiceClient();
 
         UserResetPasswordResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.PostAsync(requestUri, JsonContent.Create(new
+            HttpResponseMessage responseMessage = await httpClient.PostAsync(ResetPasswordRESTEndPoint, JsonContent.Create(new
             {
                 UserId = userId
             }));

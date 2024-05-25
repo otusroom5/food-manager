@@ -12,7 +12,27 @@ public abstract class ControllerBase : Controller
         _httpClientFactory = httpClientFactory;
     }
 
-    protected HttpClient CreateServiceHttpClient(string serviceName, bool useToken = true)
+    protected HttpClient CreateUserAuthServiceClient(bool useToken = true)
+    {
+        return CreateServiceHttpClient("UserAuthApi", useToken);
+    }
+
+    protected HttpClient CreateStorageServiceClient()
+    {
+        return CreateServiceHttpClient("FoodStorageApi");
+    }
+
+    protected HttpClient CreateSupplierServiceClient()
+    {
+        return CreateServiceHttpClient("FoodSupplierApi");
+    }
+
+    protected HttpClient CreatePlannerServiceClient()
+    {
+        return CreateServiceHttpClient("FoodPlannerApi");
+    }
+
+    private HttpClient CreateServiceHttpClient(string serviceName, bool useToken = true)
     {
         var httpClient = _httpClientFactory.CreateClient(serviceName);
         if (useToken)

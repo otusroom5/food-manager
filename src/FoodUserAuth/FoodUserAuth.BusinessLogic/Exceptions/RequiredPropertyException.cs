@@ -3,7 +3,7 @@
 namespace FoodUserAuth.BusinessLogic.Exceptions;
 
 [Serializable]
-public class RequiredPropertyException : DomainBaseException
+internal class RequiredPropertyException : DomainBaseException
 {
     public RequiredPropertyException()
     {

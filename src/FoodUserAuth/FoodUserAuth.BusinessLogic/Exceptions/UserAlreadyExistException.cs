@@ -3,7 +3,7 @@
 namespace FoodUserAuth.BusinessLogic.Exceptions;
 
 [Serializable]
-public class UserAlreadyExistException : DomainBaseException
+internal class UserAlreadyExistException : DomainBaseException
 {
     public UserAlreadyExistException() : this("User already exist")
     {

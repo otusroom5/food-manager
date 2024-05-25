@@ -1,27 +1,25 @@
 ﻿using FoodManager.Shared.Utils;
 
-namespace FoodManager.WebUI.Extensions
+namespace FoodManager.WebUI.Extensions;
+
+public static class HttpClientWebApplicationExtensions
 {
-    public static class HttpClientWebApplicationExtensions
+    public readonly static string DefaultServiceSchema = "http";
+
+    public static IHttpClientBuilder AddHttpClient(this IServiceCollection collection, string serviceName, string connectionString)
     {
-        public readonly static string AuthServiceName = "FoodAuthService";
-        public readonly static int DefaultServicePort = 8081;
-        public readonly static string DefaultServiceSchema = "http";
+        return collection.AddHttpClient(name: serviceName,
+            configureClient: options =>
+            {
+                var serviceConnection = ServiceConnectionBuilder.Parce(connectionString);
 
-        public static IHttpClientBuilder AddAuthenticationHttpClient(this IServiceCollection collection, string connectionString)
-        {
-            return collection.AddHttpClient(name: AuthServiceName,
-                configureClient: options =>
+                options.BaseAddress = new UriBuilder()
                 {
-                    var serviceConnection = ServiceConnectionBuilder.Parce(connectionString);
-
-                    options.BaseAddress = new UriBuilder()
-                    {
-                        Host = serviceConnection.GetHost(),
-                        Port = serviceConnection.GetPort(DefaultServicePort),
-                        Scheme = serviceConnection.GetSchema(DefaultServiceSchema),
-                    }.Uri;
-                });
-        }
+                    Host = serviceConnection.GetHost(),
+                    Port = serviceConnection.GetPort(),
+                    Scheme = serviceConnection.GetSchema(DefaultServiceSchema),
+                }.Uri;
+            });
     }
+
 }

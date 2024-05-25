@@ -2,7 +2,7 @@
 using FoodUserAuth.BusinessLogic.Interfaces;
 using System.Text;
 
-namespace FoodUserAuth.BusinessLogic.Utils;
+namespace FoodUserAuth.BusinessLogic.Implementations;
 
 public class DefaultPasswordGenerator : IPasswordGenerator
 {
