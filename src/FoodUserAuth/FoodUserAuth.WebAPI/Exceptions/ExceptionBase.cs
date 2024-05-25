@@ -2,7 +2,9 @@
 using System.Runtime.Serialization;
 
 namespace FoodUserAuth.WebApi.Exceptions;
-public class ExceptionBase : System.Exception
+
+[Serializable]
+internal class ExceptionBase : System.Exception
 {
     public ExceptionBase()
     {

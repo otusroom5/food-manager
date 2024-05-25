@@ -6,7 +6,7 @@ using Serilog;
 
 namespace FoodUserAuth.WebApi.Extensions;
 
-public static class WebApplicationExtensions
+internal static class WebApplicationExtensions
 {
     public static void UseEfMigration(this WebApplication application)
     {

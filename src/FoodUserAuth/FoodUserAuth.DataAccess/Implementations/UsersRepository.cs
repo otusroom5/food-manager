@@ -61,7 +61,7 @@ public class UsersRepository : IUsersRepository, IDisposable
     public async Task<User> FindByLoginNameAsync(string loginName)
     {
         return await (from users in _dbContext.Users
-                      where users.LoginName == loginName
+                      where EF.Functions.ILike(users.LoginName,$"%{loginName}%")
                       select users).FirstOrDefaultAsync();
     }
 

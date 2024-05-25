@@ -3,7 +3,7 @@ using FoodUserAuth.DataAccess.Entities;
 
 namespace FoodUserAuth.BusinessLogic.Extensions;
 
-public static class UserDtoExtensions
+internal static class UserDtoExtensions
 {
     public static User ToEntity(this UserDto user)
     {

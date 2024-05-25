@@ -96,7 +96,7 @@ public class AccountsController : ControllerBase
     /// <response code="200">Password is changed</response>
     /// <response code="400">If password is not changed then return error</response>
 
-    [Authorize(Roles = UserRole.Administration)]
+    [Authorize(Roles = $"{UserRole.Administration}, {UserRole.Manager}, {UserRole.Cooker}")]
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePassword(UserChangePasswordModel userModel)
     {

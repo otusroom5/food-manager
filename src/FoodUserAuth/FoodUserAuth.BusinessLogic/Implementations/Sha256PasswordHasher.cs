@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace FoodUserAuth.BusinessLogic.Utils;
+namespace FoodUserAuth.BusinessLogic.Implementations;
 
 public class Sha256PasswordHasher : IPasswordHasher
 {
@@ -19,6 +19,6 @@ public class Sha256PasswordHasher : IPasswordHasher
     public bool VerifyHash(string password, string hashedPassword)
     {
         string newHashed = ComputeHash(password);
-        return String.Equals(hashedPassword, newHashed);
+        return string.Equals(hashedPassword, newHashed);
     }
 }

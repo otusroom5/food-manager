@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace FoodUserAuth.BusinessLogic.Exceptions;
 
 [Serializable]
-public class UserNotFoundException : DomainBaseException
+internal class UserNotFoundException : DomainBaseException
 {
     public UserNotFoundException() : this($"User is not found")
     {

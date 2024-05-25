@@ -19,7 +19,10 @@ try
         options.LoadFromConfiguration(builder.Configuration);
     }, "Account/SignIn");
 
-    builder.Services.AddAuthenticationHttpClient(builder.Configuration.GetConnectionString("UserAuthApi"));
+    builder.Services.AddHttpClient("UserAuthApi", builder.Configuration.GetConnectionString("UserAuthApi"));
+    builder.Services.AddHttpClient("FoodStorageApi", builder.Configuration.GetConnectionString("FoodStorageApi"));
+    builder.Services.AddHttpClient("FoodSupplierApi", builder.Configuration.GetConnectionString("FoodSupplierApi"));
+    builder.Services.AddHttpClient("FoodPlannerApi", builder.Configuration.GetConnectionString("FoodPlannerApi"));
 
     var app = builder.Build();
 

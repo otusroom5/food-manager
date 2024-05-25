@@ -9,7 +9,7 @@ using FoodManager.Shared.Auth.Utils;
 
 namespace FoodUserAuth.WebApi.Utils;
 
-public static class JwtTokenUtils
+internal static class JwtTokenUtils
 {
     /// <summary>
     /// This method generates Jwt token with username, role in claims.

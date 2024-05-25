@@ -1,7 +1,6 @@
-﻿namespace FoodUserAuth.WebApi.Contracts
+﻿namespace FoodUserAuth.WebApi.Contracts;
+
+internal class GenericResponse<TModel> : ResponseBase
 {
-    public class GenericResponse<TModel> : ResponseBase
-    {
-        public TModel Data { get; set; }
-    }
+    public TModel Data { get; set; }
 }

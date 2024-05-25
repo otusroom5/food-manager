@@ -1,5 +1,4 @@
 using FoodUserAuth.BusinessLogic.Services;
-using FoodUserAuth.BusinessLogic.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +14,7 @@ using System.Text.Json.Serialization;
 using System;
 using Serilog;
 using FoodUserAuth.WebApi.Extensions;
+using FoodUserAuth.BusinessLogic.Implementations;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

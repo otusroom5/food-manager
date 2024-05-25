@@ -2,20 +2,19 @@
 using FoodUserAuth.WebApi.Models;
 using System;
 
-namespace FoodUserAuth.WebApi.Extensions
+namespace FoodUserAuth.WebApi.Extensions;
+
+internal static class UserUpdateModelExtension
 {
-    public static class UserUpdateModelExtension
+    public static UserDto ToDto(this UserUpdateModel model)
     {
-        public static UserDto ToDto(this UserUpdateModel model)
+        return new UserDto()
         {
-            return new UserDto()
-            {
-                Id = Guid.Parse(model.UserId),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                Role = Enum.Parse<DataAccess.Types.UserRole>(model.Role)
-            };
-        }
+            Id = Guid.Parse(model.UserId),
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email,
+            Role = Enum.Parse<DataAccess.Types.UserRole>(model.Role)
+        };
     }
 }

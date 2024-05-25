@@ -16,6 +16,7 @@ public sealed class CookerController : Abstractions.ControllerBase
     [Route("{area}/{controller}/{action}")]
     public IActionResult Index()
     {
+        
         return View();
     }
 }
