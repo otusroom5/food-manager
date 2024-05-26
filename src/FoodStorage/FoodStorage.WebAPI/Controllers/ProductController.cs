@@ -1,15 +1,18 @@
-﻿using FoodStorage.Application.Services;
+﻿using FoodManager.Shared.Types;
+using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.WebApi.Models.Extensions;
 using FoodStorage.WebApi.Models.ProductModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
 
+[Authorize(Roles = UserRole.Administration)]
 [Route("api/[controller]")]
 [Produces("application/json")]
 [ApiController]
-public class ProductController : ControllerBase
+public class ProductController : BaseController
 {
     private readonly IProductService _productService;
 

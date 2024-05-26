@@ -1,17 +1,19 @@
-﻿using FoodStorage.Application.Services;
-using FoodStorage.Domain.Entities;
+﻿using FoodManager.Shared.Types;
+using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 using FoodStorage.WebApi.Models.Extensions;
 using FoodStorage.WebApi.Models.ProductItemModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
 
+[Authorize(Roles = UserRole.Administration)]
 [Route("api/[controller]")]
 [Produces("application/json")]
 [ApiController]
-public class ProductItemController : ControllerBase
+public class ProductItemController : BaseController
 {
     private readonly IProductItemService _productItemService;
 
@@ -28,7 +30,7 @@ public class ProductItemController : ControllerBase
     [HttpPost("Create")]
     public ActionResult<Guid> Create(CreateProductItemModel productItem)
     {
-        ProductItem productItemToCreate = productItem.ToEntity();
+        ProductItem productItemToCreate = productItem.ToEntity(UserId);
         ProductItemId id = _productItemService.Create(productItemToCreate);
 
         return Ok(id.ToGuid());
@@ -97,8 +99,7 @@ public class ProductItemController : ControllerBase
     [HttpPost("TakePartOf/{productId}/{count}")]
     public ActionResult TakePartOf(Guid productId, int count)
     {
-        UserId userId = UserId.FromGuid(Guid.NewGuid()); //--------------
-        _productItemService.TakePartOf(ProductId.FromGuid(productId), count, userId);
+        _productItemService.TakePartOf(ProductId.FromGuid(productId), count, UserId);
 
         return Ok();
     }
@@ -111,9 +112,8 @@ public class ProductItemController : ControllerBase
     [HttpPost("WriteOff")]
     public ActionResult WriteOff(List<Guid> productItemIds)
     {
-        UserId userId = UserId.FromGuid(Guid.NewGuid()); //--------------
         IEnumerable<ProductItemId> ids = productItemIds.Select(ProductItemId.FromGuid);
-        _productItemService.WriteOff(ids, userId);
+        _productItemService.WriteOff(ids, UserId);
 
         return Ok();
     }

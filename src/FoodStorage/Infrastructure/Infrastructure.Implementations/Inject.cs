@@ -11,8 +11,6 @@ public static class Inject
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Ping).Assembly));
-
         services.AddDbContext<DatabaseContext>(o => o.UseNpgsql(configuration["DbConnection"]));
 
         services.AddScoped<IProductRepository, ProductRepository>()

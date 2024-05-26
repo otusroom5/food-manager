@@ -1,4 +1,5 @@
-﻿using FoodStorage.Domain.Entities.Common.DomainEvents;
+﻿using FoodStorage.Application.Implementations.Common.Exceptions;
+using FoodStorage.Domain.Entities.Common.DomainEvents;
 using MediatR;
 
 namespace FoodStorage.Application.Implementations.DomainEventHandlers;
@@ -6,15 +7,15 @@ namespace FoodStorage.Application.Implementations.DomainEventHandlers;
 public abstract class BaseDomainEventHandler<TDomainEvent> : INotificationHandler<TDomainEvent> 
     where TDomainEvent : BaseDomainEvent
 {
-    public async Task Handle(TDomainEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handle(TDomainEvent notification, CancellationToken cancellationToken)
     {
         try
         {
-            await HandleDomainEventAsync(domainEvent, cancellationToken);
+            await HandleDomainEventAsync(notification, cancellationToken);
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            throw new Exception(exception.Message); //-----------------------------------
+            throw new ApplicationLayerException($"Error in handler of domain event '{notification}': {ex.Message}");
         }
     }
 

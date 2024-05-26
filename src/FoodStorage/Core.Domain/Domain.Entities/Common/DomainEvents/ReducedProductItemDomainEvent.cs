@@ -1,4 +1,5 @@
 ﻿using FoodStorage.Domain.Entities.ProductEntity;
+using FoodStorage.Domain.Entities.ProductItemEntity;
 
 namespace FoodStorage.Domain.Entities.Common.DomainEvents;
 
@@ -8,18 +9,18 @@ namespace FoodStorage.Domain.Entities.Common.DomainEvents;
 public class ReducedProductItemDomainEvent : BaseDomainEvent
 {
     /// <summary>
-    /// Идентификатор уменьшенного продукта
+    /// Единица продукта из холодильника
     /// </summary>
-    public ProductId ProductId { get; }
+    public ProductItem ProductItem { get; }
 
     /// <summary>
     /// Количество взятого продукта
     /// </summary>
     public int ProductCount { get; }
 
-    public ReducedProductItemDomainEvent(ProductId productId, int productCount, UserId reducedBy, DateTime reducedAt) : base(reducedBy, reducedAt)
+    public ReducedProductItemDomainEvent(ProductItem productItem, int productCount, UserId reducedBy, DateTime reducedAt) : base(reducedBy, reducedAt)
     {
-        ProductId = productId;
+        ProductItem = productItem;
         ProductCount = productCount;
     }
 }

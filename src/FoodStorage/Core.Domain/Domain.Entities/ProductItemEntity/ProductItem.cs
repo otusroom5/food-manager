@@ -40,7 +40,7 @@ public record ProductItem
     /// </summary>
     public List<BaseDomainEvent> DomainEvents => _domainEvents;
 
-    private ProductItem(ProductId productId, int amount, UserId? userId = null) 
+    private ProductItem(ProductId productId, int amount, UserId userId = null) 
     {
         ProductId = productId;
         Amount = amount;
@@ -55,7 +55,7 @@ public record ProductItem
         }
     }
 
-    public static ProductItem CreateNew(ProductItemId id, ProductId productId, int amount, DateTime creatingDate, DateTime expiryDate, UserId? userId = null)
+    public static ProductItem CreateNew(ProductItemId id, ProductId productId, int amount, DateTime creatingDate, DateTime expiryDate, UserId userId = null)
     {
         if (amount <= 0)
         {
@@ -93,9 +93,7 @@ public record ProductItem
 
         Amount -= amount;
 
-        RegisterEvent(new ReducedProductItemDomainEvent(ProductId, amount, userId, DateTime.UtcNow));
-        //TODO не забыть что при изменении сущности нужна запись в историю + проверка других записей этого продукта на остаток в холодильнике
-        // если забираем все что было - удаление продукта из холодильника
+        RegisterEvent(new ReducedProductItemDomainEvent(this, amount, userId, DateTime.UtcNow));
     }
 
     /// <summary>

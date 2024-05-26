@@ -61,7 +61,7 @@ public class PoductItemTest
 
         var productItem = ProductItem.CreateNew(ProductItemId.CreateNew(), ProductId.CreateNew(), amountInItem, DateTime.UtcNow, DateTime.UtcNow);
 
-        productItem.ReduceAmount(amountToReduce);
+        productItem.ReduceAmount(amountToReduce, null);
 
         Assert.AreEqual(amountInItem - amountToReduce, productItem.Amount);
     }
@@ -75,7 +75,7 @@ public class PoductItemTest
 
         var productItem = ProductItem.CreateNew(ProductItemId.CreateNew(), ProductId.CreateNew(), amountInItem, DateTime.UtcNow, DateTime.UtcNow);
 
-        productItem.ReduceAmount(amountToReduce);
+        productItem.ReduceAmount(amountToReduce, null);
     }
     #endregion
 }

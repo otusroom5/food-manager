@@ -3,7 +3,6 @@ using FoodStorage.Application.Repositories;
 using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.Domain.Entities.ProductHistoryEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 
 namespace FoodStorage.Application.Implementations.Services;
@@ -12,15 +11,12 @@ public class ProductItemService : IProductItemService
 {
     private readonly IProductItemRepository _productItemRepository;
     private readonly IProductRepository _productRepository;
-    //private readonly IProductHistoryRepository _productHistoryRepository;
 
     public ProductItemService(IProductItemRepository productItemRepository,
-        IProductRepository productRepository)//, 
-                                             //IProductHistoryRepository productHistoryRepository)
+        IProductRepository productRepository)
     {
         _productItemRepository = productItemRepository;
         _productRepository = productRepository;
-        //_productHistoryRepository = productHistoryRepository;
     }
 
     public ProductItemId Create(ProductItem productItem)
@@ -78,7 +74,7 @@ public class ProductItemService : IProductItemService
         int commonCount = productItems.Sum(pi => pi.Amount);
 
         // если общее кол-во продукта в холодильнике меньше запрашиваемого - ошибка
-        if (commonCount - product.MinAmountPerDay < count)
+        if (commonCount < count)
         {
             throw new ApplicationLayerException($"Общее кол-во продукта {product.Name} в холодильнике меньше запрашиваемого ({count})");
         }
@@ -91,14 +87,18 @@ public class ProductItemService : IProductItemService
         // если меньше или равно, то берем сколько есть и выходим из цикла
         foreach (var productItem in listForTakeOff)
         {
-            if (productItem.Amount >= count)
+            if (count == 0) break;
+
+            if (productItem.Amount > count)
             {
                 productItem.ReduceAmount(count, userId);
+                _productItemRepository.ChangeAsync(productItem);
                 break;
             }
             else
             {
                 productItem.ReduceAmount(productItem.Amount, userId);
+                _productItemRepository.DeleteAsync(productItem);
                 count -= productItem.Amount;
             }
         }
@@ -109,40 +109,11 @@ public class ProductItemService : IProductItemService
         // получаем все указанные единицы продукта из холодильника
         var productItems = _productItemRepository.GetByIds(productItemIds);
 
-        //---------------------------------
-        //// формируем словарь Продукт - количество продукта, для записи в историю
-        //Dictionary<ProductId, int> productCountDict = new Dictionary<ProductId, int>();
-
         foreach (var productItem in productItems)
         {
-            //    if (productCountDict.ContainsKey(productItem.ProductId))
-            //    {
-            //        productCountDict[productItem.ProductId] += productItem.Amount;
-            //    }
-            //    else
-            //    {
-            //        productCountDict.Add(productItem.ProductId, productItem.Amount);
-            //    }
-
             productItem.WriteOff(userId);
-
-            // Удаление продукта
             _productItemRepository.DeleteAsync(productItem);
         }
-
-        //// запись в историю о списании продукта
-        //foreach (var productCountItem in productCountDict)
-        //{
-        //    ProductHistory productHistoryItem = ProductHistory.CreateNew(
-        //        id: ProductHistoryId.CreateNew(),
-        //        productId: productCountItem.Key,
-        //        state: ProductState.WriteOff,
-        //        count: productCountItem.Value,
-        //        createdBy: UserId.FromGuid(Guid.NewGuid()),
-        //        createdAt: DateTime.UtcNow);
-
-        //    _productHistoryRepository.Create(productHistoryItem);
-        //}
     }
 
     public void Delete(ProductItemId productItemId)
