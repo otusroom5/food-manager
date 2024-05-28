@@ -3,7 +3,7 @@
 namespace FoodUserAuth.BusinessLogic.Exceptions;
 
 [Serializable]
-internal class NotValidPasswordException : Exception
+public sealed class NotValidPasswordException : Exception
 {
     public NotValidPasswordException(): this ("Password is incorrect")
     {

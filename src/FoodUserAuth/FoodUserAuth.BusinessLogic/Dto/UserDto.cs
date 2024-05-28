@@ -37,14 +37,4 @@ public sealed class UserDto : IEquatable<UserDto>, ICloneable
     {
         return HashCode.Combine(Id, LoginName, FirstName, LastName, Email, IsDisabled);
     }
-
-    public static bool operator ==(UserDto left, UserDto right)
-    {
-        return EqualityComparer<UserDto>.Default.Equals(left, right);
-    }
-
-    public static bool operator !=(UserDto left, UserDto right)
-    {
-        return !(left == right);
-    }
 }

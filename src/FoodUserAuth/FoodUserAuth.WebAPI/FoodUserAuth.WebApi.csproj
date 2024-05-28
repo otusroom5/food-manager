@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <Title>Authentication Web Service</Title>
+    <Authors>Yuri Tarzimanov (heathk1iff)</Authors>
+    <Description>This service provide possibility to generate jwt token by users from database. Also create and renew api key</Description>
   </PropertyGroup>
 
   <ItemGroup>

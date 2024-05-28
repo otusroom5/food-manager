@@ -15,6 +15,7 @@ using System;
 using Serilog;
 using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.BusinessLogic.Implementations;
+using FoodUserAuth.WebApi.Utils;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -44,6 +45,8 @@ try
     builder.Services.AddSwaggerGenWithBarerAuth();
     builder.Services.AddScoped<IUsersService, UsersService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+    builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+    builder.Services.AddScoped<ITokenHandler, JwtTokenHandler>();
     builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();
     builder.Services.AddScoped<IPasswordHasher, Sha256PasswordHasher>();
     

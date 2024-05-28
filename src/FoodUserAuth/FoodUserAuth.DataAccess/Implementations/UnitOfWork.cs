@@ -7,6 +7,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly DatabaseContext _databaseContext;
     private IUsersRepository _usersRepository;
+    private IApiKeyRepository _apiKeyRepository;
     public UnitOfWork(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
@@ -20,6 +21,16 @@ public class UnitOfWork : IUnitOfWork
         }
 
         return _usersRepository;
+    }
+
+    public IApiKeyRepository GetApiKeyRepository()
+    {
+        if (_apiKeyRepository == null)
+        {
+            _apiKeyRepository = new ApiKeyRepository(_databaseContext);
+        }
+
+        return _apiKeyRepository;
     }
 
     public async Task SaveChangesAsync()

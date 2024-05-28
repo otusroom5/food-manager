@@ -2,7 +2,7 @@
 
 namespace FoodUserAuth.DataAccess.Entities;
 
-public class User
+public sealed class User
 {
     public Guid Id { get; set; }
 
