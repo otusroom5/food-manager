@@ -56,6 +56,11 @@ public class UsersService : IUsersService
     {
         User currentUser = await GetCurrentUserAsync();
 
+        if (currentUser == null) 
+        { 
+            throw new UserNotFoundException();
+        }
+
         await VerifyAndGetUserIfSuccessAsync(currentUser.LoginName, oldPassword);
 
         currentUser.Password = _passwordHasher.ComputeHash(newPassword);
@@ -204,6 +209,12 @@ public class UsersService : IUsersService
     private async Task<User> GetCurrentUserAsync()
     {
         Guid currentId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
+
+        if (currentId == Guid.Empty) 
+        {
+            throw new InvalidUserIdException();
+        }
+
         return await _unitOfWork.GetUsersRepository().GetByIdAsync(currentId);
     }
 

@@ -3,7 +3,7 @@
 namespace FoodUserAuth.BusinessLogic.Exceptions;
 
 [Serializable]
-internal class UserDisabledException : DomainBaseException
+public sealed class UserDisabledException : DomainBaseException
 {
     public UserDisabledException() : this("User is disabled")
     {

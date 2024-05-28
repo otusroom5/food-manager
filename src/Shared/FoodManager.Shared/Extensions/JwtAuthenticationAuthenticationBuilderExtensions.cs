@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FoodManager.Shared.Auth.Extensions;
 
-public static class JwtAuthenticationServiceCollectionExtensions
+public static class JwtAuthenticationAuthenticationBuilderExtensions
 {
     /// <summary>
     /// This method configures authentication with Jwt token
@@ -15,13 +15,12 @@ public static class JwtAuthenticationServiceCollectionExtensions
     /// <param name="authenticationOptions"></param>
     /// <returns>AuthenticationBuilder</returns>
     /// 
-    public static AuthenticationBuilder AddJwtAuthentication(this IServiceCollection services, Action<JwtAuthenticationOptions> action)
+    public static AuthenticationBuilder AddJwtAuthentication(this AuthenticationBuilder builder, Action<Options.AuthenticationOptions> action)
     {
-        var options = new JwtAuthenticationOptions();
+        var options = new Options.AuthenticationOptions();
         action?.Invoke(options);
 
-        return services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwtOptions =>
+        return builder.AddJwtBearer(jwtOptions =>
                 {
                     jwtOptions.TokenValidationParameters = new TokenValidationParameters
                     {

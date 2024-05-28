@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using FoodUserAuth.WebApi.Utils;
 using FoodUserAuth.WebApi.Contracts;
 using FoodUserAuth.WebApi.Models;
@@ -8,7 +7,6 @@ using System;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using FoodManager.Shared.Auth.Options;
 using FoodManager.Shared.Types;
 
 namespace FoodUserAuth.WebApi.Controllers;
@@ -19,15 +17,15 @@ namespace FoodUserAuth.WebApi.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
-    private readonly JwtAuthenticationOptions _options;
     private readonly IUsersService _userService;
+    private readonly ITokenHandler _tokenService;
 
     public AccountsController(ILogger<AccountsController> logger,
         IUsersService userService,
-        IOptions<JwtAuthenticationOptions> options)
+        ITokenHandler tokenService)
     {
         _logger = logger;
-        _options = options.Value;
+        _tokenService = tokenService;
         _userService = userService;
     }
 
@@ -56,7 +54,7 @@ public class AccountsController : ControllerBase
         {
             var user = await _userService.VerifyAndGetUserIfSuccessAsync(userModel.LoginName, userModel.Password);
             
-            string token = JwtTokenUtils.GenerateToken(_options, user.LoginName, user.Id, user.Role);
+            string token = _tokenService.Generate(user.LoginName, user.Id, user.Role);
 
             _logger.LogDebug("Generated token: {Token}", token);
             
