@@ -120,7 +120,7 @@ services:
 
   foodplanner:
     container_name: food-planner
-    build: src\FoodPlanner\FoodPlanner.Api
+    build: src\FoodPlanner\FoodPlanner.WebApi
     hostname: foodplanner    
     ports:
         - "8085:80"  
