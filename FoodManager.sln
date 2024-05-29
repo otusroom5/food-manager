@@ -90,11 +90,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{B950CD45-E1E7-42BF-B885-5C901F676172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodPlanner.WebApi", "src\FoodPlanner\FoodPlanner.WebApi\FoodPlanner.WebApi.csproj", "{472E94E9-A4AC-4E06-8043-B1FE8B5B2FF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.WebApi", "src\FoodPlanner\FoodPlanner.WebApi\FoodPlanner.WebApi.csproj", "{472E94E9-A4AC-4E06-8043-B1FE8B5B2FF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodPlanner.Infrastructure.EntityFramework", "src\FoodPlanner\Infrastructure\FoodPlanner.Infrastructure.EntityFramework\FoodPlanner.Infrastructure.EntityFramework.csproj", "{A9030935-3644-4209-95F1-A489005D3BA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.Infrastructure.EntityFramework", "src\FoodPlanner\Infrastructure\FoodPlanner.Infrastructure.EntityFramework\FoodPlanner.Infrastructure.EntityFramework.csproj", "{A9030935-3644-4209-95F1-A489005D3BA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodPlanner.Infrastructure.Implementations", "src\FoodPlanner\Infrastructure\FoodPlanner.Infrastructure.Implementations\FoodPlanner.Infrastructure.Implementations.csproj", "{718BB863-B260-4BB9-8F82-AB844C121051}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.Infrastructure.Implementations", "src\FoodPlanner\Infrastructure\FoodPlanner.Infrastructure.Implementations\FoodPlanner.Infrastructure.Implementations.csproj", "{718BB863-B260-4BB9-8F82-AB844C121051}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Application", "Core.Application", "{466D4448-C49D-48E4-AF97-E2AB5D1B2C91}"
 EndProject
