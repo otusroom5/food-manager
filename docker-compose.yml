@@ -1,0 +1,139 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=room5
+      - RABBITMQ_DEFAULT_PASS=room5Password
+    ports:
+      - 15672:15672
+    networks:
+      - food_net
+
+  postgres:
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_DB: "foodmanagerdb"
+      POSTGRES_USER: "room5"
+      POSTGRES_PASSWORD: "room5Password"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    command: 
+      -c "max_connections=200"
+      -c "shared_buffers=256MB"
+    volumes:
+      - foodmanagerdb-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d foodmanagerdb -U room5 -p 5432"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - food_net
+
+  pgadmin:
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "foodmanager@room5.com"
+      PGADMIN_DEFAULT_PASSWORD: "room5Password"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    restart: unless-stopped
+    networks:
+      - food_net
+  
+  foodauth:
+    build:
+      context: .
+      dockerfile: src/FoodUserAuth/FoodUserAuth.WebAPI/Dockerfile
+    environment:
+      - UserAuth_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
+    ports:
+      - 8081:80
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - food_net
+
+  foodwebui:
+    build:
+      context: .
+      dockerfile: src/FoodManager.WebUI/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=development
+      - ManagerUI_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http
+      - ManagerUI_ConnectionStrings__FoodStorageApi=Host=foodstorage;Port=80;Schema=http
+      - ManagerUI_ConnectionStrings__FoodSupplierApi=Host=foodsupplier;Port=80;Schema=http
+      - ManagerUI_ConnectionStrings__FoodPlannerApi=Host=foodplanner;Port=80;Schema=http
+    ports:
+      - 8080:80
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - food_net
+
+  foodstorage:
+    build:
+      context: .
+      dockerfile: src/FoodStorage/FoodStorage.WebAPI/Dockerfile
+    environment:
+      - FoodStorage_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodstoragedb;Username=room5;Password=room5Password
+    ports:
+        - 8082:80
+    depends_on:
+       postgres:
+         condition: service_healthy
+    restart: unless-stopped
+    networks:
+        - food_net 
+ 
+  foodsupplier:
+    build:
+      context: .
+      dockerfile: src/FoodSupplier/FoodSupplier.WebAPI/Dockerfile  
+    ports:
+        - 8083:80
+    restart: unless-stopped
+    networks:
+        - food_net 
+
+  foodusernotifier:
+    build:
+      context: .
+      dockerfile: src/FoodUserNotifier/FoodUserNotifier.WebAPI/Dockerfile  
+    ports:
+        - 8084:80
+    environment:
+        - FoodNotifier_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http 
+    restart: unless-stopped
+    networks:
+        - food_net 
+
+  foodplanner:
+    build:
+      context: .
+      dockerfile: src/FoodPlanner/FoodPlanner.WebApi/Dockerfile
+    ports:
+        - 8085:80 
+    environment:
+        - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http  
+    restart: unless-stopped
+    networks:
+        - food_net 
+
+volumes:
+  foodmanagerdb-data:
+  pgadmin-data:
+
+networks:
+  food_net:
+    driver: bridge
