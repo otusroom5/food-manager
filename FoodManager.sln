@@ -81,24 +81,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodUserNotifier.BusinessLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodStorage.Domain.Tests", "src\FoodStorage\Core.Domain\Domain.Tests\FoodStorage.Domain.Tests.csproj", "{F213B188-21D5-463B-81ED-4A1DDF9C3F66}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{244262B7-C20A-4089-AFE6-0CBB4F79747E}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{BBB76DB4-E654-4541-8580-94765FDC9ED5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.WebApi", "src\FoodPlanner\FoodPlanner.WebApi\FoodPlanner.WebApi.csproj", "{472E94E9-A4AC-4E06-8043-B1FE8B5B2FF9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLogic", "{63D6D5A6-BDA8-4A44-95AC-305F68B8A52A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodPlanner.BusinessLogic", "src\FoodPlanner\FoodPlanner.BusinessLogic\FoodPlanner.BusinessLogic.csproj", "{E0C0B8DF-A87B-4027-9BA7-2FD44C600B66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.BusinessLogic", "src\FoodPlanner\FoodPlanner.BusinessLogic\FoodPlanner.BusinessLogic.csproj", "{E0C0B8DF-A87B-4027-9BA7-2FD44C600B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodPlanner.BusinessLogic.Tests", "tests\FoodPlanner.BusinessLogic.Tests\FoodPlanner.BusinessLogic.Tests.csproj", "{6A6C7AF6-D4C6-4558-9240-841458A37567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.BusinessLogic.Tests", "tests\FoodPlanner.BusinessLogic.Tests\FoodPlanner.BusinessLogic.Tests.csproj", "{6A6C7AF6-D4C6-4558-9240-841458A37567}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{D5CFFF2B-D8B9-47D0-8A68-0864BF608011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodPlanner.EventBusRabbitMQ", "src\FoodPlanner\FoodPlanner.EventBusRabbitMQ\FoodPlanner.EventBusRabbitMQ.csproj", "{F10D6201-BB7B-4E55-8A8C-C5F8CE5EDA18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.EventBusRabbitMQ", "src\FoodPlanner\FoodPlanner.EventBusRabbitMQ\FoodPlanner.EventBusRabbitMQ.csproj", "{F10D6201-BB7B-4E55-8A8C-C5F8CE5EDA18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.DataAccess", "src\FoodPlanner\FoodPlanner.DataAccess\FoodPlanner.DataAccess.csproj", "{54F6149C-4EF3-42B7-B230-6B4C1C8883F4}"
 EndProject
