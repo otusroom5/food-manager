@@ -15,8 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.Application\FoodPlanner.Application.Implementations\FoodPlanner.Application.Implementations.csproj" />
-    <ProjectReference Include="..\Infrastructure\FoodPlanner.Infrastructure.Implementations\FoodPlanner.Infrastructure.Implementations.csproj" />
+    <ProjectReference Include="..\FoodPlanner.BusinessLogic\FoodPlanner.BusinessLogic.csproj" />
   </ItemGroup>
 
 </Project>
