@@ -97,6 +97,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.EventBusRabbitM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodPlanner.DataAccess", "src\FoodPlanner\FoodPlanner.DataAccess\FoodPlanner.DataAccess.csproj", "{54F6149C-4EF3-42B7-B230-6B4C1C8883F4}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{A2013A06-1849-4553-819E-E044EF65CD29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,6 +217,10 @@ Global
 		{54F6149C-4EF3-42B7-B230-6B4C1C8883F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54F6149C-4EF3-42B7-B230-6B4C1C8883F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54F6149C-4EF3-42B7-B230-6B4C1C8883F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2013A06-1849-4553-819E-E044EF65CD29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2013A06-1849-4553-819E-E044EF65CD29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2013A06-1849-4553-819E-E044EF65CD29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2013A06-1849-4553-819E-E044EF65CD29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
