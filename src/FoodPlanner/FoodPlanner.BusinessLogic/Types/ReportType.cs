@@ -1,4 +1,4 @@
-﻿namespace FoodPlanner.WebApi.Models;
+﻿namespace FoodPlanner.BusinessLogic.Types;
 
 public enum ReportType
 {
