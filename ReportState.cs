@@ -1,4 +1,4 @@
-﻿namespace FoodPlanner.Domain.Entities.ReportEntity;
+﻿namespace FoodPlanner.Types;
 
 public enum ReportState
 {
