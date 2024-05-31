@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 
@@ -12,40 +13,24 @@ public abstract class ControllerBase : Controller
         _httpClientFactory = httpClientFactory;
     }
 
-    protected HttpClient CreateUserAuthServiceClient(bool useToken = true)
+    protected HttpClient CreateUserAuthServiceClient()
     {
-        return CreateServiceHttpClient("UserAuthApi", useToken);
+        return _httpClientFactory.CreateClient("UserAuthApi");
     }
 
     protected HttpClient CreateStorageServiceClient()
     {
-        return CreateServiceHttpClient("FoodStorageApi");
+        return _httpClientFactory.CreateClient("FoodStorageApi");
     }
 
     protected HttpClient CreateSupplierServiceClient()
     {
-        return CreateServiceHttpClient("FoodSupplierApi");
+        return _httpClientFactory.CreateClient("FoodSupplierApi");
     }
 
     protected HttpClient CreatePlannerServiceClient()
     {
-        return CreateServiceHttpClient("FoodPlannerApi");
-    }
-
-    private HttpClient CreateServiceHttpClient(string serviceName, bool useToken = true)
-    {
-        var httpClient = _httpClientFactory.CreateClient(serviceName);
-        if (useToken)
-        {
-            string jwtToken = GetToken();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $" {jwtToken}");
-        }
-        return httpClient;
-    }
-
-    private string GetToken()
-    {
-        return HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.UserData))?.Value ?? string.Empty;
+        return _httpClientFactory.CreateClient("FoodPlannerApi");
     }
 
     protected Guid GetCurrentUserId()

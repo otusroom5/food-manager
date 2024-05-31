@@ -181,7 +181,7 @@ public sealed class AdministratorController : Abstractions.ControllerBase
         UsersResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.PostAsync(UsersApiUrl, JsonContent.Create(model));
+            HttpResponseMessage responseMessage = await httpClient.PostAsJsonAsync(UsersApiUrl, model);
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();

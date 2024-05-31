@@ -1,5 +1,6 @@
 using FoodManager.WebUI.Extensions;
 using FoodManager.WebUI.Options;
+using Microsoft.AspNetCore.WebUtilities;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -14,6 +15,7 @@ try
     builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection(AuthenticationOptions.Authentication));
     builder.Services.AddSerilog();
     builder.Services.AddControllersWithViews();
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddCookieAuthentication(options =>
     {
         options.LoadFromConfiguration(builder.Configuration);

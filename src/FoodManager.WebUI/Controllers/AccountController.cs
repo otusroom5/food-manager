@@ -76,7 +76,7 @@ public class AccountController : Abstractions.ControllerBase
 
     private async Task<AuthenticationResponse> GetAuthTokenAsync(string login, string password)
     {
-        HttpClient client = CreateUserAuthServiceClient(false);
+        HttpClient client = CreateUserAuthServiceClient();
 
         Uri requestUri = new UriBuilder(client.BaseAddress)
         {
