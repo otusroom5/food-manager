@@ -3,6 +3,7 @@ using FoodStorage.Application.Repositories;
 using FoodStorage.Domain.Entities.Common.DomainEvents;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductHistoryEntity;
+using Microsoft.Extensions.Logging;
 
 namespace FoodStorage.Application.Implementations.DomainEventHandlers;
 
@@ -18,7 +19,8 @@ public class WriteOffProductItemDomainEventHandler : BaseDomainEventHandler<Writ
     public WriteOffProductItemDomainEventHandler(
         IProductItemRepository productItemRepository,
         IProductHistoryRepository productHistoryRepository,
-        IProductRepository productRepository)
+        IProductRepository productRepository,
+        ILogger<WriteOffProductItemDomainEventHandler> logger) : base(logger)
     {
         _productItemRepository = productItemRepository;
         _productHistoryRepository = productHistoryRepository;

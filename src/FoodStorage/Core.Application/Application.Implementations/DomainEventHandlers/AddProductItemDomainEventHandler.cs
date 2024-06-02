@@ -1,6 +1,7 @@
 ﻿using FoodStorage.Application.Repositories;
 using FoodStorage.Domain.Entities.Common.DomainEvents;
 using FoodStorage.Domain.Entities.ProductHistoryEntity;
+using Microsoft.Extensions.Logging;
 
 namespace FoodStorage.Application.Implementations.DomainEventHandlers;
 
@@ -8,7 +9,8 @@ public class AddProductItemDomainEventHandler : BaseDomainEventHandler<AddedProd
 {
     private readonly IProductHistoryRepository _productHistoryRepository;
 
-    public AddProductItemDomainEventHandler(IProductHistoryRepository productHistoryRepository)
+    public AddProductItemDomainEventHandler(IProductHistoryRepository productHistoryRepository, ILogger<AddProductItemDomainEventHandler> logger) 
+        : base(logger)
     {
         _productHistoryRepository = productHistoryRepository;
     }

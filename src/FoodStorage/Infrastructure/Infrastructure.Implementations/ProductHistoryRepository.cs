@@ -19,7 +19,7 @@ internal class ProductHistoryRepository : IProductHistoryRepository
         _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
-    public void Create(ProductHistory productHistory)
+    public async Task CreateAsync(ProductHistory productHistory)
     {
         if (productHistory is null)
         {
@@ -27,26 +27,28 @@ internal class ProductHistoryRepository : IProductHistoryRepository
         }
 
         ProductHistoryDto productHistoryDto = productHistory.ToDto();
-        _databaseContext.ProductHistoryItems.Add(productHistoryDto);
+        await _databaseContext.ProductHistoryItems.AddAsync(productHistoryDto);
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 
-    public ProductHistory FindById(ProductHistoryId productHistoryId)
+    public async Task<ProductHistory> FindByIdAsync(ProductHistoryId productHistoryId)
     {
-        ProductHistoryDto productHistoryDto = _databaseContext.ProductHistoryItems.FirstOrDefault(ph => ph.Id == productHistoryId.ToGuid());
+        ProductHistoryDto productHistoryDto = await _databaseContext.ProductHistoryItems.FindAsync(productHistoryId.ToGuid());
         return productHistoryDto is null ? null : productHistoryDto.ToEntity();
     }
 
-    public IEnumerable<ProductHistory> GetByProductId(ProductId productId)
+    public async Task<IEnumerable<ProductHistory>> GetByProductIdAsync(ProductId productId)
     {
-        IEnumerable<ProductHistoryDto> productHistoryDtos = _databaseContext.ProductHistoryItems.Where(ph => ph.ProductId == productId.ToGuid());
+        IEnumerable<ProductHistoryDto> productHistoryDtos = 
+            await _databaseContext.ProductHistoryItems.Where(ph => ph.ProductId == productId.ToGuid()).ToListAsync();
+        
         return productHistoryDtos.Select(ph => ph.ToEntity()).ToList();
     }
 
-    public IEnumerable<ProductHistory> GetAll() =>_databaseContext.ProductHistoryItems.Select(ph => ph.ToEntity()).ToList();
+    public async Task<IEnumerable<ProductHistory>> GetAllAsync() => await _databaseContext.ProductHistoryItems.Select(ph => ph.ToEntity()).ToListAsync();
 
-    public void Delete(ProductHistory productHistory)
+    public async Task DeleteAsync(ProductHistory productHistory)
     {
         if (productHistory is null)
         {
@@ -56,6 +58,6 @@ internal class ProductHistoryRepository : IProductHistoryRepository
         ProductHistoryDto productHistoryDto = productHistory.ToDto();
         _databaseContext.ProductHistoryItems.Remove(productHistoryDto);
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 }

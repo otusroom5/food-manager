@@ -5,9 +5,9 @@ namespace FoodStorage.Application.Repositories;
 
 public interface IProductHistoryRepository
 {
-    public void Create(ProductHistory productHistory);
-    public ProductHistory FindById(ProductHistoryId productHistoryId);
-    public IEnumerable<ProductHistory> GetByProductId(ProductId productId);
-    public IEnumerable<ProductHistory> GetAll();
-    public void Delete(ProductHistory productHistory);
+    public Task CreateAsync(ProductHistory productHistory);
+    public Task<ProductHistory> FindByIdAsync(ProductHistoryId productHistoryId);
+    public Task<IEnumerable<ProductHistory>> GetByProductIdAsync(ProductId productId);
+    public Task<IEnumerable<ProductHistory>> GetAllAsync();
+    public Task DeleteAsync(ProductHistory productHistory);
 }

@@ -18,7 +18,7 @@ internal class ProductRepository : IProductRepository
         _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
-    public void Create(Product product)
+    public async Task CreateAsync(Product product)
     {
         if (product is null)
         {
@@ -28,24 +28,24 @@ internal class ProductRepository : IProductRepository
         ProductDto productDto = product.ToDto();
         _databaseContext.Products.Add(productDto);
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 
-    public Product FindById(ProductId productId)
+    public async Task<Product> FindByIdAsync(ProductId productId)
     {
-        ProductDto productDto = _databaseContext.Products.FirstOrDefault(p => p.Id == productId.ToGuid());
+        ProductDto productDto = await _databaseContext.Products.FindAsync(productId.ToGuid());
         return productDto is null ? null : productDto.ToEntity();
     }
 
-    public Product FindByName(ProductName productName)
+    public async Task<Product> FindByNameAsync(ProductName productName)
     {
-        ProductDto productDto = _databaseContext.Products.FirstOrDefault(p => p.Name.ToLower() == productName.ToString().ToLower());
+        ProductDto productDto = await _databaseContext.Products.FirstOrDefaultAsync(p => p.Name.ToLower() == productName.ToString().ToLower());
         return productDto is null ? null : productDto.ToEntity();
     }
 
-    public IEnumerable<Product> GetAll() => _databaseContext.Products.Select(p => p.ToEntity()).ToList();
+    public async Task<IEnumerable<Product>> GetAllAsync() => await _databaseContext.Products.Select(p => p.ToEntity()).ToListAsync();
 
-    public void Delete(Product product)
+    public async Task DeleteAsync(Product product)
     {
         if (product is null)
         {
@@ -55,6 +55,6 @@ internal class ProductRepository : IProductRepository
         ProductDto productDto = product.ToDto();
         _databaseContext.Products.Remove(productDto);
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 }

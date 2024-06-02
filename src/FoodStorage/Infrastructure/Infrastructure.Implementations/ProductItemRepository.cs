@@ -35,27 +35,32 @@ internal class ProductItemRepository : IProductItemRepository
         await SaveChangesAsync(productItem);
     }
 
-    public ProductItem FindById(ProductItemId productItemId)
+    public async Task<ProductItem> FindByIdAsync(ProductItemId productItemId)
     {
-        ProductItemDto productItemDto = _databaseContext.ProductItems.Include(pi => pi.Product).FirstOrDefault(pi => pi.Id == productItemId.ToGuid());
+        ProductItemDto productItemDto = await _databaseContext.ProductItems.Include(pi => pi.Product).FirstOrDefaultAsync(pi => pi.Id == productItemId.ToGuid());
         return productItemDto is null ? null : productItemDto.ToEntity();
     }
 
-    public IEnumerable<ProductItem> GetByProductId(ProductId productId)
+    public async Task<IEnumerable<ProductItem>> GetByProductIdAsync(ProductId productId)
     {
-        IEnumerable<ProductItemDto> productItemDtos = _databaseContext.ProductItems.Include(pi => pi.Product).Where(pi => pi.ProductId == productId.ToGuid());
+        IEnumerable<ProductItemDto> productItemDtos = await _databaseContext.ProductItems.Include(pi => pi.Product)
+                                                                                         .Where(pi => pi.ProductId == productId.ToGuid())
+                                                                                         .ToListAsync();
+
         return productItemDtos.Select(pi => pi.ToEntity()).ToList();
     }
 
-    public IEnumerable<ProductItem> GetByIds(IEnumerable<ProductItemId> productItemIds)
+    public async Task<IEnumerable<ProductItem>> GetByIdsAsync(IEnumerable<ProductItemId> productItemIds)
     {
         var guidIds = productItemIds.Select(pi => pi.ToGuid());
 
-        IEnumerable<ProductItemDto> productItemDtos = _databaseContext.ProductItems.Include(pi => pi.Product).Where(pi => guidIds.Contains(pi.Id));
+        IEnumerable<ProductItemDto> productItemDtos = await _databaseContext.ProductItems.Include(pi => pi.Product)
+                                                                                         .Where(pi => guidIds.Contains(pi.Id))
+                                                                                         .ToListAsync();
         return productItemDtos.Select(pi => pi.ToEntity()).ToList();
     }
 
-    public IEnumerable<ProductItem> GetAll() => _databaseContext.ProductItems.Include(pi => pi.Product).Select(pi => pi.ToEntity()).ToList();
+    public async Task<IEnumerable<ProductItem>> GetAllAsync() => await _databaseContext.ProductItems.Include(pi => pi.Product).Select(pi => pi.ToEntity()).ToListAsync();
 
     public async Task ChangeAsync(ProductItem productItem)
     {
@@ -69,7 +74,6 @@ internal class ProductItemRepository : IProductItemRepository
 
         await SaveChangesAsync(productItem);
     }
-
 
     public async Task DeleteAsync(ProductItem productItem)
     {
@@ -90,6 +94,6 @@ internal class ProductItemRepository : IProductItemRepository
         IEnumerable<Task> publishTasks = productItem.DomainEvents.Select(e => _mediator.Publish(e));
         await Task.WhenAll(publishTasks); 
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 }

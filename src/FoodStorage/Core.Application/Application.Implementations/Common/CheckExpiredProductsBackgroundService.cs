@@ -1,8 +1,8 @@
 ﻿using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities;
-using FoodStorage.Domain.Entities.ProductEntity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace FoodStorage.Application.Implementations.Common;
 
@@ -10,17 +10,22 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
 {
     private readonly IServiceProvider _services;
     private readonly CheckExpiredProductsConfiguration _configuration;
+    private readonly ILogger<CheckExpiredProductsBackgroundService> _logger;
+
     private Timer _timer = null;
 
-    public CheckExpiredProductsBackgroundService(IServiceProvider services, CheckExpiredProductsConfiguration configuration)
+    public CheckExpiredProductsBackgroundService(IServiceProvider services,
+        CheckExpiredProductsConfiguration configuration,
+        ILogger<CheckExpiredProductsBackgroundService> logger)
     {
         _services = services;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        //_logger.LogInformation("Сервис запущен");
+        _logger.LogInformation("'{0}' is handling.", GetType().Name);
 
         // Если не указано целевое время, то устанавливаем по умолчанию 8 утра
         if (!TimeSpan.TryParse(_configuration.CheckExpiredProductsTimeOfDay, out TimeSpan timeSpanTarget))
@@ -43,7 +48,7 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        //_logger.LogInformation("Сервис остановлен");
+        _logger.LogInformation("'{0}' is stopped.", GetType().Name);
 
         _timer?.Change(Timeout.Infinite, 0);
 
@@ -58,11 +63,16 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
         IProductItemService productItemService = scope.ServiceProvider.GetRequiredService<IProductItemService>();
 
         // Получаем все просроченные продукты и списываем их
+        _logger.LogInformation("Writing off expired products");
+
         var expiredProductItems = productItemService.GetExpireProductItems();
         productItemService.WriteOff(expiredProductItems.Select(epi => epi.Id), userId);
 
         // Получаем все продукты, у которых срок годности заканачивается через определенное время (указанные n дней)
-        var expireProductItems = productItemService.GetExpireProductItems(_configuration.TimeBeforeExpireInDaysForReport);
+        int countDays = _configuration.TimeBeforeExpireInDaysForReport;
+        _logger.LogInformation("Getting products that expire after {0} days", countDays);
+
+        var expireProductItems = productItemService.GetExpireProductItems(countDays);
         var products = expireProductItems.Select(epi => epi.ProductId).Distinct().ToList();
 
         throw new NotImplementedException("Will be rabbit message"); //TODO
