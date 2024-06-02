@@ -22,12 +22,12 @@ public class RecipeService : IRecipeService
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
-    public RecipeId Create(Recipe recipe)
+    public async Task<RecipeId> CreateAsync(Recipe recipe)
     {
         try
         {
             // проверка на существование рецепта с таким же именем
-            var recipeWithSameName = _recipeRepository.FindByName(recipe.Name);
+            var recipeWithSameName = await _recipeRepository.FindByNameAsync(recipe.Name);
             if (recipeWithSameName is not null)
             {
                 throw new ApplicationLayerException($"{nameof(Recipe)} with same name '{recipe.Name}' is already exists");
@@ -36,14 +36,14 @@ public class RecipeService : IRecipeService
             // проверка существования продуктов, кот. будут в рецепте
             foreach (var recipeItem in recipe.Positions)
             {
-                Product product = _productRepository.FindById(recipeItem.ProductId);
+                Product product = await _productRepository.FindByIdAsync(recipeItem.ProductId);
                 if (product is null)
                 {
                     throw new EntityNotFoundException(nameof(Product), recipeItem.ProductId.ToString());
                 }
             }
 
-            _recipeRepository.Create(recipe);
+            await _recipeRepository.CreateAsync(recipe);
 
             return recipe.Id;
         }
@@ -54,11 +54,11 @@ public class RecipeService : IRecipeService
         }
     }
 
-    public Recipe GetById(RecipeId recipeId)
+    public async Task<Recipe> GetByIdAsync(RecipeId recipeId)
     {
         try
         {
-            Recipe recipe = _recipeRepository.FindById(recipeId);
+            Recipe recipe = await _recipeRepository.FindByIdAsync(recipeId);
 
             if (recipe is null)
             {
@@ -74,11 +74,11 @@ public class RecipeService : IRecipeService
         }
     }
 
-    public Recipe GetByName(RecipeName recipeName)
+    public async Task<Recipe> GetByNameAsync(RecipeName recipeName)
     {
         try
         {
-            Recipe recipe = _recipeRepository.FindByName(recipeName);
+            Recipe recipe = await _recipeRepository.FindByNameAsync(recipeName);
 
             if (recipe is null)
             {
@@ -94,23 +94,23 @@ public class RecipeService : IRecipeService
         }
     }
 
-    public IEnumerable<Recipe> GetByProductId(ProductId productId) => _recipeRepository.GetByProductId(productId);
+    public async Task<IEnumerable<Recipe>> GetByProductIdAsync(ProductId productId) => await _recipeRepository.GetByProductIdAsync(productId);
 
-    public IEnumerable<Recipe> GetAll() => _recipeRepository.GetAll();
+    public async Task<IEnumerable<Recipe>> GetAllAsync() => await _recipeRepository.GetAllAsync();
 
-    public void Update(Recipe recipe)
+    public async Task UpdateAsync(Recipe recipe)
     {
         try
         {
             // проверка на существование этого рецепта в базе
-            var recipeFromBase = _recipeRepository.FindById(recipe.Id);
+            var recipeFromBase = await _recipeRepository.FindByIdAsync(recipe.Id);
 
             if (recipeFromBase is null)
             {
                 throw new EntityNotFoundException(nameof(Recipe), recipe.Id.ToString());
             }
 
-            _recipeRepository.Change(recipe);
+            await _recipeRepository.ChangeAsync(recipe);
         }
         catch (Exception exception)
         {
@@ -119,19 +119,19 @@ public class RecipeService : IRecipeService
         }
     }
 
-    public void Delete(RecipeId recipeId)
+    public async Task DeleteAsync(RecipeId recipeId)
     {
         try
         {
             // проверка на существование этого рецепта в базе
-            var recipe = _recipeRepository.FindById(recipeId);
+            var recipe = await _recipeRepository.FindByIdAsync(recipeId);
 
             if (recipe is null)
             {
                 throw new EntityNotFoundException(nameof(Recipe), recipeId.ToString());
             }
 
-            _recipeRepository.Delete(recipe);
+            await _recipeRepository.DeleteAsync(recipe);
         }
         catch (Exception exception)
         {

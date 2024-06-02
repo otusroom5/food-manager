@@ -19,18 +19,18 @@ public class ProductService : IProductService
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
-    public ProductId Create(Product product)
+    public async Task<ProductId> CreateAsync(Product product)
     {
         try
         {
             // проверка на существование продукта с таким же наименованием
-            Product productWithSameName = _productRepository.FindByName(product.Name);
+            Product productWithSameName = await _productRepository.FindByNameAsync(product.Name);
             if (productWithSameName is not null)
             {
                 throw new ApplicationLayerException($"{nameof(Product)} with same name '{product.Name}' is already exists");
             }
 
-            _productRepository.Create(product);
+            await _productRepository.CreateAsync(product);
 
             return product.Id;
         }
@@ -41,11 +41,11 @@ public class ProductService : IProductService
         }
     }
 
-    public Product GetById(ProductId productId)
+    public async Task<Product> GetByIdAsync(ProductId productId)
     {
         try
         {
-            Product result = _productRepository.FindById(productId);
+            Product result = await _productRepository.FindByIdAsync(productId);
 
             if (result is null)
             {
@@ -61,11 +61,11 @@ public class ProductService : IProductService
         }
     }
 
-    public Product GetByName(ProductName productName)
+    public async Task<Product> GetByNameAsync(ProductName productName)
     {
         try
         {
-            Product result = _productRepository.FindByName(productName);
+            Product result = await _productRepository.FindByNameAsync(productName);
 
             if (result is null)
             {
@@ -81,20 +81,20 @@ public class ProductService : IProductService
         }
     }
 
-    public IEnumerable<Product> GetAll() => _productRepository.GetAll();
+    public async Task<IEnumerable<Product>> GetAllAsync() => await _productRepository.GetAllAsync();
 
-    public void Delete(ProductId productId)
+    public async Task DeleteAsync(ProductId productId)
     {
         try
         {
-            Product product = _productRepository.FindById(productId);
+            Product product = await _productRepository.FindByIdAsync(productId);
 
             if (product is null)
             {
                 throw new EntityNotFoundException(nameof(Product), productId.ToString());
             }
 
-            _productRepository.Delete(product);
+            await _productRepository.DeleteAsync(product);
         }
         catch (Exception exception)
         {

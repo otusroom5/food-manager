@@ -28,10 +28,10 @@ public class ProductItemController : BaseController
     /// <param name="productItem">Модель единицы продукта</param>
     /// <returns>Идентиикатор созданной единицы продукта</returns>
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(CreateProductItemModel productItem)
+    public async Task<ActionResult<Guid>> CreateAsync(CreateProductItemModel productItem)
     {
         ProductItem productItemToCreate = productItem.ToEntity(UserId);
-        ProductItemId id = _productItemService.Create(productItemToCreate);
+        ProductItemId id = await _productItemService.CreateAsync(productItemToCreate);
 
         return Ok(id.ToGuid());
     }
@@ -42,9 +42,9 @@ public class ProductItemController : BaseController
     /// <param name="productItemId">Идентификатор единицы продукта</param>
     /// <returns>Единица продукта</returns>
     [HttpGet("GetById/{productItemId}")]
-    public ActionResult<ProductItemModel> GetById(Guid productItemId)
+    public async Task<ActionResult<ProductItemModel>> GetByIdAsync(Guid productItemId)
     {
-        ProductItem productItem = _productItemService.GetById(ProductItemId.FromGuid(productItemId));
+        ProductItem productItem = await _productItemService.GetByIdAsync(ProductItemId.FromGuid(productItemId));
         ProductItemModel result = productItem.ToModel();
 
         return Ok(result);
@@ -56,9 +56,9 @@ public class ProductItemController : BaseController
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Список единиц продукта</returns>
     [HttpGet("GetByProductId/{productId}")]
-    public ActionResult<List<ProductItemModel>> GetByProductId(Guid productId)
+    public async Task<ActionResult<List<ProductItemModel>>> GetByProductIdAsync(Guid productId)
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetByProductId(ProductId.FromGuid(productId));
+        IEnumerable<ProductItem> productItems = await _productItemService.GetByProductIdAsync(ProductId.FromGuid(productId));
         List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
 
         return Ok(result);
@@ -69,9 +69,9 @@ public class ProductItemController : BaseController
     /// </summary>
     /// <returns>Список единиц продукта</returns>
     [HttpGet("GetAll")]
-    public ActionResult<List<ProductItemModel>> GetAll()
+    public async Task<ActionResult<List<ProductItemModel>>> GetAllAsync()
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetAll();
+        IEnumerable<ProductItem> productItems = await _productItemService.GetAllAsync();
         List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
 
         return Ok(result);
@@ -82,9 +82,9 @@ public class ProductItemController : BaseController
     /// </summary>
     /// <returns>Список единиц продукта</returns>
     [HttpGet("GetExpiredProductItems")]
-    public ActionResult<List<ProductItemModel>> GetExpiredProductItems()
+    public async Task<ActionResult<List<ProductItemModel>>> GetExpiredProductItemsAsync()
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetExpireProductItems();
+        IEnumerable<ProductItem> productItems = await _productItemService.GetExpireProductItemsAsync();
         List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
 
         return Ok(result);
@@ -97,9 +97,9 @@ public class ProductItemController : BaseController
     /// <param name="count">Количество продукта</param>
     /// <returns>ок</returns>
     [HttpPost("TakePartOf/{productId}/{count}")]
-    public ActionResult TakePartOf(Guid productId, int count)
+    public async Task<ActionResult> TakePartOfAsync(Guid productId, int count)
     {
-        _productItemService.TakePartOf(ProductId.FromGuid(productId), count, UserId);
+        await _productItemService.TakePartOfAsync(ProductId.FromGuid(productId), count, UserId);
 
         return Ok();
     }
@@ -110,10 +110,10 @@ public class ProductItemController : BaseController
     /// <param name="productItemIds">Идентификаторы единиц продукта</param>
     /// <returns>ок</returns>
     [HttpPost("WriteOff")]
-    public ActionResult WriteOff(List<Guid> productItemIds)
+    public async Task<ActionResult> WriteOffAsync(List<Guid> productItemIds)
     {
         IEnumerable<ProductItemId> ids = productItemIds.Select(ProductItemId.FromGuid);
-        _productItemService.WriteOff(ids, UserId);
+        await _productItemService.WriteOffAsync(ids, UserId);
 
         return Ok();
     }
@@ -124,9 +124,9 @@ public class ProductItemController : BaseController
     /// <param name="productItemId">Идентификатор единицы продукта</param>
     /// <returns>ок</returns>
     [HttpDelete("Delete/{productItemId}")]
-    public ActionResult Delete(Guid productItemId)
+    public async Task<ActionResult> DeleteAsync(Guid productItemId)
     {
-        _productItemService.Delete(ProductItemId.FromGuid(productItemId));
+        await _productItemService.DeleteAsync(ProductItemId.FromGuid(productItemId));
 
         return Ok();
     }

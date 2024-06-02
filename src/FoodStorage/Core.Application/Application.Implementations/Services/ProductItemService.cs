@@ -26,19 +26,19 @@ public class ProductItemService : IProductItemService
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
-    public ProductItemId Create(ProductItem productItem)
+    public async Task<ProductItemId> CreateAsync(ProductItem productItem)
     {
         try
         {
             // проверка существования продукта, единицу которого хотим положить в холодильник
-            Product product = _productRepository.FindById(productItem.ProductId);
+            Product product = await _productRepository.FindByIdAsync(productItem.ProductId);
 
             if (product is null)
             {
                 throw new EntityNotFoundException(nameof(Product), productItem.ProductId.ToString());
             }
 
-            _productItemRepository.CreateAsync(productItem);
+            await _productItemRepository.CreateAsync(productItem);
 
             return productItem.Id;
         }
@@ -49,11 +49,11 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public ProductItem GetById(ProductItemId productItemId)
+    public async Task<ProductItem> GetByIdAsync(ProductItemId productItemId)
     {
         try
         {
-            ProductItem result = _productItemRepository.FindById(productItemId);
+            ProductItem result = await _productItemRepository.FindByIdAsync(productItemId);
 
             if (result is null)
             {
@@ -69,22 +69,22 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public IEnumerable<ProductItem> GetByProductId(ProductId productId) => _productItemRepository.GetByProductId(productId);
+    public async Task<IEnumerable<ProductItem>> GetByProductIdAsync(ProductId productId) => await _productItemRepository.GetByProductIdAsync(productId);
 
-    public IEnumerable<ProductItem> GetAll() => _productItemRepository.GetAll();
+    public async Task<IEnumerable<ProductItem>> GetAllAsync() => await _productItemRepository.GetAllAsync();
 
-    public IEnumerable<ProductItem> GetExpireProductItems(int daysBeforeExpired = 0)
+    public async Task<IEnumerable<ProductItem>> GetExpireProductItemsAsync(int daysBeforeExpired = 0)
     {
-        var result = _productItemRepository.GetAll();
+        var result = await _productItemRepository.GetAllAsync();
 
-        return result.Where(r => r.ExpiryDate.AddDays(-daysBeforeExpired).Date <= DateTime.UtcNow.Date);
+        return  result.Where(r => r.ExpiryDate.AddDays(-daysBeforeExpired).Date <= DateTime.UtcNow.Date);
     }
 
-    public void TakePartOf(ProductId productId, int count, UserId userId)
+    public async Task TakePartOfAsync(ProductId productId, int count, UserId userId)
     {
         try
         {
-            Product product = _productRepository.FindById(productId);
+            Product product = await _productRepository.FindByIdAsync(productId);
 
             if (product is null)
             {
@@ -92,8 +92,8 @@ public class ProductItemService : IProductItemService
             }
 
             // получаем все единицы продукта из холодильника, не просроченные
-            var productItems = _productItemRepository.GetByProductId(productId)
-                                                     .Where(pi => pi.ExpiryDate.Date > DateTime.UtcNow.Date);
+            var productItems = await _productItemRepository.GetByProductIdAsync(productId);
+            productItems = productItems.Where(pi => pi.ExpiryDate.Date > DateTime.UtcNow.Date);
 
             // общее кол-во продукта в холодильнике
             int commonCount = productItems.Sum(pi => pi.Amount);
@@ -117,13 +117,13 @@ public class ProductItemService : IProductItemService
                 if (productItem.Amount > count)
                 {
                     productItem.ReduceAmount(count, userId);
-                    _productItemRepository.ChangeAsync(productItem);
+                    await _productItemRepository.ChangeAsync(productItem);
                     break;
                 }
                 else
                 {
                     productItem.ReduceAmount(productItem.Amount, userId);
-                    _productItemRepository.DeleteAsync(productItem);
+                    await _productItemRepository.DeleteAsync(productItem);
                     count -= productItem.Amount;
                 }
             }
@@ -135,12 +135,12 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public void WriteOff(IEnumerable<ProductItemId> productItemIds, UserId userId)
+    public async Task WriteOffAsync(IEnumerable<ProductItemId> productItemIds, UserId userId)
     {
         try
         {
             // получаем все указанные единицы продукта из холодильника
-            var productItems = _productItemRepository.GetByIds(productItemIds);
+            var productItems = await _productItemRepository.GetByIdsAsync(productItemIds);
 
             foreach (var productItem in productItems)
             {
@@ -155,18 +155,18 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public void Delete(ProductItemId productItemId)
+    public async Task DeleteAsync(ProductItemId productItemId)
     {
         try
         {
-            ProductItem productItem = _productItemRepository.FindById(productItemId);
+            ProductItem productItem = await _productItemRepository.FindByIdAsync(productItemId);
 
             if (productItem is null)
             {
                 throw new EntityNotFoundException(nameof(ProductItem), productItemId.ToString());
             }
 
-            _productItemRepository.DeleteAsync(productItem);
+            await _productItemRepository.DeleteAsync(productItem);
         }
         catch (Exception exception)
         {

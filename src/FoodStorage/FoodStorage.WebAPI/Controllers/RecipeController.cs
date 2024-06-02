@@ -28,10 +28,10 @@ public class RecipeController : BaseController
     /// <param name="recipet">Модель рецепта</param>
     /// <returns>Идентификатор созданного рецепта</returns>
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(CreateRecipeModel recipe)
+    public async Task<ActionResult<Guid>> CreateAsync(CreateRecipeModel recipe)
     {
         Recipe recipeToCreate = recipe.ToEntity();
-        RecipeId id = _recipeService.Create(recipeToCreate);
+        RecipeId id = await _recipeService.CreateAsync(recipeToCreate);
 
         return Ok(id.ToGuid());
     }
@@ -42,9 +42,9 @@ public class RecipeController : BaseController
     /// <param name="recipeId">Идентификатор рецепта</param>
     /// <returns>Рецепт</returns>
     [HttpGet("GetById/{recipeId}")]
-    public ActionResult<RecipeModel> GetById(Guid recipeId)
+    public async Task<ActionResult<RecipeModel>> GetByIdAsync(Guid recipeId)
     {
-        Recipe recipe = _recipeService.GetById(RecipeId.FromGuid(recipeId));
+        Recipe recipe = await _recipeService.GetByIdAsync(RecipeId.FromGuid(recipeId));
         RecipeModel result = recipe.ToModel();
 
         return Ok(result);
@@ -56,9 +56,9 @@ public class RecipeController : BaseController
     /// <param name="recipeName">Наименование рецепта</param>
     /// <returns>Рецепт</returns>
     [HttpGet("GetByName/{recipeName}")]
-    public ActionResult<RecipeModel> GetByName(string recipeName)
+    public async Task<ActionResult<RecipeModel>> GetByNameAsync(string recipeName)
     {
-        Recipe recipe = _recipeService.GetByName(RecipeName.FromString(recipeName));
+        Recipe recipe = await _recipeService.GetByNameAsync(RecipeName.FromString(recipeName));
         RecipeModel result = recipe.ToModel();
 
         return Ok(result);
@@ -69,10 +69,10 @@ public class RecipeController : BaseController
     /// </summary>
     /// <returns>Список всех рецептов</returns>
     [HttpGet("GetAll")]
-    public ActionResult<List<RecipeModel>> GetAll()
+    public async Task<ActionResult<List<RecipeModel>>> GetAllAsync()
     {
-        IEnumerable<Recipe> Recipes = _recipeService.GetAll();
-        List<RecipeModel> result = Recipes.Select(r => r.ToModel()).ToList();
+        IEnumerable<Recipe> recipes = await _recipeService.GetAllAsync();
+        List<RecipeModel> result = recipes.Select(r => r.ToModel()).ToList();
 
         return Ok(result);
     }
@@ -83,10 +83,10 @@ public class RecipeController : BaseController
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Список рецептов</returns>
     [HttpGet("GetByProductId/{productId}")]
-    public ActionResult<List<RecipeModel>> GetByProductId(Guid productId)
+    public async Task<ActionResult<List<RecipeModel>>> GetByProductIdAsync(Guid productId)
     {
-        IEnumerable<Recipe> Recipes = _recipeService.GetByProductId(ProductId.FromGuid(productId));
-        List<RecipeModel> result = Recipes.Select(r => r.ToModel()).ToList();
+        IEnumerable<Recipe> recipes = await _recipeService.GetByProductIdAsync(ProductId.FromGuid(productId));
+        List<RecipeModel> result = recipes.Select(r => r.ToModel()).ToList();
 
         return Ok(result);
     }
@@ -97,10 +97,10 @@ public class RecipeController : BaseController
     /// <param name="recipe">Модель рецепта</param>
     /// <returns>ок</returns>
     [HttpPut("Update")]
-    public ActionResult Update(RecipeModel recipe)
+    public async Task<ActionResult> UpdateAsync(RecipeModel recipe)
     {
         Recipe recipeToUpdate = recipe.ToEntity();
-        _recipeService.Update(recipeToUpdate);
+        await _recipeService.UpdateAsync(recipeToUpdate);
 
         return Ok();
     }
@@ -111,9 +111,9 @@ public class RecipeController : BaseController
     /// <param name="recipeId">Идентификатор рецепта</param>
     /// <returns>ок</returns>
     [HttpDelete("Delete/{recipeId}")]
-    public ActionResult Delete(Guid recipeId)
+    public async Task<ActionResult> DeleteAsync(Guid recipeId)
     {
-        _recipeService.Delete(RecipeId.FromGuid(recipeId));
+        await _recipeService.DeleteAsync(RecipeId.FromGuid(recipeId));
 
         return Ok();
     }

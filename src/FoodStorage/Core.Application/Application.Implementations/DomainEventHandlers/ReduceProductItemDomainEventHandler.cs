@@ -40,16 +40,16 @@ public class ReduceProductItemDomainEventHandler : BaseDomainEventHandler<Reduce
             createdBy: domainEvent.OccuredBy,
             createdAt: domainEvent.OccuredOn);
 
-        _productHistoryRepository.Create(productHistoryItem);
+        await _productHistoryRepository.CreateAsync(productHistoryItem);
 
         // Проверка на остаток продукта в холодильнике. Если продукта осталось меньше, чем мин остаток на день, то отправка сообщения в брокер
-        Product product = _productRepository.FindById(productId);
+        Product product = await _productRepository.FindByIdAsync(productId);
         if (product is null)
         {
             throw new EntityNotFoundException(nameof(Product), productId.ToString());
         }
 
-        var productItems = _productItemRepository.GetByProductId(productId);
+        var productItems = await _productItemRepository.GetByProductIdAsync(productId);
         int countProductInBase = productItems.Sum(pi => pi.Amount);
         if (countProductInBase <= product.MinAmountPerDay)
         {

@@ -27,10 +27,10 @@ public class ProductController : BaseController
     /// <param name="product">Модель продукта</param>
     /// <returns>Идентификатор созданного продукта</returns>
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(CreateProductModel product)
+    public async Task<ActionResult<Guid>> CreateAsync(CreateProductModel product)
     {
         Product productToCreate = product.ToEntity();
-        ProductId id = _productService.Create(productToCreate);
+        ProductId id = await _productService.CreateAsync(productToCreate);
 
         return Ok(id.ToGuid());
     }
@@ -41,9 +41,9 @@ public class ProductController : BaseController
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Продукт</returns>
     [HttpGet("GetById/{productId}")]
-    public ActionResult<ProductModel> GetById(Guid productId)
+    public async Task<ActionResult<ProductModel>> GetByIdAsync(Guid productId)
     {
-        Product product = _productService.GetById(ProductId.FromGuid(productId));
+        Product product = await _productService.GetByIdAsync(ProductId.FromGuid(productId));
         ProductModel result = product.ToModel();
 
         return Ok(result);
@@ -55,9 +55,9 @@ public class ProductController : BaseController
     /// <param name="productName">Наенование продукта</param>
     /// <returns>Продукт</returns>
     [HttpGet("GetByName/{productName}")]
-    public ActionResult<ProductModel> GetByName(string productName)
+    public async Task<ActionResult<ProductModel>> GetByNameAsync(string productName)
     {
-        Product product = _productService.GetByName(ProductName.FromString(productName));
+        Product product = await _productService.GetByNameAsync(ProductName.FromString(productName));
         ProductModel result = product.ToModel();
 
         return Ok(result);
@@ -68,9 +68,9 @@ public class ProductController : BaseController
     /// </summary>
     /// <returns>Список продуктов</returns>
     [HttpGet("GetAll")]
-    public ActionResult<List<ProductModel>> GetAll()
+    public async Task<ActionResult<List<ProductModel>>> GetAllAsync()
     {
-        IEnumerable<Product> products = _productService.GetAll();
+        IEnumerable<Product> products = await _productService.GetAllAsync();
         List<ProductModel> result = products.Select(p => p.ToModel()).ToList();
 
         return Ok(result);
@@ -82,9 +82,9 @@ public class ProductController : BaseController
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>ок</returns>
     [HttpDelete("Delete/{productId}")]
-    public ActionResult Delete(Guid productId)
+    public async Task<ActionResult> DeleteAsync(Guid productId)
     {
-        _productService.Delete(ProductId.FromGuid(productId));
+        await _productService.DeleteAsync(ProductId.FromGuid(productId));
 
         return Ok();
     }

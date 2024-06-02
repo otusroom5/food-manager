@@ -5,11 +5,11 @@ namespace FoodStorage.Application.Services;
 
 public interface IRecipeService
 {
-    public RecipeId Create(Recipe recipe);
-    public Recipe GetById(RecipeId recipeId);
-    public Recipe GetByName(RecipeName recipeName);
-    public IEnumerable<Recipe> GetByProductId(ProductId productId);
-    public IEnumerable<Recipe> GetAll();
-    public void Update(Recipe recipe);
-    public void Delete(RecipeId recipeId);
+    public Task<RecipeId> CreateAsync(Recipe recipe);
+    public Task<Recipe> GetByIdAsync(RecipeId recipeId);
+    public Task<Recipe> GetByNameAsync(RecipeName recipeName);
+    public Task<IEnumerable<Recipe>> GetByProductIdAsync(ProductId productId);
+    public Task<IEnumerable<Recipe>> GetAllAsync();
+    public Task UpdateAsync(Recipe recipe);
+    public Task DeleteAsync(RecipeId recipeId);
 }

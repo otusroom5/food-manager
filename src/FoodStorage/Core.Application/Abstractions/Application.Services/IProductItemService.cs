@@ -6,12 +6,12 @@ namespace FoodStorage.Application.Services;
 
 public interface IProductItemService
 {
-    public ProductItemId Create(ProductItem productItem);
-    public ProductItem GetById(ProductItemId productItemId);
-    public IEnumerable<ProductItem> GetByProductId(ProductId productId);
-    public IEnumerable<ProductItem> GetAll();
-    public IEnumerable<ProductItem> GetExpireProductItems(int daysBeforeExpired = 0);
-    public void TakePartOf(ProductId productId, int count, UserId userId);
-    public void WriteOff(IEnumerable<ProductItemId> productItemIds, UserId userId);
-    public void Delete(ProductItemId productItemId);
+    public Task<ProductItemId> CreateAsync(ProductItem productItem);
+    public Task<ProductItem> GetByIdAsync(ProductItemId productItemId);
+    public Task<IEnumerable<ProductItem>> GetByProductIdAsync(ProductId productId);
+    public Task<IEnumerable<ProductItem>> GetAllAsync();
+    public Task<IEnumerable<ProductItem>> GetExpireProductItemsAsync(int daysBeforeExpired = 0);
+    public Task TakePartOfAsync(ProductId productId, int count, UserId userId);
+    public Task WriteOffAsync(IEnumerable<ProductItemId> productItemIds, UserId userId);
+    public Task DeleteAsync(ProductItemId productItemId);
 }

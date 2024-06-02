@@ -26,6 +26,6 @@ public class AddProductItemDomainEventHandler : BaseDomainEventHandler<AddedProd
             createdBy: domainEvent.OccuredBy,
             createdAt: domainEvent.OccuredOn);
 
-        _productHistoryRepository.Create(productHistoryItem);
+        await _productHistoryRepository.CreateAsync(productHistoryItem);
     }
 }

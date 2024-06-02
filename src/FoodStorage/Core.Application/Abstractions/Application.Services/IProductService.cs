@@ -4,10 +4,10 @@ namespace FoodStorage.Application.Services;
 
 public interface IProductService
 {
-    public ProductId Create(Product product);
-    public Product GetById(ProductId productId);
-    public Product GetByName(ProductName productName);
-    public IEnumerable<Product> GetAll();
-    public void Delete(ProductId productId);
+    public Task<ProductId> CreateAsync(Product product);
+    public Task<Product> GetByIdAsync(ProductId productId);
+    public Task<Product> GetByNameAsync(ProductName productName);
+    public Task<IEnumerable<Product>> GetAllAsync();
+    public Task DeleteAsync(ProductId productId);
 
 }
