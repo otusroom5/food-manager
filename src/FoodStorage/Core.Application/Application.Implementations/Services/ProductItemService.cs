@@ -50,11 +50,11 @@ public class ProductItemService : IProductItemService
 
     public IEnumerable<ProductItem> GetAll() => _productItemRepository.GetAll();
 
-    public IEnumerable<ProductItem> GetExpiredProductItems()
+    public IEnumerable<ProductItem> GetExpireProductItems(int daysBeforeExpired = 0)
     {
         var result = _productItemRepository.GetAll();
 
-        return result.Where(r => r.ExpiryDate < DateTime.UtcNow);
+        return result.Where(r => r.ExpiryDate.AddDays(-daysBeforeExpired).Date <= DateTime.UtcNow.Date);
     }
 
     public void TakePartOf(ProductId productId, int count, UserId userId)
@@ -68,7 +68,7 @@ public class ProductItemService : IProductItemService
 
         // получаем все единицы продукта из холодильника, не просроченные
         var productItems = _productItemRepository.GetByProductId(productId)
-                                                 .Where(pi => pi.ExpiryDate > DateTime.UtcNow);
+                                                 .Where(pi => pi.ExpiryDate.Date > DateTime.UtcNow.Date);
 
         // общее кол-во продукта в холодильнике
         int commonCount = productItems.Sum(pi => pi.Amount);

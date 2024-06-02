@@ -84,7 +84,7 @@ public class ProductItemController : BaseController
     [HttpGet("GetExpiredProductItems")]
     public ActionResult<List<ProductItemModel>> GetExpiredProductItems()
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetExpiredProductItems();
+        IEnumerable<ProductItem> productItems = _productItemService.GetExpireProductItems();
         List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
 
         return Ok(result);

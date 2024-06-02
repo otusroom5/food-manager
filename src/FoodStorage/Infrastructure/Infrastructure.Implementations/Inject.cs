@@ -3,7 +3,6 @@ using FoodStorage.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.NetworkInformation;
 
 namespace FoodStorage.Infrastructure.Implementations;
 

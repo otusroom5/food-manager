@@ -62,12 +62,12 @@ public record ProductItem
             throw new InvalidArgumentValueException("Количество единиц продукта должно быть положительным числом", nameof(Amount));
         }
 
-        if (creatingDate >= DateTime.UtcNow)
+        if (creatingDate.Date >= DateTime.UtcNow.Date)
         {
             throw new InvalidArgumentValueException("Дата изготовления не может быть из будущего", nameof(CreatingDate));
         }
 
-        if (expiryDate <= creatingDate)
+        if (expiryDate.Date <= creatingDate.Date)
         {
             throw new InvalidArgumentValueException("Дата окончания срока годности не может быть раньше чем дата изготовления", nameof(ExpiryDate));
         }
@@ -75,8 +75,8 @@ public record ProductItem
         return new(productId, amount, userId)
         {
             Id = id,
-            CreatingDate = creatingDate,
-            ExpiryDate = expiryDate
+            CreatingDate = creatingDate.Date,
+            ExpiryDate = expiryDate.Date
         };
     }
 

@@ -10,7 +10,7 @@ public interface IProductItemService
     public ProductItem GetById(ProductItemId productItemId);
     public IEnumerable<ProductItem> GetByProductId(ProductId productId);
     public IEnumerable<ProductItem> GetAll();
-    public IEnumerable<ProductItem> GetExpiredProductItems();
+    public IEnumerable<ProductItem> GetExpireProductItems(int daysBeforeExpired = 0);
     public void TakePartOf(ProductId productId, int count, UserId userId);
     public void WriteOff(IEnumerable<ProductItemId> productItemIds, UserId userId);
     public void Delete(ProductItemId productItemId);
