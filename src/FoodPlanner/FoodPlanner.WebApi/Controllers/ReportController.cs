@@ -1,4 +1,6 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.Services;
+using FoodPlanner.DataAccess.Implementations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodPlanner.WebApi.Controllers
@@ -9,18 +11,14 @@ namespace FoodPlanner.WebApi.Controllers
     public class ReportController : ControllerBase
     {        
         private readonly ILogger<ReportController> _logger;
-        private readonly IReportService _reportService;
-
-        public ReportController(IReportService reportService, ILogger<ReportController> logger)
-        {
-            _reportService = reportService;
+        public ReportController(ILogger<ReportController> logger)
+        {            
             _logger = logger;
         }
 
         [HttpPost("Create")]
         public ActionResult<Guid> Create()
-        {
-          
+        {       
             return Ok(new Guid());
         }
     }
