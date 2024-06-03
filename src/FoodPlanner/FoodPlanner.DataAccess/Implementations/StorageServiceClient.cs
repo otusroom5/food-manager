@@ -7,16 +7,18 @@ namespace FoodPlanner.DataAccess.Implementations;
 public class StorageServiceClient: IStorageServiceClient
 {
     private readonly HttpClient _httpClient;
-    public StorageServiceClient(HttpClient httpClient)
+    private readonly string _url;
+    public StorageServiceClient(HttpClient httpClient, string url)
     {
         _httpClient = httpClient;
+        _url = url;
     }
 
     public async Task<List<ProductDto>> GetExpiredProductsAsync()
     {
         var result = new List<ProductDto>();
 
-        var client = await _httpClient.GetAsync("api/storage");
+        var client = await _httpClient.GetAsync(_url);
         client.EnsureSuccessStatusCode();
         if (client.IsSuccessStatusCode)
         {

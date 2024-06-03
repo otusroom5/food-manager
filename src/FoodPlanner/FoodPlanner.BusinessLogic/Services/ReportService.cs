@@ -1,17 +1,17 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
-using FoodPlanner.BusinessLogic.Models;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
-public class ReportService : IReportService
+public class ReportService
 {
-    public ReportService()
+    private readonly IReportService _reportService;
+    public ReportService(IReportService reportService)
     {
-        //
+        _reportService = reportService;           
     }
-
-    public void Generate(Report report)
+    
+    public void Generate()
     {
-        throw new NotImplementedException();
+        _reportService.Generate();
     }
 }
