@@ -13,7 +13,7 @@ using FoodUserAuth.BusinessLogic.Exceptions;
 
 namespace FoodUserAuth.WebApi.Utils;
 
-public class JwtTokenHandler: ITokenHandler
+internal class JwtTokenHandler: ITokenHandler
 {
     private const int ExpiryTokenTimeSec = 300;
     private readonly AuthenticationOptions _options;

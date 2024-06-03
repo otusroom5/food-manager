@@ -28,7 +28,7 @@ public partial class ApiKeysController : ControllerBase
     }
 
     [HttpPost("RenewToken")]
-    public async Task<ActionResult> RenewApiKey([FromBody] RenewApiKeyTokenModel model)
+    public async Task<ActionResult> RenewApiKey([FromBody] ApiKeyRenewTokenModel model)
     {
         try
         {
@@ -66,7 +66,7 @@ public partial class ApiKeysController : ControllerBase
 
     [HttpPut]
     [Authorize(Roles = UserRole.Administration)]
-    public async Task<IActionResult> CreateAsync(CreateApiKeyModel model) 
+    public async Task<IActionResult> CreateAsync(ApiKeyCreateModel model) 
     {
         try
         {
@@ -90,15 +90,16 @@ public partial class ApiKeysController : ControllerBase
         }
     }
 
+
     [HttpDelete]
     [Authorize(Roles = UserRole.Administration)]
-    public async Task<IActionResult> DeleteAsync(DeleteApiKeyModel model)
+    public async Task<IActionResult> Delete(string keyId)
     {
         try
         {
-            if (!Guid.TryParse(model.Id, out Guid id))
+            if (!Guid.TryParse(keyId, out Guid id))
             {
-                throw new InvalidUserIdException();
+                throw new InvalidApiKeyException();
             }
 
             await _apiKeyService.DeleteAsync(id);

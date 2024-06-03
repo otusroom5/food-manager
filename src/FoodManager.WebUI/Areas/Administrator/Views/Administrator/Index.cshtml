@@ -5,7 +5,7 @@
 @model UserIndexModel
 
 @{
-    Layout = "_Layout";
+    Layout = "_AdministrationLayout ";
     ViewData["Title"] = "Accounts";
     var isUpdateMode = Model.User != null;
 }
@@ -21,20 +21,18 @@
 
         return string.Empty;
     }
-
-    string GetSuccessAlertClassIfTrue(bool isError)
-    {
-        if (isError)
-        {
-            return "alert-danger";
-        }
-        return "alert-success";
-    }
 }
 
-@if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
 {
-    <div id="alert-message" class="alert @GetSuccessAlertClassIfTrue(bool.Equals(true, @TempData["IsError"]))" role="alert">@TempData["Message"]</div>
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+    {
+        <div id="alert-message" class="alert alert-success" role="alert">@TempData["Message"]</div>
+    }
 }
 
 

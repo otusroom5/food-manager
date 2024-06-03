@@ -11,7 +11,7 @@ public static class ApiKeyExtensions
         {
             Id = apiKey.Id,
             ExpiryDate = apiKey.ExpiryDate,
-            Token = apiKey.Token
+            Key = apiKey.Token
         };
     }
 }

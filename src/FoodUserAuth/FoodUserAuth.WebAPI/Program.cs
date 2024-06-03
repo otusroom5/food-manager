@@ -38,6 +38,7 @@ try
                     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new DateJsonConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
@@ -65,7 +66,9 @@ try
     }
     app.UseAuthorization();
 
-    app.MapControllers();
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action}/{id?}");
 
     app.UseEfMigration();
 

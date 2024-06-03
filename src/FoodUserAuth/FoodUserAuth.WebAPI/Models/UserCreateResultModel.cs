@@ -2,7 +2,7 @@
 
 namespace FoodUserAuth.WebApi.Models;
 
-public class UserCreatedModel
+public class UserCreateResultModel
 {
     public Guid UserId { get; set; }
     public string Password { get; set; }
