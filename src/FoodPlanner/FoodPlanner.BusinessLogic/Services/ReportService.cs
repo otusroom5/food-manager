@@ -1,5 +1,17 @@
-﻿namespace FoodPlanner.BusinessLogic.Services;
+﻿using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.Models;
 
-public class ReportService
+namespace FoodPlanner.BusinessLogic.Services;
+
+public class ReportService : IReportService
 {
+    public ReportService()
+    {
+        //
+    }
+
+    public void Generate(Report report)
+    {
+        throw new NotImplementedException();
+    }
 }
