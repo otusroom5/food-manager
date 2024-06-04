@@ -8,7 +8,6 @@ using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.DataAccess.DataContext;
 using FoodUserAuth.DataAccess.Interfaces;
 using FoodUserAuth.DataAccess.Implementations;
-using FoodManager.Shared.Auth.Extensions;
 using FoodManager.Shared.Extensions;
 using System.Text.Json.Serialization;
 using System;

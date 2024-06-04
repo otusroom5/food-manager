@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FoodManager.Shared.Auth.Extensions;
+namespace FoodManager.Shared.Extensions;
 
 public static class JwtAuthenticationAuthenticationBuilderExtensions
 {

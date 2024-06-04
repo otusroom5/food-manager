@@ -126,7 +126,9 @@ services:
     ports:
         - 8085:80 
     environment:
-        - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http  
+        - ASPNETCORE_ENVIRONMENT=development 
+        - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http
+        - FoodPlanner_ConnectionStrings__FoodStorageApi=Host=foodstorage;Port=80;Schema=http
     restart: unless-stopped
     networks:
         - food_net 

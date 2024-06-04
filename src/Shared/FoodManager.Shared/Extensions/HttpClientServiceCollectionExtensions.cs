@@ -5,7 +5,6 @@ using FoodManager.Shared.Exceptions;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
 
@@ -13,7 +12,8 @@ namespace FoodManager.Shared.Extensions;
 
 public static class HttpClientServiceCollectionExtensions
 {
-    public readonly static string DefaultServiceSchema = "http";
+    public const string DefaultServiceSchema = "http";
+    public static string AuthServiceNameHeader = "AuthServiceName";
 
     public static IServiceCollection AddHttpMessageHandlers(this IServiceCollection collection)
     {
@@ -40,18 +40,24 @@ public static class HttpClientServiceCollectionExtensions
                     Scheme = serviceConnection.GetSchema(DefaultServiceSchema),
                 }.Uri;
 
-                if (httpClientOptions.AuthorizationHeader != null)
+                if (!string.IsNullOrWhiteSpace(httpClientOptions.AuthServiceName))
                 {
-                    configure.DefaultRequestHeaders.Authorization = httpClientOptions.AuthorizationHeader;
+                    configure.DefaultRequestHeaders.Add(AuthServiceNameHeader, httpClientOptions.AuthServiceName);
+
+                    if (!string.IsNullOrWhiteSpace(httpClientOptions.ApiKey))
+                    {
+                        configure.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(ApiAuthenticationAuthenticationBuilderExtensions.ApiKeyAuthentication,
+                            httpClientOptions.ApiKey);
+                    }
                 }
             });
 
         switch (httpClientOptions.AuthenticationType)
         {
-            case HttpClientOptions.HttpClientAuthentication.ApiKey:
+            case AuthenticationType.ApiKey:
                 clientBuilder.AddHttpMessageHandler<ApiKeyAuthenticationHttpMessageHandler>();
                 break;
-            case HttpClientOptions.HttpClientAuthentication.Bearer:
+            case AuthenticationType.Bearer:
                 clientBuilder.AddHttpMessageHandler<BearerAuthenticationHttpMessageHandler>();
                 break;
         }
@@ -66,20 +72,13 @@ public static class HttpClientServiceCollectionExtensions
         {
             options.ServiceName = serviceName;
             options.ConnectionString = connectionString;
-        });        
+        });
     }
 
-    public sealed class HttpClientOptions
-    {
-        public string ServiceName { get; set; }
-        public string ConnectionString { get; set; }
-        public AuthenticationHeaderValue AuthorizationHeader { get; set; }
-        public HttpClientAuthentication AuthenticationType { get; set; } = HttpClientAuthentication.Bearer;
-        public enum HttpClientAuthentication { None, Bearer, ApiKey }
-    }
+    
 }
 
-public class BearerAuthenticationHttpMessageHandler : DelegatingHandler
+internal class BearerAuthenticationHttpMessageHandler : DelegatingHandler
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     public BearerAuthenticationHttpMessageHandler(IHttpContextAccessor httpContextAccessor)
@@ -105,67 +104,92 @@ public class BearerAuthenticationHttpMessageHandler : DelegatingHandler
     }
 }
 
-public class ApiKeyAuthenticationHttpMessageHandler : DelegatingHandler
+internal class ApiKeyAuthenticationHttpMessageHandler : DelegatingHandler
 {
+    private const string RenewTokenUrl = "/api/v1/ApiKeys/RenewToken";
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IConfiguration _configuration;
 
-    public ApiKeyAuthenticationHttpMessageHandler(IHttpClientFactory httpClientFactory,
-        IConfiguration configuration)
+    public ApiKeyAuthenticationHttpMessageHandler(IHttpClientFactory httpClientFactory)
     {
-        _configuration = configuration;
         _httpClientFactory = httpClientFactory;
     }
 
     protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-
         HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode != HttpStatusCode.OK)
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
-            var apiKey = await GetRenewTokenAsync(request.Headers.Authorization.Parameter);
-            request.Headers.Authorization = new AuthenticationHeaderValue("ApiKey", apiKey);
+            if (!request.Headers.TryGetValues(HttpClientServiceCollectionExtensions.AuthServiceNameHeader, out var values))
+            {
+                throw new InvalidConfigurationException($"{HttpClientServiceCollectionExtensions.AuthServiceNameHeader} header is not defiend");
+            }
 
-            return await SendAsync(request, cancellationToken);
+            if (!values.Any())
+            {
+                throw new InvalidConfigurationException($"{HttpClientServiceCollectionExtensions.AuthServiceNameHeader} header value is not defiend");
+            }
+
+            string authServiceName = values.First();
+
+            var apiKey = await GetRenewTokenAsync(authServiceName, request.Headers.Authorization.Parameter);
+            request.Headers.Authorization = new AuthenticationHeaderValue(ApiAuthenticationAuthenticationBuilderExtensions.ApiKeyAuthentication, apiKey);
+
+            return await base.SendAsync(request, cancellationToken);
         }
 
         return response;
     }
 
-    private async Task<string> GetRenewTokenAsync(string oldToken)
+    private async Task<string> GetRenewTokenAsync(string authServiceName, string oldToken)
     {
-        string serviceName = _configuration.GetValue<string>("ApiKeysApiServiceName");
-
-        if (string.IsNullOrEmpty(serviceName))
-        {
-            throw new InvalidConfigurationException($"ApiKeysApiServiceName key is not defined");
-        }
-
-        HttpClient client = _httpClientFactory.CreateClient(serviceName);
+        HttpClient client = _httpClientFactory.CreateClient(authServiceName);
 
         try
         {
-            HttpResponseMessage responseMessage = await client.PostAsJsonAsync("/api/v1/ApiKeys/RenewToken", new
+            HttpResponseMessage responseMessage = await client.PostAsJsonAsync(RenewTokenUrl, new
             {
                 OldToken = oldToken
             });
 
-            responseMessage.EnsureSuccessStatusCode();
-
             ApiKeyRenewResponse response = await responseMessage.Content.ReadFromJsonAsync<ApiKeyRenewResponse>();
+
+            try
+            {
+                responseMessage.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException($"{response.Message} ({ex.Message})");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             return response.Data;
         }
         catch (HttpRequestException ex)
         {
-            throw new CommunicationException();
+            throw new ApiTokenUpdateException(ex.Message, ex);
         }
     }
 
-    public class ApiKeyRenewResponse
+    public sealed class ApiKeyRenewResponse
     {
         public string Data { get; set; }
         public string Message { get; set; }
     }
 }
+
+public sealed class HttpClientOptions
+{
+    public string ServiceName { get; set; }
+    public string ConnectionString { get; set; }
+    public string AuthServiceName { get; set; }
+    public string ApiKey { get; set; }
+    public AuthenticationType AuthenticationType { get; set; } = AuthenticationType.Bearer;
+
+}
+
+public enum AuthenticationType { None, Bearer, ApiKey }
