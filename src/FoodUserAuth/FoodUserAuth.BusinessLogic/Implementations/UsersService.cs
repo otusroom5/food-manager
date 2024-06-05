@@ -8,6 +8,7 @@ using System.Data;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using FoodUserAuth.DataAccess.Implementations;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -42,7 +43,6 @@ public class UsersService : IUsersService
         {
             Id = Guid.NewGuid(),
             LoginName = "predefined",
-            Email = "predefined@foodmanager.com",
             Role = DataAccess.Types.UserRole.Administrator,
             IsDisabled = usersRepository.GetAllAsync().Result.Any(),
             Password = passwordHasher.ComputeHash("predefined")
@@ -133,7 +133,15 @@ public class UsersService : IUsersService
         entity.Password = _passwordHasher.ComputeHash(newPassword);
 
         _unitOfWork.GetUsersRepository().Create(entity);
-        
+
+        _unitOfWork.GetUserContactsRepository().Create(new UserContact()
+        {
+            Id = user.Id,
+            UserId = entity.Id,
+            ContactType = DataAccess.Types.UserContactType.Email,
+            Contact = user.Email
+        });
+
         await _unitOfWork.SaveChangesAsync();
 
         var result = entity.ToDto();
@@ -189,7 +197,13 @@ public class UsersService : IUsersService
         item.FirstName = user.FirstName;
         item.LastName = user.LastName;
         item.Role = user.Role;
-        item.Email = user.Email;
+
+        var eMailContact = await _unitOfWork.GetUserContactsRepository().GetByUserIdAndContactTypeAsync(item.Id, DataAccess.Types.UserContactType.Email);
+
+        if (eMailContact != null)
+        {
+            eMailContact.Contact = user.Email;
+        }
 
         await _unitOfWork.SaveChangesAsync();
     }
