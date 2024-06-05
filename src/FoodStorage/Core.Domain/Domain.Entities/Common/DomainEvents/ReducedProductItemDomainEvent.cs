@@ -1,5 +1,4 @@
-﻿using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.Domain.Entities.ProductItemEntity;
+﻿using FoodStorage.Domain.Entities.ProductItemEntity;
 
 namespace FoodStorage.Domain.Entities.Common.DomainEvents;
 

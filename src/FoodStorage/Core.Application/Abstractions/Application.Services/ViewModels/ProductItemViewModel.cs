@@ -1,35 +1,32 @@
-﻿using System.ComponentModel;
-
-namespace FoodStorage.WebApi.Models.ProductItemModels;
+﻿namespace FoodStorage.Application.Services.ViewModels;
 
 /// <summary>
 /// Модель единицы продукта (в холодильнике)
 /// </summary>
-public class ProductItemModel
+public sealed record ProductItemViewModel
 {
     /// <summary>
     /// Идентификатор единицы продукта
     /// </summary>
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
     /// <summary>
     /// Продукт
     /// </summary>
-    public Guid ProductId { get; set; }
+    public ProductShortViewModel Product { get; init; }
 
     /// <summary>
     /// Количество продукта в холодильнике
     /// </summary>
-    public int Amount { get; set; }
+    public int Amount { get; init; }
 
     /// <summary>
     /// Дата изготовления
     /// </summary>
-    public DateTime CreatingDate { get; set; }
+    public DateTime CreatingDate { get; init; }
 
-    [DefaultValue(null)]
     /// <summary>
     /// Дата окончания срока годности
     /// </summary>
-    public DateTime? ExpiryDate { get; set; }
+    public DateTime ExpiryDate { get; init; }
 }

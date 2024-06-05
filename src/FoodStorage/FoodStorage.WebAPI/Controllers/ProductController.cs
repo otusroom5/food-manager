@@ -1,14 +1,12 @@
 ﻿using FoodManager.Shared.Types;
 using FoodStorage.Application.Services;
-using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.WebApi.Models.Extensions;
-using FoodStorage.WebApi.Models.ProductModels;
+using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
 
-[Authorize(Roles = UserRole.Administration)]
 [Route("api/[controller]")]
 [Produces("application/json")]
 [ApiController]
@@ -26,13 +24,13 @@ public class ProductController : BaseController
     /// </summary>
     /// <param name="product">Модель продукта</param>
     /// <returns>Идентификатор созданного продукта</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPost("Create")]
-    public async Task<ActionResult<Guid>> CreateAsync(CreateProductModel product)
+    public async Task<ActionResult<Guid>> CreateAsync(ProductCreateRequestModel product)
     {
-        Product productToCreate = product.ToEntity();
-        ProductId id = await _productService.CreateAsync(productToCreate);
+        Guid id = await _productService.CreateAsync(product);
 
-        return Ok(id.ToGuid());
+        return Ok(id);
     }
 
     /// <summary>
@@ -40,11 +38,11 @@ public class ProductController : BaseController
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Продукт</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetById/{productId}")]
-    public async Task<ActionResult<ProductModel>> GetByIdAsync(Guid productId)
+    public async Task<ActionResult<ProductViewModel>> GetByIdAsync(Guid productId)
     {
-        Product product = await _productService.GetByIdAsync(ProductId.FromGuid(productId));
-        ProductModel result = product.ToModel();
+        ProductViewModel result = await _productService.GetByIdAsync(productId);
 
         return Ok(result);
     }
@@ -54,11 +52,11 @@ public class ProductController : BaseController
     /// </summary>
     /// <param name="productName">Наенование продукта</param>
     /// <returns>Продукт</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetByName/{productName}")]
-    public async Task<ActionResult<ProductModel>> GetByNameAsync(string productName)
+    public async Task<ActionResult<ProductViewModel>> GetByNameAsync(string productName)
     {
-        Product product = await _productService.GetByNameAsync(ProductName.FromString(productName));
-        ProductModel result = product.ToModel();
+        ProductViewModel result = await _productService.GetByNameAsync(productName);
 
         return Ok(result);
     }
@@ -67,11 +65,11 @@ public class ProductController : BaseController
     /// Получить все продукты
     /// </summary>
     /// <returns>Список продуктов</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey",Roles = UserRole.Cooker)]
     [HttpGet("GetAll")]
-    public async Task<ActionResult<List<ProductModel>>> GetAllAsync()
+    public async Task<ActionResult<List<ProductViewModel>>> GetAllAsync()
     {
-        IEnumerable<Product> products = await _productService.GetAllAsync();
-        List<ProductModel> result = products.Select(p => p.ToModel()).ToList();
+        List<ProductViewModel> result = await _productService.GetAllAsync();
 
         return Ok(result);
     }
@@ -81,10 +79,11 @@ public class ProductController : BaseController
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>ок</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpDelete("Delete/{productId}")]
     public async Task<ActionResult> DeleteAsync(Guid productId)
     {
-        await _productService.DeleteAsync(ProductId.FromGuid(productId));
+        await _productService.DeleteAsync(productId);
 
         return Ok();
     }

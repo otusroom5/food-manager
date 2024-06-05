@@ -1,9 +1,9 @@
-﻿namespace FoodStorage.WebApi.Models.ProductModels;
+﻿namespace FoodStorage.Application.Services.ViewModels;
 
 /// <summary>
 /// Модель продукта
 /// </summary>
-public class ProductModel
+public sealed record ProductViewModel
 {
     /// <summary>
     /// Идентификатор продукта

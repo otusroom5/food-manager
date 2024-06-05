@@ -1,6 +1,9 @@
 ﻿using FoodStorage.Application.Implementations.Common.Exceptions;
+using FoodStorage.Application.Implementations.Common.Extensions;
 using FoodStorage.Application.Repositories;
 using FoodStorage.Application.Services;
+using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
 using FoodStorage.Domain.Entities.ProductEntity;
 using Microsoft.Extensions.Logging;
 
@@ -19,20 +22,22 @@ public class ProductService : IProductService
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
-    public async Task<ProductId> CreateAsync(Product product)
+    public async Task<Guid> CreateAsync(ProductCreateRequestModel product)
     {
         try
         {
+            Product productEntity = product.ToEntity();
+
             // проверка на существование продукта с таким же наименованием
-            Product productWithSameName = await _productRepository.FindByNameAsync(product.Name);
+            Product productWithSameName = await _productRepository.FindByNameAsync(productEntity.Name);
             if (productWithSameName is not null)
             {
-                throw new ApplicationLayerException($"{nameof(Product)} with same name '{product.Name}' is already exists");
+                throw new ApplicationLayerException($"{nameof(Product)} with same name '{productEntity.Name}' is already exists");
             }
 
-            await _productRepository.CreateAsync(product);
+            await _productRepository.CreateAsync(productEntity);
 
-            return product.Id;
+            return productEntity.Id.ToGuid();
         }
         catch (Exception exception)
         {
@@ -41,18 +46,20 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<Product> GetByIdAsync(ProductId productId)
+    public async Task<ProductViewModel> GetByIdAsync(Guid productId)
     {
         try
         {
-            Product result = await _productRepository.FindByIdAsync(productId);
+            var productEntityId = ProductId.FromGuid(productId);
 
-            if (result is null)
+            Product product = await _productRepository.FindByIdAsync(productEntityId);
+
+            if (product is null)
             {
-                throw new EntityNotFoundException(nameof(Product), productId.ToString());
+                throw new EntityNotFoundException(nameof(Product), productEntityId.ToString());
             }
 
-            return result;
+            return product.ToViewModel();
         }
         catch (Exception exception)
         {
@@ -61,18 +68,18 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<Product> GetByNameAsync(ProductName productName)
+    public async Task<ProductViewModel> GetByNameAsync(string productName)
     {
         try
         {
-            Product result = await _productRepository.FindByNameAsync(productName);
+            Product product = await _productRepository.FindByNameAsync(ProductName.FromString(productName));
 
-            if (result is null)
+            if (product is null)
             {
-                throw new EntityNotFoundException(nameof(Product), productName.ToString());
+                throw new EntityNotFoundException(nameof(Product), productName);
             }
 
-            return result;
+            return product.ToViewModel();
         }
         catch (Exception exception)
         {
@@ -81,17 +88,32 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync() => await _productRepository.GetAllAsync();
-
-    public async Task DeleteAsync(ProductId productId)
+    public async Task<List<ProductViewModel>> GetAllAsync()
     {
         try
         {
-            Product product = await _productRepository.FindByIdAsync(productId);
+            var products = await _productRepository.GetAllAsync();
+
+            return products.Select(p => p.ToViewModel()).ToList();
+        }
+        catch (Exception exception)
+        {
+            LogError("GetAll", exception);
+            throw;
+        }
+    }
+
+    public async Task DeleteAsync(Guid productId)
+    {
+        try
+        {
+            var productEntityId = ProductId.FromGuid(productId);
+
+            Product product = await _productRepository.FindByIdAsync(productEntityId);
 
             if (product is null)
             {
-                throw new EntityNotFoundException(nameof(Product), productId.ToString());
+                throw new EntityNotFoundException(nameof(Product), productEntityId.ToString());
             }
 
             await _productRepository.DeleteAsync(product);

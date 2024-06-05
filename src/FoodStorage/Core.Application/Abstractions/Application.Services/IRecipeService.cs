@@ -1,15 +1,15 @@
-﻿using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.Domain.Entities.RecipeEntity;
+﻿using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
 
 namespace FoodStorage.Application.Services;
 
 public interface IRecipeService
 {
-    public Task<RecipeId> CreateAsync(Recipe recipe);
-    public Task<Recipe> GetByIdAsync(RecipeId recipeId);
-    public Task<Recipe> GetByNameAsync(RecipeName recipeName);
-    public Task<IEnumerable<Recipe>> GetByProductIdAsync(ProductId productId);
-    public Task<IEnumerable<Recipe>> GetAllAsync();
-    public Task UpdateAsync(Recipe recipe);
-    public Task DeleteAsync(RecipeId recipeId);
+    public Task<Guid> CreateAsync(RecipeCreateRequestModel recipe);
+    public Task<RecipeViewModel> GetByIdAsync(Guid recipeId);
+    public Task<RecipeViewModel> GetByNameAsync(string recipeName);
+    public Task<List<RecipeViewModel>> GetByProductIdAsync(Guid productId);
+    public Task<List<RecipeViewModel>> GetAllAsync();
+    public Task UpdateAsync(RecipeUpdateRequestModel recipe);
+    public Task DeleteAsync(Guid recipeId);
 }

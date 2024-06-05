@@ -45,6 +45,14 @@ internal class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllAsync() => await _databaseContext.Products.Select(p => p.ToEntity()).ToListAsync();
 
+    public async Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<ProductId> productIds)
+    {
+        var guidIds = productIds.Select(pi => pi.ToGuid());
+
+        IEnumerable<ProductDto> productDtos = await _databaseContext.Products.Where(pi => guidIds.Contains(pi.Id)).ToListAsync();
+        return productDtos.Select(pi => pi.ToEntity()).ToList();
+    }
+
     public async Task DeleteAsync(Product product)
     {
         if (product is null)

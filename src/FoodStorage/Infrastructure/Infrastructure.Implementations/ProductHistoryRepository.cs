@@ -1,4 +1,5 @@
 ﻿using FoodStorage.Application.Repositories;
+using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductHistoryEntity;
 using FoodStorage.Infrastructure.EntityFramework;
@@ -43,6 +44,22 @@ internal class ProductHistoryRepository : IProductHistoryRepository
         IEnumerable<ProductHistoryDto> productHistoryDtos = 
             await _databaseContext.ProductHistoryItems.Where(ph => ph.ProductId == productId.ToGuid()).ToListAsync();
         
+        return productHistoryDtos.Select(ph => ph.ToEntity()).ToList();
+    }
+
+    public async Task<IEnumerable<ProductHistory>> GetByUserIdAsync(UserId userId)
+    {
+        IEnumerable<ProductHistoryDto> productHistoryDtos =
+            await _databaseContext.ProductHistoryItems.Where(ph => ph.CreatedBy == userId.ToGuid()).ToListAsync();
+
+        return productHistoryDtos.Select(ph => ph.ToEntity()).ToList();
+    }
+
+    public async Task<IEnumerable<ProductHistory>> GetByStateAsync(ProductState state)
+    {
+        IEnumerable<ProductHistoryDto> productHistoryDtos =
+            await _databaseContext.ProductHistoryItems.Where(ph => ph.State == state.ToString()).ToListAsync();
+
         return productHistoryDtos.Select(ph => ph.ToEntity()).ToList();
     }
 

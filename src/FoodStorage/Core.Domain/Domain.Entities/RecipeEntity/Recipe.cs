@@ -17,7 +17,7 @@ public record Recipe
     /// </summary>
     public RecipeName Name { get; init; }
 
-    private List<RecipePosition> _positions = new();
+    private readonly List<RecipePosition> _positions = new();
     /// <summary>
     /// Позиции рецепта
     /// </summary>
@@ -55,7 +55,7 @@ public record Recipe
         bool isAlreadyExists = _positions.Select(p => p.ProductId).Contains(position.ProductId);
         if (isAlreadyExists)
         {
-            throw new DomainEntitiesException($"Попытка добавить продукт '{position.ProductId}', который уже есть в рецепте");
+            throw new DomainEntitiesException($"Trying to add product '{position.ProductId}' that is already in the recipe");
         }
 
         _positions.Add(position);
@@ -68,9 +68,10 @@ public record Recipe
     public void RemovePosition(ProductId productId)
     {
         RecipePosition position = _positions.Find(p => p.ProductId == productId);
+        // Попытка убрать из списка продукт, которого нет в рецепте
         if (position is null)
         {
-            throw new DomainEntitiesException($"Попытка убрать из списка продукт '{productId}', которого нет в рецепте");
+            throw new DomainEntitiesException($"An attempt to remove a product '{productId}' from the list that is not in the recipe");
         }
 
         _positions.Remove(position);

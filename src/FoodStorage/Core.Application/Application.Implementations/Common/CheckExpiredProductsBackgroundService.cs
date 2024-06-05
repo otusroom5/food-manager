@@ -66,14 +66,13 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
         _logger.LogInformation("Writing off expired products");
 
         var expiredProductItems = await productItemService.GetExpireProductItemsAsync();
-        await productItemService.WriteOffAsync(expiredProductItems.Select(epi => epi.Id), userId);
+        await productItemService.WriteOffAsync(expiredProductItems.Select(epi => epi.Id), userId.ToGuid());
 
         // Получаем все продукты, у которых срок годности заканачивается через определенное время (указанные n дней)
         int countDays = _configuration.TimeBeforeExpireInDaysForReport;
         _logger.LogInformation("Getting products that expire after {0} days", countDays);
 
         var expireProductItems = await productItemService.GetExpireProductItemsAsync(countDays);
-        var products = expireProductItems.Select(epi => epi.ProductId).Distinct().ToList();
 
         throw new NotImplementedException("Will be rabbit message"); //TODO
     }

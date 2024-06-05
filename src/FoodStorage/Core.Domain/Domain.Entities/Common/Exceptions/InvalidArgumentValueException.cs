@@ -3,6 +3,6 @@
 public class InvalidArgumentValueException : DomainEntitiesException
 {
     public InvalidArgumentValueException(string message, string argumentName) 
-        : base($"Некорректное значение аргумента '{argumentName}' : {message}") 
+        : base($"Invalid argument value '{argumentName}' : {message}") 
     { }
 }

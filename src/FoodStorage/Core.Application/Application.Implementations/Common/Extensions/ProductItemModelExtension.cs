@@ -1,23 +1,24 @@
-﻿using FoodStorage.Domain.Entities;
+﻿using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
+using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
-using FoodStorage.WebApi.Models.ProductItemModels;
 
-namespace FoodStorage.WebApi.Models.Extensions;
+namespace FoodStorage.Application.Implementations.Common.Extensions;
 
 public static class ProductItemModelExtension
 {
-    public static ProductItemModel ToModel(this ProductItem productItem) =>
+    public static ProductItemViewModel ToViewModel(this ProductItem productItem, Product product) =>
         new()
         {
             Id = productItem.Id.ToGuid(),
-            ProductId = productItem.ProductId.ToGuid(),
+            Product = product.ToShortViewModel(),
             Amount = productItem.Amount,
-            CreatingDate = productItem.CreatingDate, 
+            CreatingDate = productItem.CreatingDate,
             ExpiryDate = productItem.ExpiryDate
         };
 
-    public static ProductItem ToEntity(this CreateProductItemModel productItemModel, UserId userId)
+    public static ProductItem ToEntity(this ProductItemCreateRequestModel productItemModel, UserId userId)
     {
         var productItemId = ProductItemId.CreateNew();
         var productId = ProductId.FromGuid(productItemModel.ProductId);

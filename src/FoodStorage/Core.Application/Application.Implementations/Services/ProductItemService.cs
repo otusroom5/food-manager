@@ -1,10 +1,14 @@
 ﻿using FoodStorage.Application.Implementations.Common.Exceptions;
+using FoodStorage.Application.Implementations.Common.Extensions;
 using FoodStorage.Application.Repositories;
 using FoodStorage.Application.Services;
+using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
 using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace FoodStorage.Application.Implementations.Services;
 
@@ -26,21 +30,23 @@ public class ProductItemService : IProductItemService
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
-    public async Task<ProductItemId> CreateAsync(ProductItem productItem)
+    public async Task<Guid> CreateAsync(ProductItemCreateRequestModel productItem, Guid userId)
     {
+        ProductItem productItemEntity = productItem.ToEntity(UserId.FromGuid(userId));
+
         try
         {
             // проверка существования продукта, единицу которого хотим положить в холодильник
-            Product product = await _productRepository.FindByIdAsync(productItem.ProductId);
+            Product product = await _productRepository.FindByIdAsync(productItemEntity.ProductId);
 
             if (product is null)
             {
-                throw new EntityNotFoundException(nameof(Product), productItem.ProductId.ToString());
+                throw new EntityNotFoundException(nameof(Product), productItemEntity.ProductId.ToString());
             }
 
-            await _productItemRepository.CreateAsync(productItem);
+            await _productItemRepository.CreateAsync(productItemEntity);
 
-            return productItem.Id;
+            return productItemEntity.Id.ToGuid();
         }
         catch (Exception exception)
         {
@@ -49,18 +55,20 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task<ProductItem> GetByIdAsync(ProductItemId productItemId)
+    public async Task<ProductItemViewModel> GetByIdAsync(Guid productItemId)
     {
         try
         {
-            ProductItem result = await _productItemRepository.FindByIdAsync(productItemId);
+            ProductItem productItem = await _productItemRepository.FindByIdAsync(ProductItemId.FromGuid(productItemId));
 
-            if (result is null)
+            if (productItem is null)
             {
                 throw new EntityNotFoundException(nameof(ProductItem), productItemId.ToString());
             }
 
-            return result;
+            Product product = await _productRepository.FindByIdAsync(productItem.ProductId);
+
+            return productItem.ToViewModel(product);
         }
         catch (Exception exception)
         {
@@ -69,22 +77,106 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task<IEnumerable<ProductItem>> GetByProductIdAsync(ProductId productId) => await _productItemRepository.GetByProductIdAsync(productId);
-
-    public async Task<IEnumerable<ProductItem>> GetAllAsync() => await _productItemRepository.GetAllAsync();
-
-    public async Task<IEnumerable<ProductItem>> GetExpireProductItemsAsync(int daysBeforeExpired = 0)
-    {
-        var result = await _productItemRepository.GetAllAsync();
-
-        return  result.Where(r => r.ExpiryDate.AddDays(-daysBeforeExpired).Date <= DateTime.UtcNow.Date);
-    }
-
-    public async Task TakePartOfAsync(ProductId productId, int count, UserId userId)
+    public async Task<List<ProductItemViewModel>> GetByProductIdAsync(Guid productId)
     {
         try
         {
-            Product product = await _productRepository.FindByIdAsync(productId);
+            ProductId productIdEntity = ProductId.FromGuid(productId);
+
+            Product product = await _productRepository.FindByIdAsync(productIdEntity);
+
+            if (product is null)
+            {
+                throw new EntityNotFoundException(nameof(Product), productId.ToString());
+            }
+
+            var productItems = await _productItemRepository.GetByProductIdAsync(productIdEntity);
+
+            return productItems.Select(pi => pi.ToViewModel(product)).ToList();
+        }
+        catch (Exception exception)
+        {
+            LogError("GetByProductId", exception);
+            throw;
+        }
+    }
+
+    public async Task<List<ProductItemViewModel>> GetAllAsync() 
+    {
+        try
+        {
+            var productItems = await _productItemRepository.GetAllAsync();
+            var products = await _productRepository.GetByIdsAsync(productItems.Select(pi => pi.ProductId).Distinct());
+
+            return productItems.Select(pi => pi.ToViewModel(products.FirstOrDefault(p => p.Id == pi.ProductId))).ToList();
+        }
+        catch (Exception exception)
+        {
+            LogError("GetAll", exception);
+            throw;
+        }
+    }
+
+    public async Task<List<ProductItemViewModel>> GetExpireProductItemsAsync(int daysBeforeExpired = 0)
+    {
+        try
+        {
+            var productItems = await _productItemRepository.GetAllAsync();
+            productItems = productItems.Where(r => r.ExpiryDate.AddDays(-daysBeforeExpired).Date <= DateTime.UtcNow.Date);
+
+            var products = await _productRepository.GetByIdsAsync(productItems.Select(pi => pi.ProductId).Distinct());
+
+            return productItems.Select(pi => pi.ToViewModel(products.FirstOrDefault(p => p.Id == pi.ProductId)))
+                               .ToList();
+        }
+        catch (Exception exception)
+        {
+            LogError("GetExpireProductItems", exception);
+            throw;
+        }
+    }
+
+    public async Task<List<ProductItemViewModel>> GetEndingProductItemsAsync()
+    {
+        try
+        {
+            List<ProductItemViewModel> result = new();
+
+            // Получение всех единиц продуктов и по ним продуктов
+            var productItems = await _productItemRepository.GetAllAsync();
+            var products = await _productRepository.GetByIdsAsync(productItems.Select(pi => pi.ProductId).Distinct());
+
+            foreach (var productItem in productItems)
+            {
+                var product = products.FirstOrDefault(p => p.Id == productItem.ProductId);
+                if (product is null)
+                {
+                    throw new EntityNotFoundException(nameof(Product), productItem.ProductId.ToString());
+                }
+
+                // Если кол-во продукта в холодильнике больше чем мин остаток на день то норм, иначе в выборку
+                if (productItem.Amount > product.MinAmountPerDay) continue;
+
+                result.Add(productItem.ToViewModel(product));
+            }
+
+            return result;
+        }
+        catch (Exception exception)
+        {
+            LogError("GetEndingProductItems", exception);
+            throw;
+        }
+    }
+
+    public async Task TakePartOfAsync(Guid productId, int count, Guid userId)
+    {
+        try
+        {
+            ProductId productIdEntity = ProductId.FromGuid(productId);
+            UserId userIdEntity = UserId.FromGuid(userId);
+
+            Product product = await _productRepository.FindByIdAsync(productIdEntity);
 
             if (product is null)
             {
@@ -92,7 +184,7 @@ public class ProductItemService : IProductItemService
             }
 
             // получаем все единицы продукта из холодильника, не просроченные
-            var productItems = await _productItemRepository.GetByProductIdAsync(productId);
+            var productItems = await _productItemRepository.GetByProductIdAsync(productIdEntity);
             productItems = productItems.Where(pi => pi.ExpiryDate.Date > DateTime.UtcNow.Date);
 
             // общее кол-во продукта в холодильнике
@@ -116,13 +208,13 @@ public class ProductItemService : IProductItemService
 
                 if (productItem.Amount > count)
                 {
-                    productItem.ReduceAmount(count, userId);
+                    productItem.ReduceAmount(count, userIdEntity);
                     await _productItemRepository.ChangeAsync(productItem);
                     break;
                 }
                 else
                 {
-                    productItem.ReduceAmount(productItem.Amount, userId);
+                    productItem.ReduceAmount(productItem.Amount, userIdEntity);
                     await _productItemRepository.DeleteAsync(productItem);
                     count -= productItem.Amount;
                 }
@@ -135,17 +227,19 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task WriteOffAsync(IEnumerable<ProductItemId> productItemIds, UserId userId)
+    public async Task WriteOffAsync(IEnumerable<Guid> productItemIds, Guid userId)
     {
         try
         {
+            var productItemEntityIds = productItemIds.Select(ProductItemId.FromGuid);
+
             // получаем все указанные единицы продукта из холодильника
-            var productItems = await _productItemRepository.GetByIdsAsync(productItemIds);
+            var productItems = await _productItemRepository.GetByIdsAsync(productItemEntityIds);
 
             foreach (var productItem in productItems)
             {
-                productItem.WriteOff(userId);
-                _productItemRepository.DeleteAsync(productItem);
+                productItem.WriteOff(UserId.FromGuid(userId));
+                await _productItemRepository.DeleteAsync(productItem);
             }
         }
         catch (Exception exception)
@@ -155,15 +249,17 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task DeleteAsync(ProductItemId productItemId)
+    public async Task DeleteAsync(Guid productItemId)
     {
         try
         {
-            ProductItem productItem = await _productItemRepository.FindByIdAsync(productItemId);
+            var productItemEntityId = ProductItemId.FromGuid(productItemId);
+
+            ProductItem productItem = await _productItemRepository.FindByIdAsync(productItemEntityId);
 
             if (productItem is null)
             {
-                throw new EntityNotFoundException(nameof(ProductItem), productItemId.ToString());
+                throw new EntityNotFoundException(nameof(ProductItem), productItemEntityId.ToString());
             }
 
             await _productItemRepository.DeleteAsync(productItem);

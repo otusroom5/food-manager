@@ -1,13 +1,14 @@
-﻿using FoodStorage.Domain.Entities.ProductEntity;
+﻿using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
 
 namespace FoodStorage.Application.Services;
 
 public interface IProductService
 {
-    public Task<ProductId> CreateAsync(Product product);
-    public Task<Product> GetByIdAsync(ProductId productId);
-    public Task<Product> GetByNameAsync(ProductName productName);
-    public Task<IEnumerable<Product>> GetAllAsync();
-    public Task DeleteAsync(ProductId productId);
+    public Task<Guid> CreateAsync(ProductCreateRequestModel product);
+    public Task<ProductViewModel> GetByIdAsync(Guid productId);
+    public Task<ProductViewModel> GetByNameAsync(string productName);
+    public Task<List<ProductViewModel>> GetAllAsync();
+    public Task DeleteAsync(Guid productId);
 
 }

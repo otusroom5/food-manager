@@ -8,5 +8,6 @@ public interface IProductRepository
     public Task<Product> FindByIdAsync(ProductId productId);
     public Task<Product> FindByNameAsync(ProductName productName);
     public Task<IEnumerable<Product>> GetAllAsync();
+    public Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<ProductId> productIds);
     public Task DeleteAsync(Product product);
 }

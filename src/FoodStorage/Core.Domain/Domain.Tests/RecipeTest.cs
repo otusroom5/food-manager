@@ -32,7 +32,7 @@ public class RecipeTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'RecipeId': Передан пустой Guid")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'RecipeId': Empty Guid passed")]
     public void IncorrectRecipeIdTest()
     {
         RecipeId.FromGuid(Guid.Empty);
@@ -42,7 +42,7 @@ public class RecipeTest
     [TestMethod]
     [DataRow("а")]
     [DataRow("многобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобукв")]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'RecipeName': Передано некорректное значение")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'RecipeName': Empty value passed")]
     public void IncorrectRecipeNameTest(string name)
     {
         RecipeName.FromString(name);
@@ -52,7 +52,7 @@ public class RecipeTest
     [DataRow(null)]
     [DataRow("")]
     [DataRow("   ")]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'RecipeName': Передано пустое значение")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'RecipeName': Empty value passed")]
     public void EmptyRecipeNameTest(string name)
     {
         RecipeName.FromString(name);
@@ -62,7 +62,7 @@ public class RecipeTest
     [DataRow(-1)]
     [DataRow(0)]
     [ExpectedException(typeof(InvalidArgumentValueException),
-        "Некорректное значение аргумента 'ProductCount': Количество продукта в рецепте должно быть больше 0")]
+        "Invalid argument value 'ProductCount': The amount of product in the recipe must be greater than 0")]
     public void IncorrectRecipeProductCountTest(int count)
     {
         RecipePosition.CreateNew(ProductId.CreateNew(), count);
@@ -108,7 +108,7 @@ public class RecipeTest
         }
         catch (DomainEntitiesException ex)
         {
-            Assert.AreEqual($"Попытка добавить продукт '{position.ProductId}', который уже есть в рецепте", ex.Message);
+            Assert.AreEqual($"Trying to add product '{position.ProductId}' that is already in the recipe", ex.Message);
         }
     }
 
@@ -126,7 +126,7 @@ public class RecipeTest
         }
         catch (DomainEntitiesException ex)
         {
-            Assert.AreEqual($"Попытка убрать из списка продукт '{newProductId}', которого нет в рецепте", ex.Message);
+            Assert.AreEqual($"An attempt to remove a product '{newProductId}' from the list that is not in the recipe", ex.Message);
         }
     }
     #endregion

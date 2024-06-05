@@ -59,17 +59,17 @@ public record ProductItem
     {
         if (amount <= 0)
         {
-            throw new InvalidArgumentValueException("Количество единиц продукта должно быть положительным числом", nameof(Amount));
+            throw new InvalidArgumentValueException("The number of product items must be a positive number", nameof(Amount));
         }
 
-        if (creatingDate.Date >= DateTime.UtcNow.Date)
+        if (creatingDate.Date.Date > DateTime.UtcNow.Date)
         {
-            throw new InvalidArgumentValueException("Дата изготовления не может быть из будущего", nameof(CreatingDate));
+            throw new InvalidArgumentValueException("Creating date cannot be from the future", nameof(CreatingDate));
         }
 
         if (expiryDate.Date <= creatingDate.Date)
         {
-            throw new InvalidArgumentValueException("Дата окончания срока годности не может быть раньше чем дата изготовления", nameof(ExpiryDate));
+            throw new InvalidArgumentValueException("The expiration date cannot be earlier than the production date", nameof(ExpiryDate));
         }
 
         return new(productId, amount, userId)
@@ -88,7 +88,7 @@ public record ProductItem
     {
         if (amount > Amount)
         {
-            throw new DomainEntitiesException("Нельзя забрать продукта больше, чем есть");
+            throw new DomainEntitiesException("You can't take more product than you have");
         }
 
         Amount -= amount;

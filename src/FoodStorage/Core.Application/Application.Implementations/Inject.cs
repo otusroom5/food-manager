@@ -13,7 +13,8 @@ public static class Inject
     {
         services.AddScoped<IProductService, ProductService>()
                 .AddScoped<IProductItemService, ProductItemService>()
-                .AddScoped<IRecipeService, RecipeService>();
+                .AddScoped<IRecipeService, RecipeService>()
+                .AddScoped<IProductHistoryService, ProductHistoryService>();
 
         services.AddDomainEventsHandling();
         services.AddBackgroundServices(configuration);
