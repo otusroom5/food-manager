@@ -19,4 +19,6 @@ public sealed class User
     public string Password { get; set; }
 
     public UserRole Role {  get; set; }
+
+    public ICollection<UserContact> UserContacts { get; set; }
 }
