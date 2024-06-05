@@ -1,9 +1,10 @@
 ﻿using FoodPlanner.BusinessLogic.Models;
+using FoodPlanner.BusinessLogic.Types;
 
 namespace FoodPlanner.BusinessLogic.Interfaces;
 
 public interface IReportService
 {
-    public void Create(Report report);
-    public void Generate();    
+    public Report Create(ReportType reportType);
+    public byte[] Generate();    
 }

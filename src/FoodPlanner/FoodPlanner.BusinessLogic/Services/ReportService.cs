@@ -1,17 +1,28 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.Models;
+using FoodPlanner.BusinessLogic.Types;
+using FoodPlanner.DataAccess.Interfaces;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
-public class ReportService
-{
-    private readonly IReportService _reportService;
-    public ReportService(IReportService reportService)
+public class ReportService : IReportService
+{    
+    private readonly IStorageRepository _storageRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public ReportService(IUnitOfWork unitOfWork)
     {
-        _reportService = reportService;           
+        _unitOfWork = unitOfWork;
+        _storageRepository = _unitOfWork.GetStorageRepository();
     }
-    
-    public void Generate()
+
+    public Report Create(ReportType reportType)
     {
-        _reportService.Generate();
+        throw new NotImplementedException();
+    }
+
+    public byte[] Generate()
+    {
+        throw new NotImplementedException();
     }
 }

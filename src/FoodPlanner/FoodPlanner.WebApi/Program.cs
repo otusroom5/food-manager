@@ -1,4 +1,8 @@
 using FoodManager.Shared.Extensions;
+using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.Services;
+using FoodPlanner.DataAccess.Implementations;
+using FoodPlanner.DataAccess.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
@@ -19,6 +23,8 @@ builder.Services.AddHttpServiceClient(options =>
     options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
 });
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IReportService, ReportService>();
 builder.ConfigureAuthentication();
 
 var app = builder.Build();
