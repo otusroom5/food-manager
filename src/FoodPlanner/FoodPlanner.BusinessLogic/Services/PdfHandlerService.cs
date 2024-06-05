@@ -5,8 +5,7 @@ using PdfSharp.Drawing.Layout;
 namespace FoodPlanner.BusinessLogic.Services;
 
 public class PdfHandlerService: IPdfHandlerService
-{   
-    // Change to ganarate table instead of pure text
+{       
     public byte[] CreateDocument(string text)
     {
         var document = new PdfSharp.Pdf.PdfDocument();

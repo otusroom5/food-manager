@@ -23,7 +23,11 @@ namespace FoodPlanner.WebApi.Controllers
              
         public ActionResult<Report> GenerateExpiredProductsReport()
         {
-            var report = _reportService.Create(ReportType.ExpiredProducts);
+            var report = _reportService.Create(ReportType.ExpiredProducts,
+                "ExpiredProducts",
+                "Отчет о товарах с заканчивающимся сроком использования",
+                 Guid.NewGuid()
+             );
             _logger.LogInformation("Report created: {ReportGuid}", report.Id);
 
             report.Content = new MemoryStream(_reportService.Generate());          
