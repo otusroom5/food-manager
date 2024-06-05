@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace FoodManager.Shared.Auth.Extensions;
+namespace FoodManager.Shared.Extensions;
 
 public static class SwaggerGenServiceCollectionExtensions
 {

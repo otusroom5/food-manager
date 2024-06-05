@@ -1,9 +1,8 @@
 ﻿using FoodManager.WebUI.Contracts;
 
-namespace FoodManager.WebUI.Areas.Administrator.Contracts.Responses
+namespace FoodManager.WebUI.Areas.Administrator.Contracts.Responses;
+
+public sealed class UsersResponse : ResponseBase
 {
-    public class UsersResponse : ResponseBase
-    {
-        public User[] Data { get; set; }
-    }
+    public User[] Data { get; set; }
 }

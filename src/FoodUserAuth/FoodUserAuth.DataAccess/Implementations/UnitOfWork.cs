@@ -8,6 +8,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly DatabaseContext _databaseContext;
     private IUsersRepository _usersRepository;
     private IApiKeyRepository _apiKeyRepository;
+    private IUserContactsRepository _userContactsRepository;
     public UnitOfWork(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
@@ -31,6 +32,17 @@ public class UnitOfWork : IUnitOfWork
         }
 
         return _apiKeyRepository;
+    }
+
+
+    public IUserContactsRepository GetUserContactsRepository()
+    {
+        if (_userContactsRepository == null)
+        {
+            _userContactsRepository = new UserContactsRepository(_databaseContext);
+        }
+
+        return _userContactsRepository;
     }
 
     public async Task SaveChangesAsync()

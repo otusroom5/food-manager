@@ -1,4 +1,4 @@
-﻿namespace FoodManager.Shared.Auth.Options;
+﻿namespace FoodManager.Shared.Options;
 
 public class AuthenticationOptions
 {

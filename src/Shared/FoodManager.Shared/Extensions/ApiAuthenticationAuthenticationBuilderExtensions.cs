@@ -15,9 +15,9 @@ public static class ApiAuthenticationAuthenticationBuilderExtensions
 {
     public readonly static string ApiKeyAuthentication = "ApiKey";
 
-    public static AuthenticationBuilder AddApiAuthentication(this AuthenticationBuilder services, Action<Auth.Options.AuthenticationOptions> action)
+    public static AuthenticationBuilder AddApiAuthentication(this AuthenticationBuilder services, Action<Options.AuthenticationOptions> action)
     {
-        var authenticationOptions = new Auth.Options.AuthenticationOptions();
+        var authenticationOptions = new Options.AuthenticationOptions();
         action?.Invoke(authenticationOptions);
 
         return services

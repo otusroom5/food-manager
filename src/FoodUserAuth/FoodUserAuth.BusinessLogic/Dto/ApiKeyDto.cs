@@ -3,7 +3,7 @@
 public sealed class ApiKeyDto : IEquatable<ApiKeyDto>, ICloneable
 {
     public Guid Id { get; set; }
-    public string Token { get; set; }
+    public string Key { get; set; }
     public DateTime ExpiryDate { get; set; }
 
     public object Clone()
@@ -15,7 +15,7 @@ public sealed class ApiKeyDto : IEquatable<ApiKeyDto>, ICloneable
     {
         return other is not null
              && Id.Equals(other.Id)
-             && Token == other.Token
+             && Key == other.Key
              && ExpiryDate == other.ExpiryDate;
     }
 
@@ -26,6 +26,6 @@ public sealed class ApiKeyDto : IEquatable<ApiKeyDto>, ICloneable
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Id, Token, ExpiryDate);
+        return HashCode.Combine(Id, Key, ExpiryDate);
     }
 }

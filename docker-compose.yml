@@ -52,6 +52,7 @@ services:
       context: .
       dockerfile: src/FoodUserAuth/FoodUserAuth.WebAPI/Dockerfile
     environment:
+      - ASPNETCORE_ENVIRONMENT=development
       - UserAuth_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
     ports:
       - 8081:80
@@ -125,7 +126,9 @@ services:
     ports:
         - 8085:80 
     environment:
-        - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http  
+        - ASPNETCORE_ENVIRONMENT=development 
+        - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http
+        - FoodPlanner_ConnectionStrings__FoodStorageApi=Host=foodstorage;Port=80;Schema=http
     restart: unless-stopped
     networks:
         - food_net 

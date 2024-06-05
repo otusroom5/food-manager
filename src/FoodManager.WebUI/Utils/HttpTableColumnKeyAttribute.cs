@@ -1,6 +1,5 @@
 ﻿namespace FoodManager.WebUI.Utils;
 
-public class HttpTableColumnKeyAttribute : Attribute
+public sealed class HttpTableColumnKeyAttribute : Attribute
 {
-
 }

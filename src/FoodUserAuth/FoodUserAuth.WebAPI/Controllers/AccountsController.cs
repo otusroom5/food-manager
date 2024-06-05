@@ -119,7 +119,7 @@ public class AccountsController : ControllerBase
         {
             if (!Guid.TryParse(model.UserId, out Guid userId))
             {
-                throw new FormatException("Id identified is not valid");
+                throw new FormatException("Id identifier is not valid");
             }
 
             string newPassword = await _userService.ResetPasswordAsync(userId);
