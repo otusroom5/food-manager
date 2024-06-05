@@ -1,9 +1,7 @@
 ﻿namespace FoodUserAuth.DataAccess.Types;
 
-[Flags]
-public enum UserContactType: byte
+public enum UserContactType
 {
-    None = 0b_0000_0000,
-    Email = 0b_0000_0001,
-    TelegramUserName = 0b_0000_0010
+    Email = 0,
+    TelegramUserName = 1
 }
