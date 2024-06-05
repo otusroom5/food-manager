@@ -1,34 +1,51 @@
-﻿using FoodUserNotifier.DataAccess.Entities;
-using FoodUserNotifier.DataAccess.Interfaces;
-using FoodUserNotifier.DataAccess.Types;
-
+﻿using FoodUserNotifier.BusinessLogic.Interfaces;
+using FoodUserNotifier.DataAccess.Infrastructure.EntityFramework;
+using FoodUserNotifier.BusinessLogic.Entities;
+using FoodUserNotifier.BusinessLogic.Types;
+using Microsoft.EntityFrameworkCore;
+using FoodUserNotifier.BusinessLogic.Contracts;
+using System.Data;
 namespace FoodUserNotifier.DataAccess.Implementations
 {
     public class RecepientRepository : IRecepientRepository
     {
-        public Recepient Create(Recepient recepient)
+        DatabaseContext _databaseContext;
+
+        public RecepientRepository(DatabaseContext databaseContext)
         {
-            throw new NotImplementedException();
+            _databaseContext = databaseContext;
+            _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
+
+
+        public void Create(Recepient recepient)
+        {
+            RecepientDTO recepientDTO = recepient.ToDTO(recepient);
+            _databaseContext.Recipient.Add(recepientDTO);
+            _databaseContext.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            throw new NotImplementedException();
+            _databaseContext.Recipient.RemoveRange(_databaseContext.Recipient.Where(recepient => recepient.Id == id));
+            _databaseContext.SaveChanges();
         }
 
-        public IEnumerable<Recepient> GetAllForRole(Role role)
+        public IEnumerable<RecepientDTO> GetAllForRole(Role role)
         {
-            throw new NotImplementedException();
+          return  _databaseContext.Recipient.Where(recepient => recepient.RoleEnum == role.ToString()).ToList();
         }
 
-        public Recepient GetById(Guid id)
+        public RecepientDTO GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return _databaseContext.Recipient.Find(id);
         }
 
-        public void Update(Recepient recepient)
+        public void Update(Recepient _recepient)
         {
-            throw new NotImplementedException();
+            RecepientDTO recepientDTO = _databaseContext.Recipient.Single(recepient => recepient.Email == _recepient.Email);
+            recepientDTO.RoleEnum = _recepient.RoleEnum.ToString();
+            _databaseContext.SaveChanges();
         }
     }
 }

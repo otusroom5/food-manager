@@ -1,6 +1,5 @@
 using FoodUserNotifier.BusinessLogic.Interfaces;
 using FoodUserNotifier.DataAccess.Implementations;
-using FoodUserNotifier.DataAccess.Interfaces;
 using FoodUserNotifier.WebApi.Extensions;
 using FoodUserNotifier.WebApi.Implementations;
 using FoodUserNotifier.WebApi.Implementations.Options;
@@ -12,18 +11,18 @@ builder.Services.AddControllers();
 builder.Services.AddLogging();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<AqmpClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
-builder.Services.Configure<TelegramClientOptions>(builder.Configuration.GetSection(TelegramClientOptions.TelegramClient));
-builder.Services.Configure<SmptClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
+//builder.Services.Configure<AqmpClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
+//builder.Services.Configure<TelegramClientOptions>(builder.Configuration.GetSection(TelegramClientOptions.TelegramClient));
+//builder.Services.Configure<SmptClientOptions>(builder.Configuration.GetSection(AqmpClientOptions.AqmpClient));
 
-builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
-builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
-builder.Services.AddTransient<IRecepientRepository, RecepientRepository>();
-builder.Services.AddSingleton<IAqmpService, AqmpService>();
+//builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
+//builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
+//builder.Services.AddTransient<IRecepientRepository, RecepientRepository>();
+//builder.Services.AddSingleton<IAqmpService, AqmpService>();
 
 var app = builder.Build();
 
-app.UseAqmpService();
+//app.UseAqmpService();
 
 if (app.Environment.IsDevelopment())
 {
