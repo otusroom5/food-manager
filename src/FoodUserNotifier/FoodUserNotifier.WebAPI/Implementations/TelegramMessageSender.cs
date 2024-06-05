@@ -1,5 +1,5 @@
 ﻿using FoodUserNotifier.BusinessLogic.Interfaces;
-using FoodUserNotifier.DataAccess.Entities;
+using FoodUserNotifier.BusinessLogic.Contracts;
 using FoodUserNotifier.WebApi.Implementations.Options;
 using Microsoft.Extensions.Options;
 
@@ -14,7 +14,7 @@ public class TelegramMessageSender : IMessageSender
         _options = options;
         _logger = logger;
     }
-    public Task SendAsync(IEnumerable<Recepient> recepients, string message)
+    public Task SendAsync(IEnumerable<RecepientDTO> recepients, string message)
     {
         throw new NotImplementedException();
     }
