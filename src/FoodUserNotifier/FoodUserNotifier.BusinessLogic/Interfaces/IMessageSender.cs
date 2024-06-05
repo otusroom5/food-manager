@@ -1,8 +1,9 @@
-﻿using FoodUserNotifier.DataAccess.Entities;
+﻿using FoodUserNotifier.BusinessLogic.Contracts;
+
 
 namespace FoodUserNotifier.BusinessLogic.Interfaces;
 
 public interface IMessageSender
 {
-    Task SendAsync(IEnumerable<Recepient> recepients, string message);
+    Task SendAsync(IEnumerable<RecepientDTO> recepients, string message);
 }

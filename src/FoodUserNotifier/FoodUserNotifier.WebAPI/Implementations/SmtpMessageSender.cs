@@ -1,7 +1,7 @@
 ﻿using FoodUserNotifier.BusinessLogic.Interfaces;
-using FoodUserNotifier.DataAccess.Entities;
 using FoodUserNotifier.WebApi.Implementations.Options;
 using Microsoft.Extensions.Options;
+using FoodUserNotifier.BusinessLogic.Contracts;
 
 namespace FoodUserNotifier.WebApi.Implementations;
 
@@ -15,7 +15,7 @@ public class SmtpMessageSender : IMessageSender
         _logger = logger;
     }
 
-    public Task SendAsync(IEnumerable<Recepient> recepients, string message)
+    public Task SendAsync(IEnumerable<RecepientDTO> recepients, string message)
     {
         throw new NotImplementedException();
     }

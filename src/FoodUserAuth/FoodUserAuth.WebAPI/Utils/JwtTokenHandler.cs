@@ -4,16 +4,16 @@ using System.Security.Claims;
 using System;
 using System.Collections.Generic;
 using FoodUserAuth.DataAccess.Types;
-using FoodManager.Shared.Auth.Options;
 using FoodManager.Shared.Auth.Utils;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using FoodUserAuth.BusinessLogic.Exceptions;
+using FoodManager.Shared.Options;
 
 namespace FoodUserAuth.WebApi.Utils;
 
-public class JwtTokenHandler: ITokenHandler
+internal class JwtTokenHandler: ITokenHandler
 {
     private const int ExpiryTokenTimeSec = 300;
     private readonly AuthenticationOptions _options;

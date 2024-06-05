@@ -1,0 +1,49 @@
+﻿@using FoodManager.WebUI.Areas.Administrator.Models;
+@using FoodManager.WebUI.Extensions;
+@using Microsoft.AspNetCore.Html;
+@model ApiKeyIndexModel;
+
+@{
+    Layout = "_AdministrationLayout ";
+    ViewData["Title"] = "Api Keys";
+}
+
+
+@functions
+{
+    string GetSuccessAlertClassIfTrue(bool isError)
+    {
+        if (isError)
+        {
+            return "alert-danger";
+        }
+        return "alert-success";
+    }
+}
+
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
+{
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+
+@(Html.TableFor<ApiKeyModel>(@Model.ApiKeys, key =>
+{
+    var builder = new HtmlContentBuilder();
+    builder.AppendHtml(Html.ActionLink("delete", "DeleteKey", "Administrator", new { Id = key }));
+    return builder;
+}))
+
+@using (Html.BeginForm(actionName: "CreateKey", controllerName: "Administrator", new { area = "Administrator" }, FormMethod.Post))
+{
+    <input type="hidden" name="Id" value="@Model.ApiKey?.Id">
+    <div class="row">
+        <div class="col">Expired:</div>
+        <div class="col">
+            <input name="ExpiryDate" type="date" class="form-control" value="@Model.ApiKey?.ExpiryDate">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" type="submit">Create</button>
+    </div>
+}
+

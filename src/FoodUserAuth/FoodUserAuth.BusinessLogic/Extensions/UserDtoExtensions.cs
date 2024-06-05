@@ -13,7 +13,6 @@ internal static class UserDtoExtensions
             LoginName = user.LoginName,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email,
             Role = user.Role,
             IsDisabled = user.IsDisabled
         };

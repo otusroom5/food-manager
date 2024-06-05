@@ -9,7 +9,7 @@ namespace FoodManager.WebUI.Areas.Administrator.Controllers;
 
 [Area("Administrator")]
 [Authorize(Roles = "Administrator")]
-public sealed class AdministratorController : Abstractions.ControllerBase
+public sealed partial class AdministratorController : Abstractions.ControllerBase
 {
     private static readonly string UsersApiUrl = "/api/v1/Users";
     private static readonly string ResetPasswordRESTEndPoint = "/api/v1/Accounts/ResetPassword";
@@ -33,17 +33,10 @@ public sealed class AdministratorController : Abstractions.ControllerBase
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();
-            
-            if (!TempData.Keys.Contains("IsError"))
-            {
-                TempData["IsError"] = false;
-                TempData["Message"] = response.Message;
-            }
         }
         catch (HttpRequestException ex)
         {
-            TempData["IsError"] = true;
-            TempData["Message"] = response?.Message ?? ex.Message;
+            TempData["ErrorMessage"] = response?.Message ?? ex.Message;
         } 
         catch (Exception ex) 
         {
@@ -56,6 +49,7 @@ public sealed class AdministratorController : Abstractions.ControllerBase
                 Users = response?.Data.Select(f => f.ToModel()).ToArray()
             });
     }
+
 
     [HttpGet]
     [Route("{area}/{controller}/{action}")]
@@ -76,14 +70,10 @@ public sealed class AdministratorController : Abstractions.ControllerBase
             
             response = await responseMessage.Content.ReadFromJsonAsync<ResponseBase>();
             responseMessage.EnsureSuccessStatusCode();
-
-            TempData["IsError"] = false;
-            TempData["Message"] = response.Message;
         } 
         catch (HttpRequestException ex)
         {
-            TempData["IsError"] = true;
-            TempData["Message"] = response?.Message ?? ex.Message;
+            TempData["ErrorMessage"] = response?.Message ?? ex.Message;
         }
         catch (Exception ex) 
         {
@@ -107,13 +97,11 @@ public sealed class AdministratorController : Abstractions.ControllerBase
             response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
             responseMessage.EnsureSuccessStatusCode();
             
-            TempData["IsError"] = false;
             TempData["Message"] = $"User is created. Generated password: {response.Data.Password}";
         }
         catch (HttpRequestException ex)
         {
-            TempData["IsError"] = true;
-            TempData["Message"] = response?.Message ?? ex.Message;
+            TempData["ErrorMessage"] = response?.Message ?? ex.Message;
         }
         catch (Exception ex)
         {
@@ -141,17 +129,10 @@ public sealed class AdministratorController : Abstractions.ControllerBase
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();
-            
-            if (!TempData.Keys.Contains("IsError"))
-            {
-                TempData["IsError"] = false;
-                TempData["Message"] = response.Message;
-            }
         }
         catch (HttpRequestException ex)
         {
-            TempData["IsError"] = true;
-            TempData["Message"] = response?.Message ?? ex.Message;
+            TempData["ErrorMessage"] = response?.Message ?? ex.Message;
         }
         catch (Exception ex)
         {
@@ -185,18 +166,10 @@ public sealed class AdministratorController : Abstractions.ControllerBase
 
             response = await responseMessage.Content.ReadFromJsonAsync<UsersResponse>();
             responseMessage.EnsureSuccessStatusCode();
-           
-
-            if (!TempData.Keys.Contains("IsError"))
-            {
-                TempData["IsError"] = false;
-                TempData["Message"] = response.Message;
-            }
         }
         catch (HttpRequestException ex)
         {
-            TempData["IsError"] = true;
-            TempData["Message"] = response?.Message ?? ex.Message;
+            TempData["ErrorMessage"] = response?.Message ?? ex.Message;
         }
         catch (Exception ex)
         {
@@ -228,13 +201,11 @@ public sealed class AdministratorController : Abstractions.ControllerBase
             response = await responseMessage.Content.ReadFromJsonAsync<UserResetPasswordResponse>();
             responseMessage.EnsureSuccessStatusCode();
 
-            TempData["IsError"] = false;
             TempData["Message"] = $"Password is reseted. Password: {response.Data.Password}";
         }
         catch (HttpRequestException ex)
         {
-            TempData["IsError"] = true;
-            TempData["Message"] = response?.Message ?? ex.Message;
+            TempData["ErrorMessage"] = response?.Message ?? ex.Message;
         }
         catch (Exception ex)
         {

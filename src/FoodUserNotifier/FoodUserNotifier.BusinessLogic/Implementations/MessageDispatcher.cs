@@ -1,9 +1,9 @@
 ﻿using FoodUserNotifier.BusinessLogic.Abstractions;
 using FoodUserNotifier.BusinessLogic.Interfaces;
-using FoodUserNotifier.DataAccess.Entities;
-using FoodUserNotifier.DataAccess.Interfaces;
+using FoodUserNotifier.BusinessLogic.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using FoodUserNotifier.BusinessLogic.Contracts;
 
 namespace FoodUserNotifier.BusinessLogic.Services;
 
@@ -36,11 +36,11 @@ public class MessageDispatcher : IMessageDispatcher
         {
             DataMessage dataMessage = _messageConverter.Convert(message);
 
-            IEnumerable<Recepient> recepients = _recepientRepository.GetAllForRole(dataMessage.Role);
+            IEnumerable<RecepientDTO> recepients = _recepientRepository.GetAllForRole(dataMessage.Role);
 
             foreach (IMessageSender service in _serviceProvider.GetServices<IMessageSender>())
             {
-                await service.SendAsync(recepients, dataMessage.Data);
+                await   service.SendAsync(recepients, dataMessage.Data);
             }
         }
         catch (FormatException ex)

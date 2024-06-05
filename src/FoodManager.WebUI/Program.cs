@@ -1,6 +1,6 @@
+using FoodManager.Shared.Extensions;
 using FoodManager.WebUI.Extensions;
 using FoodManager.WebUI.Options;
-using Microsoft.AspNetCore.WebUtilities;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -21,10 +21,11 @@ try
         options.LoadFromConfiguration(builder.Configuration);
     }, "Account/SignIn");
 
-    builder.Services.AddHttpClient("UserAuthApi", builder.Configuration.GetConnectionString("UserAuthApi"));
-    builder.Services.AddHttpClient("FoodStorageApi", builder.Configuration.GetConnectionString("FoodStorageApi"));
-    builder.Services.AddHttpClient("FoodSupplierApi", builder.Configuration.GetConnectionString("FoodSupplierApi"));
-    builder.Services.AddHttpClient("FoodPlannerApi", builder.Configuration.GetConnectionString("FoodPlannerApi"));
+    builder.Services.AddHttpMessageHandlers();
+    builder.Services.AddHttpServiceClient("UserAuthApi", builder.Configuration.GetConnectionString("UserAuthApi"));
+    builder.Services.AddHttpServiceClient("FoodStorageApi", builder.Configuration.GetConnectionString("FoodStorageApi"));
+    builder.Services.AddHttpServiceClient("FoodSupplierApi", builder.Configuration.GetConnectionString("FoodSupplierApi"));
+    builder.Services.AddHttpServiceClient("FoodPlannerApi", builder.Configuration.GetConnectionString("FoodPlannerApi"));
 
     var app = builder.Build();
 

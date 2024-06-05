@@ -28,7 +28,7 @@ public class ApiKeyService : IApiKeyService
         {
             Id = newId,
             ExpiryDate = expiryDate,
-            Token = _tokenGenerator.GenerateApiToken(newId)
+            Key = _tokenGenerator.GenerateApiToken(newId)
         };
 
         _apiKeyRepository.Create(apiKey.ToModel());

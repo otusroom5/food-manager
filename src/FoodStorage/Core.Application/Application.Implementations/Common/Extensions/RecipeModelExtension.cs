@@ -24,7 +24,7 @@ public static class RecipeModelExtension
 
     public static Recipe ToEntity(this RecipeUpdateRequestModel recipeModel)
     {
-        // При создании в рецепте может не быть позиций
+        // При редактировании в рецепте может не быть позиций
         IEnumerable<RecipePosition> positions = recipeModel.Positions is null ? null : recipeModel.Positions.Select(p => p.ToEntity());
 
         return Recipe.CreateNew(RecipeId.FromGuid(recipeModel.Id), RecipeName.FromString(recipeModel.Name), positions);

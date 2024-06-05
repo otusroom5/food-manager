@@ -74,9 +74,9 @@ public class UsersController : ControllerBase
 
             _logger.LogDebug("Create user ({Id}) was create", result.User.Id);
 
-            return Ok(new GenericResponse<UserCreatedModel>()
+            return Ok(new GenericResponse<UserCreateResultModel>()
             {
-                Data = new UserCreatedModel()
+                Data = new UserCreateResultModel()
                 {
                     UserId = result.User.Id,
                     Password = result.Password
@@ -124,13 +124,13 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpDelete]
-    public async Task<ActionResult> Delete(UserDeleteModel item)
+    public async Task<ActionResult> Delete(string userId)
     {
         try
         {
-            await _usersService.DisableUserAsync(Guid.Parse(item.UserId));
+            await _usersService.DisableUserAsync(Guid.Parse(userId));
 
-            _logger.LogDebug("User ({Id}) was disabled", item.UserId);
+            _logger.LogDebug("User ({Id}) was disabled", userId);
             return Ok(ResponseBase.Create("Success"));
         }
         catch (Exception ex)

@@ -1,5 +1,4 @@
-﻿using FoodManager.Shared.Auth.Extensions;
-using FoodManager.Shared.Auth.Options;
+﻿using FoodManager.Shared.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;

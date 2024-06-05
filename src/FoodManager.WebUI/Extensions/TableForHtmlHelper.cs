@@ -23,6 +23,7 @@ public static class TableForHtmlHelper
         }
 
         var table = new TagBuilder("table");
+        table.Attributes.Add("Style", "table-layout: fixed;");
         table.AddCssClass("table");
         table.AddCssClass("table-hover");
 
@@ -43,6 +44,10 @@ public static class TableForHtmlHelper
             foreach (var column in columns)
             {
                 var tdBody = new TagBuilder("td");
+                if (!string.IsNullOrWhiteSpace(column.ColumnStyle))
+                {
+                    tdBody.Attributes.Add("Style", column.ColumnStyle);
+                }
                 tdBody.InnerHtml.AppendHtml(column.Property.GetValue(row)?.ToString());
                 trBody.InnerHtml.AppendHtml(tdBody);
             }
@@ -64,6 +69,7 @@ public static class TableForHtmlHelper
         {
             var tdCtrlCaption = new TagBuilder("td");
             tdCtrlCaption.InnerHtml.AppendHtml("#");
+            tdCtrlCaption.Attributes.Add("Style", "width: 150px;");
             tr.InnerHtml.AppendHtml(tdCtrlCaption);
         }
 
@@ -71,6 +77,12 @@ public static class TableForHtmlHelper
         {
             var td = new TagBuilder("td");
             td.InnerHtml.AppendHtml(column.Caption);
+
+            if (!string.IsNullOrWhiteSpace(column.HeaderStyle))
+            {
+                td.Attributes.Add("Style", column.HeaderStyle);
+            }
+
             tr.InnerHtml.AppendHtml(td);
         }
 
@@ -85,7 +97,7 @@ public static class TableForHtmlHelper
         foreach (var property in typeof(TEntity).GetProperties().Where(a => a.HasAttribute<HttpTableColumnAttribute>()))
         {
             HttpTableColumnAttribute attribute = property.GetCustomAttribute<HttpTableColumnAttribute>();
-            result.Add(new ColumnDefinition(property, attribute.Caption));
+            result.Add(new ColumnDefinition(property, attribute.Caption, attribute.HeaderStyle, attribute.ColumnStyle));
         }
 
         return result.ToArray();
@@ -97,13 +109,17 @@ public static class TableForHtmlHelper
     }
     private sealed class ColumnDefinition
     {
-        public ColumnDefinition(PropertyInfo property, string caption)
+        public ColumnDefinition(PropertyInfo property, string caption, string headerStyle, string columnStyle)
         {
             Property = property;
             Caption = caption;
+            HeaderStyle = headerStyle;
+            ColumnStyle = columnStyle;
         }
 
         public PropertyInfo Property { get; }
         public string Caption { get; }
+        public string HeaderStyle { get; }
+        public string ColumnStyle { get; }
     }
 }
