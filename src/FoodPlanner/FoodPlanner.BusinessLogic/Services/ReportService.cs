@@ -28,7 +28,7 @@ public class ReportService : IReportService
     {
         byte[] reportContent = _reportType switch
         {
-            ReportType.ExpiredProducts => new ExpiredProductsReport().Prepare(),
+            ReportType.ExpiredProducts => new ExpiredProductsReport(_storageRepository).Prepare(),
             ReportType.ConsumptionProducts => throw new NotImplementedException(),
             ReportType.PurchasingProducts => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),
