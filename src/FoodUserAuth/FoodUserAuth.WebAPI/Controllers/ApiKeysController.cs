@@ -72,7 +72,7 @@ public partial class ApiKeysController : ControllerBase
         {
             if (!DateTime.TryParseExact(model.ExpiryDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiryDate))
             {
-                throw new FormatException($"Ivalid date format 'yyyy-MM-dd'");
+                return BadRequest(ResponseBase.Create("Ivalid date format 'yyyy-MM-dd'"));
             }
 
             ApiKeyDto key = await _apiKeyService.CreateApiKeyAsync(expiryDate);
@@ -99,7 +99,7 @@ public partial class ApiKeysController : ControllerBase
         {
             if (!Guid.TryParse(keyId, out Guid id))
             {
-                throw new InvalidApiKeyException();
+                return BadRequest(ResponseBase.Create("Invalid Api key"));
             }
 
             await _apiKeyService.DeleteAsync(id);

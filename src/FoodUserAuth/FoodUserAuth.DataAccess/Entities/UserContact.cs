@@ -2,10 +2,11 @@
 
 namespace FoodUserAuth.DataAccess.Entities;
 
-public class UserContact
+public sealed class UserContact
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public Guid UserId { get; set; } 
     public UserContactType ContactType { get; set; }
     public string Contact {  get; set; }
+    public User User { get; set; }
 }

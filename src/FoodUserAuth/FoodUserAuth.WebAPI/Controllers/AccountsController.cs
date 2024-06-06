@@ -49,6 +49,11 @@ public class AccountsController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> Login(UserLoginModel userModel)
     {
+        if (!ModelState.IsValid)
+        {
+            BadRequest(ResponseBase.Create("Model is not valid"));
+        }
+
         _logger.LogTrace("Attempt login {LoginName}", userModel.LoginName);
         try
         {
@@ -98,6 +103,11 @@ public class AccountsController : ControllerBase
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePassword(UserChangePasswordModel userModel)
     {
+        if (!ModelState.IsValid)
+        {
+            BadRequest(ResponseBase.Create("Model is not valid"));
+        }
+
         try
         {
             await _userService.ChangePasswordAsync(userModel.OldPassword, userModel.Password);
@@ -115,6 +125,11 @@ public class AccountsController : ControllerBase
     [HttpPost("ResetPassword")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            BadRequest(ResponseBase.Create("Model is not valid"));
+        }
+
         try
         {
             if (!Guid.TryParse(model.UserId, out Guid userId))

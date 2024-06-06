@@ -39,6 +39,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserModel>>> Get(string id = "")
     {
+
         if (!string.IsNullOrWhiteSpace(id)) 
         {
             if (Guid.TryParse(id, out Guid employeeId))
@@ -68,6 +69,11 @@ public class UsersController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> Create([FromBody] UserCreateModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            BadRequest(ResponseBase.Create("Model is not valid"));
+        }
+
         try
         {
             var result = await _usersService.CreateUserAsync(model.ToDto());
@@ -102,6 +108,11 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Update([FromBody] UserUpdateModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            BadRequest(ResponseBase.Create("Model is not valid"));
+        }
+
         try
         {
             await _usersService.UpdateUserAsync(model.ToDto());

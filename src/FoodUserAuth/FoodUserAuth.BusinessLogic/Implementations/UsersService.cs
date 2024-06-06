@@ -8,7 +8,6 @@ using System.Data;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
-using FoodUserAuth.DataAccess.Implementations;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -84,7 +83,6 @@ public class UsersService : IUsersService
 
         return foundUser.ToDto();
     }
-
 
     private async Task<User> InternalFindUserByLoginNameAsync(string loginName)
     {   
@@ -198,7 +196,9 @@ public class UsersService : IUsersService
         item.LastName = user.LastName;
         item.Role = user.Role;
 
-        var eMailContact = await _unitOfWork.GetUserContactsRepository().GetByUserIdAndContactTypeAsync(item.Id, DataAccess.Types.UserContactType.Email);
+        var eMailContact = await _unitOfWork
+            .GetUserContactsRepository()
+            .GetByUserIdAndContactTypeAsync(item.Id, DataAccess.Types.UserContactType.Email, false);
 
         if (eMailContact != null)
         {

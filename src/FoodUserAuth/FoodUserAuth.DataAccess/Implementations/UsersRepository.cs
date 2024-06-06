@@ -65,6 +65,7 @@ public class UsersRepository : IUsersRepository, IDisposable
                       select users).Include(f=>f.UserContacts).FirstOrDefaultAsync();
     }
 
+
     /// <summary>
     /// Get user by id, throw exception if user is not found
     /// </summary>

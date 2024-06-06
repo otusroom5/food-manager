@@ -27,23 +27,37 @@ internal class UserContactsRepository : IUserContactsRepository
 
     public async Task<IEnumerable<UserContact>> GetAllAsync()
     {
-        return await _dataContext.UserContacts.OrderBy(f => f.Id).ToListAsync();
+        return await _dataContext
+            .UserContacts
+            .Include(c => c.User)
+            .OrderBy(f => f.Id)
+            .ToListAsync();
     }
 
-    public async Task<IEnumerable<UserContact>> GetAllForRoleAsync(UserRole role)
+    public async Task<IEnumerable<UserContact>> GetAllForRoleAsync(UserRole role, bool include)
     {
-        return await (from users in _dataContext.Users
-                      join contacts in _dataContext.UserContacts on users.Id equals contacts.UserId
-                      where role == users.Role
-                      select contacts).ToListAsync();
-     }
+        var query = from users in _dataContext.Users
+                    join contacts in _dataContext.UserContacts on users.Id equals contacts.UserId
+                    where role == users.Role
+                    select contacts;
 
-    public async Task<UserContact> GetByUserIdAndContactTypeAsync(Guid userId, UserContactType contactType)
+        if (include)
+            query = query.Include(c => c.User);
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<UserContact> GetByUserIdAndContactTypeAsync(Guid userId, UserContactType contactType, bool include)
     {
-        return await (from users in _dataContext.Users
-                     join contacts in _dataContext.UserContacts on users.Id equals contacts.UserId
-                     where users.Id == userId && contacts.ContactType == contactType
-                     select contacts).FirstOrDefaultAsync();
+        var query = from users in _dataContext.Users
+                    join contacts in _dataContext.UserContacts on users.Id equals contacts.UserId
+                    where users.Id == userId && contacts.ContactType == contactType
+                    select contacts;
+        
+        if (include)
+            query = query.Include(c => c.User);
+
+        return await query.FirstOrDefaultAsync();
     }
 
     public void Update(UserContact user)
