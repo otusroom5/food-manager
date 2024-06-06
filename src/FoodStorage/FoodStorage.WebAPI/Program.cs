@@ -1,4 +1,3 @@
-using FoodManager.Shared.Auth.Extensions;
 using FoodManager.Shared.Extensions;
 using FoodStorage.Application.Implementations;
 using FoodStorage.Infrastructure.Implementations;
