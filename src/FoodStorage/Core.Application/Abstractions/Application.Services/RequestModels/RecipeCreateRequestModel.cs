@@ -1,9 +1,9 @@
-﻿namespace FoodStorage.WebApi.Models.RecipeModels;
+﻿namespace FoodStorage.Application.Services.RequestModels;
 
 /// <summary>
 /// Модель создания рецепта
 /// </summary>
-public class CreateRecipeModel
+public sealed record RecipeCreateRequestModel
 {
     /// <summary>
     /// Наименование рецепта
@@ -13,5 +13,5 @@ public class CreateRecipeModel
     /// <summary>
     /// Позиции рецепта (продукт + его количество)
     /// </summary>
-    public List<RecipePositionModel> Positions { get; set; } = new List<RecipePositionModel>();
+    public List<RecipePositionRequestModel> Positions { get; set; } = new();
 }

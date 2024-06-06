@@ -1,9 +1,9 @@
-﻿namespace FoodStorage.WebApi.Models.RecipeModels;
+﻿namespace FoodStorage.Application.Services.RequestModels;
 
 /// <summary>
-/// Модель позиции рецепта
+/// Модель запроса позиции рецепта
 /// </summary>
-public class RecipePositionModel
+public sealed record RecipePositionRequestModel
 {
     /// <summary>
     /// Идентификатор продукта

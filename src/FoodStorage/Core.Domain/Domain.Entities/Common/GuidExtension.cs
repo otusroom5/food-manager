@@ -8,7 +8,7 @@ public static class GuidExtension
     {
         if (guid == Guid.Empty)
         {
-            throw new InvalidArgumentValueException("Передан пустой Guid", propertyName);
+            throw new InvalidArgumentValueException("Empty Guid passed", propertyName);
         }
     }
 }

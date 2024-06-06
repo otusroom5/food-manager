@@ -1,9 +1,9 @@
-﻿namespace FoodStorage.WebApi.Models.ProductItemModels;
+﻿namespace FoodStorage.Application.Services.RequestModels;
 
 /// <summary>
 /// Модель создания единицы продукта
 /// </summary>
-public class CreateProductItemModel
+public sealed record ProductItemCreateRequestModel
 {
     /// <summary>
     /// Продукт
@@ -20,3 +20,4 @@ public class CreateProductItemModel
     /// </summary>
     public DateTime CreatingDate { get; set; }
 }
+

@@ -1,7 +1,8 @@
-﻿using FoodStorage.Application.Services;
-using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.WebApi.Models.Extensions;
-using FoodStorage.WebApi.Models.ProductModels;
+﻿using FoodManager.Shared.Types;
+using FoodStorage.Application.Services;
+using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
@@ -9,7 +10,7 @@ namespace FoodStorage.WebApi.Controllers;
 [Route("api/[controller]")]
 [Produces("application/json")]
 [ApiController]
-public class ProductController : ControllerBase
+public class ProductController : BaseController
 {
     private readonly IProductService _productService;
 
@@ -23,13 +24,13 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="product">Модель продукта</param>
     /// <returns>Идентификатор созданного продукта</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(CreateProductModel product)
+    public async Task<ActionResult<Guid>> CreateAsync(ProductCreateRequestModel product)
     {
-        Product productToCreate = product.ToEntity();
-        ProductId id = _productService.Create(productToCreate);
+        Guid id = await _productService.CreateAsync(product);
 
-        return Ok(id.ToGuid());
+        return Ok(id);
     }
 
     /// <summary>
@@ -37,11 +38,11 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Продукт</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetById/{productId}")]
-    public ActionResult<ProductModel> GetById(Guid productId)
+    public async Task<ActionResult<ProductViewModel>> GetByIdAsync(Guid productId)
     {
-        Product product = _productService.GetById(ProductId.FromGuid(productId));
-        ProductModel result = product.ToModel();
+        ProductViewModel result = await _productService.GetByIdAsync(productId);
 
         return Ok(result);
     }
@@ -51,11 +52,11 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="productName">Наенование продукта</param>
     /// <returns>Продукт</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetByName/{productName}")]
-    public ActionResult<ProductModel> GetByName(string productName)
+    public async Task<ActionResult<ProductViewModel>> GetByNameAsync(string productName)
     {
-        Product product = _productService.GetByName(ProductName.FromString(productName));
-        ProductModel result = product.ToModel();
+        ProductViewModel result = await _productService.GetByNameAsync(productName);
 
         return Ok(result);
     }
@@ -64,11 +65,11 @@ public class ProductController : ControllerBase
     /// Получить все продукты
     /// </summary>
     /// <returns>Список продуктов</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey",Roles = UserRole.Cooker)]
     [HttpGet("GetAll")]
-    public ActionResult<List<ProductModel>> GetAll()
+    public async Task<ActionResult<List<ProductViewModel>>> GetAllAsync()
     {
-        IEnumerable<Product> products = _productService.GetAll();
-        List<ProductModel> result = products.Select(p => p.ToModel()).ToList();
+        List<ProductViewModel> result = await _productService.GetAllAsync();
 
         return Ok(result);
     }
@@ -78,10 +79,11 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>ок</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpDelete("Delete/{productId}")]
-    public ActionResult Delete(Guid productId)
+    public async Task<ActionResult> DeleteAsync(Guid productId)
     {
-        _productService.Delete(ProductId.FromGuid(productId));
+        await _productService.DeleteAsync(productId);
 
         return Ok();
     }

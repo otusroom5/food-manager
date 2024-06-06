@@ -3,6 +3,6 @@
 public class EntityNotFoundException : ApplicationLayerException
 {
     public EntityNotFoundException(string entity, string paramValue) 
-        : base($"Сущность '{entity}' с указанными параметрами: '{paramValue}' не была найдена")
+        : base($"Entity '{entity}' with parameters: '{paramValue}' was not found")
     { }
 }

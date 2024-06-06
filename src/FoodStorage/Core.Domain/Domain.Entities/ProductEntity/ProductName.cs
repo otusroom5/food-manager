@@ -20,12 +20,12 @@ public record ProductName
     {
         if (string.IsNullOrWhiteSpace(productName))
         {
-            throw new InvalidArgumentValueException("Передано пустое значение", nameof(ProductName));
+            throw new InvalidArgumentValueException("Empty value passed", nameof(ProductName));
         }
 
         if (productName.Length is < 2 or > 100)
         {
-            throw new InvalidArgumentValueException("Передано некорректное значение", nameof(ProductName));
+            throw new InvalidArgumentValueException("Incorrect value passed", nameof(ProductName));
         }
 
         return new ProductName(productName);

@@ -21,6 +21,6 @@ public static class ProductItemDtoExtension
             Id = productItem.Id.ToGuid(),
             ProductId = productItem.ProductId.ToGuid(),
             Amount = productItem.Amount,
-            CreatingDate = productItem.CreatingDate
+            CreatingDate = productItem.CreatingDate.Date
         };
 }

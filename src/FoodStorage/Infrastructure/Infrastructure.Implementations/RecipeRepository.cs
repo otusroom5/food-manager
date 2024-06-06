@@ -7,7 +7,6 @@ using FoodStorage.Infrastructure.EntityFramework.Contracts;
 using FoodStorage.Infrastructure.EntityFramework.Contracts.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using UnitsNet;
 
 namespace FoodStorage.Infrastructure.Implementations;
 
@@ -21,7 +20,7 @@ internal class RecipeRepository : IRecipeRepository
         _databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
-    public void Create(Recipe recipe)
+    public async Task CreateAsync(Recipe recipe)
     {
         if (recipe is null)
         {
@@ -31,30 +30,32 @@ internal class RecipeRepository : IRecipeRepository
         RecipeDto recipeDto = recipe.ToDto();
         _databaseContext.Recipes.Add(recipeDto);
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 
-    public Recipe FindById(RecipeId recipeId)
+    public async Task<Recipe> FindByIdAsync(RecipeId recipeId)
     {
-        RecipeDto recipeDto = _databaseContext.Recipes.FirstOrDefault(r => r.Id == recipeId.ToGuid());
+        RecipeDto recipeDto = await _databaseContext.Recipes.FindAsync(recipeId.ToGuid());
         return recipeDto is null ? null : recipeDto.ToEntity();
     }
 
-    public Recipe FindByName(RecipeName recipeName)
+    public async Task<Recipe> FindByNameAsync(RecipeName recipeName)
     {
-        RecipeDto recipeDto = _databaseContext.Recipes.FirstOrDefault(r => r.Name.ToLower() == recipeName.ToString().ToLower());
+        RecipeDto recipeDto = await _databaseContext.Recipes.FirstOrDefaultAsync(r => r.Name.ToLower() == recipeName.ToString().ToLower());
         return recipeDto is null ? null : recipeDto.ToEntity();
     }
 
-    public IEnumerable<Recipe> GetByProductId(ProductId productId)
+    public async Task<IEnumerable<Recipe>> GetByProductIdAsync(ProductId productId)
     {
-        IEnumerable<RecipeDto> recipeDtos = _databaseContext.Recipes.Where(r => r.Positions.Any(p => p.ProductId == productId.ToGuid()));
+        IEnumerable<RecipeDto> recipeDtos = await _databaseContext.Recipes.Where(r => r.Positions.Any(p => p.ProductId == productId.ToGuid()))
+                                                                          .ToListAsync();
+
         return recipeDtos.Select(r => r.ToEntity()).ToList();
     }
 
-    public IEnumerable<Recipe> GetAll() => _databaseContext.Recipes.Select(r => r.ToEntity()).ToList();
+    public async Task<IEnumerable<Recipe>> GetAllAsync() => await _databaseContext.Recipes.Select(r => r.ToEntity()).ToListAsync();
 
-    public void Change(Recipe recipe)
+    public async Task ChangeAsync(Recipe recipe)
     {
         if (recipe is null)
         {
@@ -64,7 +65,7 @@ internal class RecipeRepository : IRecipeRepository
         RecipeDto recipeDto = recipe.ToDto();
 
         // достаем сущность из базы
-        var recipeFromBase = _databaseContext.Recipes.Include(r => r.Positions).FirstOrDefault(r => r.Id == recipe.Id.ToGuid());
+        var recipeFromBase = await _databaseContext.Recipes.Include(r => r.Positions).FirstOrDefaultAsync(r => r.Id == recipe.Id.ToGuid());
         // прикрепляем ее к трекеру
         _databaseContext.Recipes.Attach(recipeFromBase);
         // достаем ее из трекерв
@@ -73,10 +74,10 @@ internal class RecipeRepository : IRecipeRepository
         entry.CurrentValues.SetValues(recipeDto);
         entry.Entity.Positions = recipeDto.Positions;
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 
-    public void Delete(Recipe recipe)
+    public async Task DeleteAsync(Recipe recipe)
     {
         if (recipe is null)
         {
@@ -86,6 +87,6 @@ internal class RecipeRepository : IRecipeRepository
         RecipeDto recipeDto = recipe.ToDto();
         _databaseContext.Recipes.Remove(recipeDto);
 
-        _databaseContext.SaveChanges();
+        await _databaseContext.SaveChangesAsync();
     }
 }

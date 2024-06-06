@@ -20,12 +20,12 @@ public record RecipeName
     {
         if (string.IsNullOrWhiteSpace(recipeName))
         {
-            throw new InvalidArgumentValueException("Передано пустое значение", nameof(RecipeName));
+            throw new InvalidArgumentValueException("Empty value passed", nameof(RecipeName));
         }
 
         if (recipeName.Length is < 2 or > 100)
         {
-            throw new InvalidArgumentValueException("Передано некорректное значение", nameof(RecipeName));
+            throw new InvalidArgumentValueException("Incorrect value passed", nameof(RecipeName));
         }
 
         return new RecipeName(recipeName);
