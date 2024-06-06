@@ -30,7 +30,7 @@ namespace FoodPlanner.WebApi.Controllers
              );
             _logger.LogInformation("Report created: {ReportGuid}", report.Id);
 
-            report.Content = new MemoryStream(_reportService.Generate());          
+            report.Content = new MemoryStream(_reportService.Generate(report.Type));          
             report.State = ReportState.Generated;
             _logger.LogInformation("Report {ReportGuid} generated successfully", report.Id);
 

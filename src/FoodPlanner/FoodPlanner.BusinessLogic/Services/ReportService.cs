@@ -7,14 +7,12 @@ using FoodPlanner.DataAccess.Interfaces;
 namespace FoodPlanner.BusinessLogic.Services;
 
 public class ReportService : IReportService
-{
-    private readonly ReportType _reportType;
+{   
     private readonly IStorageRepository _storageRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ReportService(IUnitOfWork unitOfWork, ReportType reportType)
-    {
-        _reportType = reportType;
+    public ReportService(IUnitOfWork unitOfWork)
+    {   
         _unitOfWork = unitOfWork;
         _storageRepository = _unitOfWork.GetStorageRepository();
     }
@@ -24,9 +22,9 @@ public class ReportService : IReportService
         return Report.CreateNew(ReportId.CreateNew(), ReportName.FromString(reportName), reportType, reportDescription, UserId.FromGuid(userId));
     }
 
-    public byte[] Generate()
+    public byte[] Generate(ReportType reportType)
     {
-        byte[] reportContent = _reportType switch
+        byte[] reportContent = reportType switch
         {
             ReportType.ExpiredProducts => new ExpiredProductsReport(_storageRepository).Prepare(),
             ReportType.ConsumptionProducts => throw new NotImplementedException(),
