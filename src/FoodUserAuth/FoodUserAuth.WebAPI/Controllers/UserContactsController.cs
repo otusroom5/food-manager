@@ -25,7 +25,7 @@ public class UserContactsController : ControllerBase
         _userContactsService = userContactsService;
     }
 
-    [HttpPut("GetAllForRole")]
+    [HttpGet("GetAllForRole")]
     public async Task<IActionResult> GetAllForRole(string role)
     {
         try
@@ -39,7 +39,7 @@ public class UserContactsController : ControllerBase
 
             if (userRole == DataAccess.Types.UserRole.Administrator)
             {
-                return BadRequest(ResponseBase.Create($"Invalid User role. Accessible: {DataAccess.Types.UserRole.Cooker.ToString()}, {DataAccess.Types.UserRole.Manager.ToString()}"));
+                return BadRequest(ResponseBase.Create("Invalid User role. Accessible: Cooker, Manager"));
             }
 
             var userContacts = await _userContactsService.GetAllForRoleAsync(userRole);
