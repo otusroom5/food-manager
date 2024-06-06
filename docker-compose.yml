@@ -110,7 +110,7 @@ services:
   foodusernotifier:
     build:
       context: .
-      dockerfile: src/FoodUserNotifier/FoodUserNotifier.WebAPI/Dockerfile  
+      dockerfile: src/FoodUserNotifier/FoodUserNotifier.Application.WebAPI/Dockerfile  
     ports:
         - 8084:80
     environment:
