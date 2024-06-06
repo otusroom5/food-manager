@@ -9,9 +9,9 @@ public static class UserContactDtoExtensions
     {
         return new UserContactModel()
         {
+            Id = contactDto.Id,
             Contact = contactDto.Contact,
-            ContactType = contactDto.ContactType,
-            UserId = contactDto.UserId
+            ContactType = contactDto.ContactType
         };
     }
 }

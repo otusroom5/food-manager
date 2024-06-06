@@ -5,7 +5,7 @@ namespace FoodUserAuth.WebApi.Models;
 
 public sealed class UserContactModel
 {
-    public Guid UserId { get; set; }
+    public Guid Id { get; set; }
     public UserContactType ContactType { get; set; }
     public string Contact { get; set; }
 }

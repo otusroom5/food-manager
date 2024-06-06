@@ -1,10 +1,11 @@
 ﻿using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.WebApi.Contracts;
-using FoodUserAuth.WebApi.Exceptions;
 using FoodUserAuth.WebApi.Extensions;
+using FoodUserAuth.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,7 +44,11 @@ public class UserContactsController : ControllerBase
 
             var userContacts = await _userContactsService.GetAllForRoleAsync(userRole);
 
-            return Ok(userContacts.Select(f => f.ToModel()));
+            return Ok(new GenericResponse<IEnumerable<UserContactModel>>()
+            {
+                Data = userContacts.Select(f => f.ToModel()),
+                Message = "Success"
+            });
         } 
         catch (Exception ex) 
         { 
