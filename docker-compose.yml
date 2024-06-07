@@ -102,6 +102,8 @@ services:
     build:
       context: .
       dockerfile: src/FoodSupplier/FoodSupplier.WebAPI/Dockerfile  
+    environment:
+      - FoodSupplier_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodsupplierdb;Username=room5;Password=room5Password
     ports:
         - 8083:80
     restart: unless-stopped
