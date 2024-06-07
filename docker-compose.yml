@@ -6,6 +6,7 @@ services:
       - RABBITMQ_DEFAULT_USER=room5
       - RABBITMQ_DEFAULT_PASS=room5Password
     ports:
+      - 5672:5672
       - 15672:15672
     networks:
       - food_net
