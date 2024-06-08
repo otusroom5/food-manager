@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FoodPlanner.WebApi.Controllers
 {
     [Authorize(Roles = UserRole.Manager)]
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class ReportController : ControllerBase
     {
@@ -20,9 +20,12 @@ namespace FoodPlanner.WebApi.Controllers
             _reportService = reportService;
             _logger = logger;
         }
-             
+
+        [HttpGet("GenerateExpiredProductsReport")]
         public ActionResult<Report> GenerateExpiredProductsReport()
         {
+            // Modify to async 
+
             var report = _reportService.Create(ReportType.ExpiredProducts,
                 "ExpiredProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",

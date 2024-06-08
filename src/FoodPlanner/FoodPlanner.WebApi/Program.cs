@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
 
 builder.Services.AddControllers();
+builder.Services.AddLogging();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBarerAuth();
 
