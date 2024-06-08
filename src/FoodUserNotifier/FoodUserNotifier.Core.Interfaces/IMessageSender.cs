@@ -4,5 +4,5 @@ namespace FoodUserNotifier.Core.Domain.Interfaces;
 
 public interface IMessageSender
 {
-    Task SendAsync(Message message, in Report report);
+    Task SendAsync(Message message, Report report);
 }

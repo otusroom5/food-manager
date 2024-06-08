@@ -54,6 +54,7 @@ public class MessageDispatcher : IMessageDispatcher
                 _unitOfWork
                     .GetReportsRepository()
                     .Create(report);
+                await _unitOfWork.SaveChangesAsync();
             }
         }
     }

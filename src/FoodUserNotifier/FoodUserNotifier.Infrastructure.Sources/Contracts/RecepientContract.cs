@@ -1,8 +1,10 @@
-﻿namespace FoodUserNotifier.Infrastructure.Sources.Contracts;
+﻿using FoodUserNotifier.Core.Entities.Types;
 
-internal sealed class RecepientContract
+namespace FoodUserNotifier.Infrastructure.Sources.Contracts;
+
+public sealed class RecepientContract
 {
     public Guid Id { get; set; }
-    public int ContactType { get; set; }
+    public ContactType ContactType { get; set; }
     public string Contact { get; set; }
 }

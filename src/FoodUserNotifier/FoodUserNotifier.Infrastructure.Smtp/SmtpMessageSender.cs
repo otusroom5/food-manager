@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace FoodUserNotifier.Infrastructure.Sender.Smtp;
 
-public class SmtpMessageSender : IMessageSender
+public sealed class SmtpMessageSender : IMessageSender
 {
     private readonly IOptions<SmptClientOptions> _options;
     private readonly ILogger _logger;
@@ -18,8 +18,9 @@ public class SmtpMessageSender : IMessageSender
         _logger = loggerFactory.CreateLogger<SmtpMessageSender>();
     }
 
-    public Task SendAsync(Message message, in Report report)
+    public Task SendAsync(Message message, Report report)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
+        //throw new NotImplementedException();
     }
 }

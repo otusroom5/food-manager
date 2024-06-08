@@ -5,11 +5,14 @@ using FoodUserNotifier.Infrastructure.Sources.Contracts;
 using FoodUserNotifier.Infrastructure.Sources.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FoodUserNotifier.Infrastructure.Sources;
 
 public partial class RecepientsSource : IRecepientsSource
 {
+    private const string UserAuthGetAllForRoleUrl = "/api/v1/UserContacts/GetAllForRole";
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _serviceName;
 
@@ -25,13 +28,12 @@ public partial class RecepientsSource : IRecepientsSource
 
         Uri requestUri = new UriBuilder(httpClient.BaseAddress)
         {
-            Path = "api/v1/UserContacts/GetAllForRole",
+            Path = UserAuthGetAllForRoleUrl,
             Query = QueryString.Create("role", recepientGroupType.ToString()).ToString()
         }.Uri;
 
         HttpResponseMessage response = await httpClient.GetAsync(requestUri);
-
-        RecepientResponse recepientResponse = await response.Content.ReadFromJsonAsync<RecepientResponse>();
+        RecepientResponse recepientResponse = await response.Content.ReadFromJsonAsync<RecepientResponse>(GetJsonSerializerOptions());
 
         if (recepientResponse is null)
         {
@@ -44,14 +46,25 @@ public partial class RecepientsSource : IRecepientsSource
         }
         catch (HttpRequestException ex)
         {
-            throw new HttpRequestException(recepientResponse.Message, ex);
+            throw new HttpRequestException(recepientResponse.Message ?? ex.Message, ex);
         }
 
         return recepientResponse.Data.Select(item => new Recepient()
         {
             Id = item.Id,
-            ContactType = (ContactType) item.ContactType,
+            ContactType = item.ContactType,
             Address = item.Contact
         }).ToArray();
+    }
+
+    private JsonSerializerOptions GetJsonSerializerOptions()
+    {
+        var jsonOptions = new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        jsonOptions.Converters.Add(new JsonStringEnumConverter());
+        return jsonOptions;
     }
 }

@@ -9,13 +9,17 @@ using FoodUserNotifier.Infrastructure.Sender.Telegram;
 using FoodUserNotifier.Infrastructure.Sender.Smtp;
 using FoodUserNotifier.Infrastucture.Repositories;
 using FoodUserNotifier.Core.Interfaces;
-using FoodUserNotifier.BusinessLogic.Services;
 using FoodUserNotifier.WebApi.Extensions;
 using FoodUserNotifier.Application.WebAPI.Utils;
 using FoodUserNotifier.Application.WebAPI.Extensions;
 using FoodUserNotifier.Infrastructure.Services.Utils;
 using FoodUserNotifier.Infrastructure.Sender.Smtp.Options;
 using FoodUserNotifier.Infrastructure.Sender.Telegram.Options;
+using FoodUserNotifier.Core.Entities;
+using System.Runtime;
+using System.Text.Json.Serialization;
+using System.Runtime.InteropServices;
+using FoodUserNotifier.BusinessLogic.Services;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -34,15 +38,15 @@ try
     {
         options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection"),
             x => x.MigrationsAssembly("FoodUserNotifier.Infrastructure.Repositories"));
-    }, ServiceLifetime.Singleton);
+    });
 
     builder.Services.AddControllers()
                     .AddJsonOptions(options =>
                     {
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     });
 
-    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGenWithBarerAuth();
 
     builder.Services.AddHttpMessageHandlers();
@@ -55,15 +59,15 @@ try
         options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
     });
 
-    var notificationService = new NotificationService();
-    builder.Services.AddScoped<INotificationService>(provider => notificationService);
-    builder.Services.AddTransient<IMessageDispatcher, MessageDispatcher>();
+
+    builder.Services.AddHostedService<NotificationBackgroundService>();
+    builder.Services.AddScoped<IMessageDispatcher, MessageDispatcher>();
     builder.Services.AddTransient<INotificationConverter, JsonNotificationConverter>();
-    builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-    builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+    //builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
     builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
     builder.Services.AddTransient<IMessageSenderCollection, MessageSenderCollection>();
-    builder.Services.AddTransient<IDomainLogger, DomainLogger>();
+    builder.Services.AddScoped<IDomainLogger, DomainLogger>();
     builder.Services.AddRecepientsSource("UserAuthApi"); 
 
     builder.ConfigureAuthentication();
@@ -81,7 +85,6 @@ try
     }
     app.UseAuthorization();
 
-    app.UseNotificationService();
     app.UseLogMediator();
 
     app.MapControllerRoute(
