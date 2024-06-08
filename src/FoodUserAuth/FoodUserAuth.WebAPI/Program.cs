@@ -41,7 +41,6 @@ try
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGenWithBarerAuth();
     builder.Services.AddScoped<IUsersService, UsersService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -20,7 +20,8 @@ public static class AuthenticationWebApplicationBuilderExtensions
            .GetSection(AuthenticationOptions.Authentication)
            .Bind(authenticationOptions);
 
-        builder.Services.AddTransient<ICurrentUserIdAccessor, CurrentUserIdAccessor>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ICurrentUserIdAccessor, CurrentUserIdAccessor>();
 
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

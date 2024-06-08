@@ -12,7 +12,6 @@ builder.Services.AddLogging();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBarerAuth();
 
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpMessageHandlers();
 builder.Services.AddHttpServiceClient("UserAuthApi", builder.Configuration.GetConnectionString("UserAuthApi"));
 builder.Services.AddHttpServiceClient(options =>
