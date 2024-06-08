@@ -1,4 +1,5 @@
-﻿using FoodUserAuth.BusinessLogic.Dto;
+﻿using FoodManager.Shared.Utils.Interfaces;
+using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.BusinessLogic.Extensions;
 using FoodUserAuth.BusinessLogic.Interfaces;
@@ -13,12 +14,16 @@ public class ApiKeyService : IApiKeyService
     private readonly ITokenHandler _tokenGenerator;
     private readonly IApiKeyRepository _apiKeyRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUserIdAccessor _currentUserIdAccessor;
 
-    public ApiKeyService(IUnitOfWork unitOfWork, ITokenHandler tokenGenerator)
+    public ApiKeyService(IUnitOfWork unitOfWork, 
+        ITokenHandler tokenGenerator,
+        ICurrentUserIdAccessor currentUserIdAccessor)
     {
         _unitOfWork = unitOfWork;
         _apiKeyRepository = unitOfWork.GetApiKeyRepository();
         _tokenGenerator = tokenGenerator;
+        _currentUserIdAccessor = currentUserIdAccessor;
     }
 
     public async Task<ApiKeyDto> CreateApiKeyAsync(DateTime expiryDate)
@@ -28,7 +33,7 @@ public class ApiKeyService : IApiKeyService
         {
             Id = newId,
             ExpiryDate = expiryDate,
-            Key = _tokenGenerator.GenerateApiToken(newId)
+            Key = _tokenGenerator.GenerateApiToken(newId, _currentUserIdAccessor.GetCurrentUserId())
         };
 
         _apiKeyRepository.Create(apiKey.ToModel());
@@ -46,39 +51,31 @@ public class ApiKeyService : IApiKeyService
 
     public async Task<string> RenewApiKeyAsync(string token)
     {
-        (Guid apiKeyId, DateTime validTo) = _tokenGenerator.ExtractApiKeyData(token);
+        ApiKeyData apiTokenData = _tokenGenerator.ExtractApiKeyData(token);
         
-        if (IsValidToken(validTo)) 
+        if (IsValidToken(apiTokenData.ValidTo)) 
         {
             return token;
         }
 
-        ApiKey apiKey = await _apiKeyRepository.GetByIdOrDefaultAsync(apiKeyId);
+        ApiKey apiKey = await _apiKeyRepository.GetByIdOrDefaultAsync(apiTokenData.KeyId);
 
         if (apiKey == default)
         {
             throw new InvalidApiKeyException();
         }
 
-        (_, DateTime dbTokenValidTo) = _tokenGenerator.ExtractApiKeyData(apiKey.Token);
-
-        if (IsValidToken(dbTokenValidTo))
+        if (!IsValidToken(apiKey.ExpiryDate))
         {
-            return apiKey.Token;
+            throw new InvalidApiKeyException();
         }
 
-        apiKey.Token = _tokenGenerator.GenerateApiToken(apiKeyId);
-
-        _apiKeyRepository.Update(apiKey);
-
-        await _unitOfWork.SaveChangesAsync();
-
-        return apiKey.Token;
+        return _tokenGenerator.GenerateApiToken(apiTokenData.KeyId, apiTokenData.UserId);
     }
 
     private bool IsValidToken(DateTime validTo) 
     { 
-        return validTo <= DateTime.Now;
+        return validTo >= DateTime.Now;
     }
 
     public async Task DeleteAsync(Guid id)

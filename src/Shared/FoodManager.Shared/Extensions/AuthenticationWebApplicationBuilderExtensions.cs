@@ -1,4 +1,6 @@
 ﻿using FoodManager.Shared.Options;
+using FoodManager.Shared.Utils.Implementations;
+using FoodManager.Shared.Utils.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +19,8 @@ public static class AuthenticationWebApplicationBuilderExtensions
         builder.Configuration
            .GetSection(AuthenticationOptions.Authentication)
            .Bind(authenticationOptions);
+
+        builder.Services.AddTransient<ICurrentUserIdAccessor, CurrentUserIdAccessor>();
 
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

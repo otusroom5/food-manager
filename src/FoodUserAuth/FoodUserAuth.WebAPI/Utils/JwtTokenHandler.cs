@@ -17,27 +17,32 @@ internal class JwtTokenHandler: ITokenHandler
 {
     private const int ExpiryTokenTimeSec = 300;
     private readonly AuthenticationOptions _options;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public JwtTokenHandler(IOptions<AuthenticationOptions> options, 
-        IHttpContextAccessor httpContextAccessor)
+    public JwtTokenHandler(IOptions<AuthenticationOptions> options)
     {
-        _httpContextAccessor = httpContextAccessor;
         _options = options.Value;
     }
 
-    public (Guid ApiKeyId, DateTime ValidTo) ExtractApiKeyData(string token)
+    public ApiKeyData ExtractApiKeyData(string token)
     {
         try
         {
             JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            string userData = jwtToken.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.UserData))?.Value ?? string.Empty;
-            return (ApiKeyId: Guid.Parse(userData), ValidTo: jwtToken.ValidTo);
-        } catch
+            ApiKeyClaimsHelper apiKeyClaims = ApiKeyClaimsHelper.Parce(jwtToken.Claims);
+
+            return new()
+            {
+                KeyId = apiKeyClaims.KeyId,
+                UserId = apiKeyClaims.UserId,
+                ValidTo = jwtToken.ValidTo,
+            };
+        }
+        catch
         {
             throw new InvalidApiKeyException();
         }
     }
+
 
     public string Generate(string loginName, Guid id, UserRole role)
     {
@@ -51,20 +56,15 @@ internal class JwtTokenHandler: ITokenHandler
         return Generate(claims, _options.TokenExpirySec);
     }
 
-    public string GenerateApiToken(Guid apiKeyId)
+    public string GenerateApiToken(Guid apiKeyId, Guid userId)
     {
-        var claims = new List<Claim>
+        ApiKeyClaimsHelper claims = new ApiKeyClaimsHelper()
         {
-            new Claim(ClaimTypes.NameIdentifier, GetCurrentUserId()),
-            new Claim(ClaimTypes.UserData, apiKeyId.ToString())
+            KeyId = apiKeyId,
+            UserId = userId
         };
 
-        return Generate(claims, ExpiryTokenTimeSec);
-    }
-
-    private string GetCurrentUserId()
-    {
-        return _httpContextAccessor.HttpContext.User.Claims.First(f => f.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        return Generate(claims.ToList(), ExpiryTokenTimeSec);
     }
 
     private string Generate(IEnumerable<Claim> claims, int expiryTokenTimeSec)
@@ -88,5 +88,4 @@ internal class JwtTokenHandler: ITokenHandler
     {
         return new SigningCredentials(SecurityKeyUtils.CreateSymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
     }
-
 }

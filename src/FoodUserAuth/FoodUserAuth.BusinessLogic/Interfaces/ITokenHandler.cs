@@ -9,7 +9,7 @@ public interface ITokenHandler
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    (Guid ApiKeyId, DateTime ValidTo) ExtractApiKeyData(string token);
+    ApiKeyData ExtractApiKeyData(string token);
 
     /// <summary>
     /// This method generates Jwt token with Id of api key into database.
@@ -18,7 +18,7 @@ public interface ITokenHandler
     /// <param name="userName"></param>
     /// <param name="role"></param>
     /// <returns>string</returns>
-    string GenerateApiToken(Guid apiKeyId);
+    string GenerateApiToken(Guid apiKeyId, Guid userId);
 
     /// <summary>
     /// This method generates Jwt token with username, role in claims.

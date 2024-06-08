@@ -1,4 +1,4 @@
-﻿namespace FoodManager.Shared.Utils;
+﻿namespace FoodManager.Shared.Utils.Interfaces;
 
 public interface IServiceConnection
 {

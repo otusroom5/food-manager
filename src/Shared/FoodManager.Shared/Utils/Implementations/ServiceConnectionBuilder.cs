@@ -1,6 +1,7 @@
 ﻿using System.Text;
+using FoodManager.Shared.Utils.Interfaces;
 
-namespace FoodManager.Shared.Utils;
+namespace FoodManager.Shared.Utils.Implementations;
 
 public class ServiceConnectionBuilder : IServiceConnection
 {
