@@ -8,7 +8,7 @@ namespace FoodUserNotifier.Infrastucture.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly DatabaseContext _context;
-    private IReportsRepository _reportsRepository;
+    private IDeliveryReportsRepository _reportsRepository;
     private ITelegramSessionsRepository _telegramSessionsRepository;
 
     public UnitOfWork(DatabaseContext context)
@@ -16,11 +16,11 @@ public class UnitOfWork : IUnitOfWork
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
     
-    public IReportsRepository GetReportsRepository()
+    public IDeliveryReportsRepository GetDeliveryReportsRepository()
     {
         if (_reportsRepository == null)
         {
-            _reportsRepository = new ReportsRepository(_context);
+            _reportsRepository = new DeliveryReportsRepository(_context);
         }
 
         return _reportsRepository;

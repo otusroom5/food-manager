@@ -38,7 +38,7 @@ public class MessageDispatcher : IMessageDispatcher
                 AttachmentIds = notification.AttachmentIds,
             };
 
-            var report = GenerateReport(notification);
+            var report = GenerateDeliveryReport(notification);
 
             try
             {
@@ -47,25 +47,27 @@ public class MessageDispatcher : IMessageDispatcher
             catch (Exception ex)
             {
                 report.Message = ex.Message;
+                report.Success = false;
                 _logger.Error(ex.Message);
             }
             finally
             {
                 _unitOfWork
-                    .GetReportsRepository()
+                    .GetDeliveryReportsRepository()
                     .Create(report);
                 await _unitOfWork.SaveChangesAsync();
             }
         }
     }
 
-    private Report GenerateReport(Notification notification)
+    private DeliveryReport GenerateDeliveryReport(Notification notification)
     {
-        return new Report()
+        return new DeliveryReport()
         {
             Id = Guid.NewGuid(),
             NotificationId = notification.Id,
-            Message = "Success"
+            Message = "Success",
+            Success = true
         };
     }
 }

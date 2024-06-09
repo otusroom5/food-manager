@@ -15,10 +15,6 @@ using FoodUserNotifier.Application.WebAPI.Extensions;
 using FoodUserNotifier.Infrastructure.Services.Utils;
 using FoodUserNotifier.Infrastructure.Sender.Smtp.Options;
 using FoodUserNotifier.Infrastructure.Sender.Telegram.Options;
-using FoodUserNotifier.Core.Entities;
-using System.Runtime;
-using System.Text.Json.Serialization;
-using System.Runtime.InteropServices;
 using FoodUserNotifier.BusinessLogic.Services;
 
 Log.Logger = new LoggerConfiguration()
@@ -40,15 +36,8 @@ try
             x => x.MigrationsAssembly("FoodUserNotifier.Infrastructure.Repositories"));
     });
 
-    builder.Services.AddControllers()
-                    .AddJsonOptions(options =>
-                    {
-                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                    });
-
-    builder.Services.AddSwaggerGenWithBarerAuth();
-
+    builder.Services.AddControllers();
+    
     builder.Services.AddHttpMessageHandlers();
     builder.Services.AddHttpServiceClient(options =>
     {
@@ -67,8 +56,10 @@ try
     //builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
     builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
     builder.Services.AddTransient<IMessageSenderCollection, MessageSenderCollection>();
-    builder.Services.AddScoped<IDomainLogger, DomainLogger>();
-    builder.Services.AddRecepientsSource("UserAuthApi"); 
+    builder.Services.AddSingleton<IDomainLogger, DomainLogger>();
+    builder.Services.AddRecepientsSource("UserAuthApi");
+    builder.Services.AddSwaggerGenWithBarerAuth();
+
 
     builder.ConfigureAuthentication();
 

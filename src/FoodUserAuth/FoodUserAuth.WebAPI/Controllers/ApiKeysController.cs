@@ -1,6 +1,5 @@
 ﻿using FoodManager.Shared.Types;
 using FoodUserAuth.BusinessLogic.Dto;
-using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.WebApi.Contracts;
 using FoodUserAuth.WebApi.Extensions;
@@ -18,7 +17,7 @@ namespace FoodUserAuth.WebApi.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
-public partial class ApiKeysController : ControllerBase
+public class ApiKeysController : ControllerBase
 {
     private readonly IApiKeyService _apiKeyService;
 

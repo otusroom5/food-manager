@@ -15,7 +15,7 @@ internal static class UserExtensions
             LastName = user.LastName,
             Role = user.Role,
             IsDisabled = user.IsDisabled,
-            Email = user.UserContacts.FirstOrDefault(f => f.ContactType == DataAccess.Types.UserContactType.Email)?.Contact ?? string.Empty
+            Email = user.UserContacts?.FirstOrDefault(f => f.ContactType == DataAccess.Types.UserContactType.Email)?.Contact ?? string.Empty
         };
     }
 }

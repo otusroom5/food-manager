@@ -34,7 +34,7 @@ public sealed class TelegramMessageSender : IMessageSender
         _botClient = new TelegramBotClient(options.Value.AccessToken);
     }
 
-    public Task SendAsync(Message message, Report report)
+    public Task SendAsync(Message message, DeliveryReport report)
     {
         using var cts = new CancellationTokenSource();
 

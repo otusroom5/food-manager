@@ -119,6 +119,7 @@ services:
     ports:
         - 8084:80
     environment:
+        - ASPNETCORE_ENVIRONMENT=development
         - UserNotifier_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http 
         - UserNotifier_ConnectionStrings__DbConnection=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
         - UserNotifier_ConnectionStrings__RabbitMq=Host=rabbitmq;Port=5672;Queue=notification;Username=test;Password=test

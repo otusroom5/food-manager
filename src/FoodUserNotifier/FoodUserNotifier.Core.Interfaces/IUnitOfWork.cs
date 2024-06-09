@@ -5,7 +5,7 @@ namespace FoodUserNotifier.Core.Interfaces;
 
 public interface IUnitOfWork
 { 
-    IReportsRepository GetReportsRepository();
+    IDeliveryReportsRepository GetDeliveryReportsRepository();
     ITelegramSessionsRepository GetTelegramSessionsRepository();
     Task SaveChangesAsync();
 }

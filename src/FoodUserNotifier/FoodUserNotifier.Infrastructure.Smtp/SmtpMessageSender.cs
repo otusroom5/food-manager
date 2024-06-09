@@ -18,7 +18,7 @@ public sealed class SmtpMessageSender : IMessageSender
         _logger = loggerFactory.CreateLogger<SmtpMessageSender>();
     }
 
-    public Task SendAsync(Message message, Report report)
+    public Task SendAsync(Message message, DeliveryReport report)
     {
         return Task.CompletedTask;
         //throw new NotImplementedException();

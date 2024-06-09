@@ -27,7 +27,7 @@ public static class ApplicationBuilderExtensions
             throw new InvalidOperationException();
         }
 
-        IDomainLogger domailLogger = app.ApplicationServices.GetService<IDomainLogger>();
+        IDomainLogger domailLogger = app.ApplicationServices.GetRequiredService<IDomainLogger>();
         _logMediator = new LogMediator(Log.Logger, domailLogger);
     }
 }
