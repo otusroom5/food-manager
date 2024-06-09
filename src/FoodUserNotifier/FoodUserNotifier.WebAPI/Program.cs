@@ -5,6 +5,7 @@ using FoodUserNotifier.WebApi.Implementations;
 using FoodUserNotifier.WebApi.Implementations.Options;
 using FoodUserNotifier.WebApi.Interfaces;
 using FoodUserNotifier.WebApi.Services;
+using FoodUserNotifier.DataAccess.Infrastructure.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -19,6 +20,8 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
 //builder.Services.AddTransient<IRecepientRepository, RecepientRepository>();
 //builder.Services.AddSingleton<IAqmpService, AqmpService>();
+
+builder.Services.AddDbContext<DatabaseContext>();
 
 var app = builder.Build();
 

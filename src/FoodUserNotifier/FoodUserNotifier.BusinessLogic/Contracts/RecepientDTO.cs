@@ -11,21 +11,14 @@ namespace FoodUserNotifier.BusinessLogic.Contracts
     [Table("recepient")]
     public class RecepientDTO
     {
-        [Key, Column("id")]
+        [Key]
         public Guid Id { get; set; }
-
-        [Column("role"), MaxLength(100)]
         [Required]
         public string RoleEnum { get; set; }
-
-        [Column("email"), MaxLength(100)]
         [Required]
         public string Email { get; set; }
-
-        [Column("telegram"), MaxLength(100)]
         [Required]
         public string Telegram { get; set; }
-
 
     }
 }
