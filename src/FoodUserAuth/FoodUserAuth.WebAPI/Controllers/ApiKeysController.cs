@@ -6,6 +6,7 @@ using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,10 +21,12 @@ namespace FoodUserAuth.WebApi.Controllers;
 public class ApiKeysController : ControllerBase
 {
     private readonly IApiKeyService _apiKeyService;
+    private readonly ILogger<ApiKeysController> _logger;
 
-    public ApiKeysController(IApiKeyService apiKeyService)
+    public ApiKeysController(IApiKeyService apiKeyService, ILogger<ApiKeysController> logger)
     {
         _apiKeyService = apiKeyService;
+        _logger = logger;
     }
 
     [HttpPost("RenewToken")]
@@ -31,15 +34,21 @@ public class ApiKeysController : ControllerBase
     {
         try
         {
+            string newToken = await _apiKeyService.RenewApiKeyAsync(model.OldToken);
+
+            _logger.LogDebug("New token is generated");
+
             return Ok(new GenericResponse<string>()
             {
-               Data = await _apiKeyService.RenewApiKeyAsync(model.OldToken),
+               Data = newToken,
                Message = "Success"
             });
         } 
         catch (Exception ex)
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -59,7 +68,9 @@ public class ApiKeysController : ControllerBase
         } 
         catch (Exception ex) 
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -76,6 +87,9 @@ public class ApiKeysController : ControllerBase
 
             ApiKeyDto key = await _apiKeyService.CreateApiKeyAsync(expiryDate);
 
+
+            _logger.LogInformation("New Api key is added {Id}", key.Id);
+
             return Ok(new GenericResponse<ApiKeyModel>()
             {
                 Data = key.ToModel(),
@@ -85,7 +99,9 @@ public class ApiKeysController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -107,7 +123,9 @@ public class ApiKeysController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 

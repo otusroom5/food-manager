@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodUserAuth.WebApi.Models;
 
@@ -9,4 +10,5 @@ public class UserLoginModel
 
     [Required]
     public string Password { get; set; }
+
 }

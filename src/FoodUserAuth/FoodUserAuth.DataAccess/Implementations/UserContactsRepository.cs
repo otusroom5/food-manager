@@ -3,6 +3,7 @@ using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.DataAccess.Interfaces;
 using FoodUserAuth.DataAccess.Types;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace FoodUserAuth.DataAccess.Implementations;
 
@@ -23,6 +24,21 @@ internal class UserContactsRepository : IUserContactsRepository
     public void Delete(UserContact user)
     {
         _dataContext.UserContacts.Remove(user);
+    }
+
+    public async Task<UserContact> FindContact(UserContactType contactType, string contact, bool include)
+    {
+        string contactText = contact.ToLower();
+
+        var query = from contacts in _dataContext.UserContacts
+                    where contacts.Contact.ToLower() == contactText &&
+                    contacts.ContactType == contactType
+                    select contacts;
+
+        if (include)
+            query = query.Include(c => c.User);
+
+        return await query.FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<UserContact>> GetAllAsync()

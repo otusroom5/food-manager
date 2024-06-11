@@ -8,6 +8,7 @@ using FoodUserAuth.BusinessLogic.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using FoodManager.Shared.Types;
+using FoodUserAuth.BusinessLogic.Dto;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -51,18 +52,26 @@ public class AccountsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
+            _logger.LogWarning("UserLoginModel is not valid");
             BadRequest(ResponseBase.Create("Model is not valid"));
         }
 
-        _logger.LogTrace("Attempt login {LoginName}", userModel.LoginName);
+        _logger.LogDebug("Attempt to login {LoginName}", userModel.LoginName);
         try
         {
-            var user = await _userService.VerifyAndGetUserIfSuccessAsync(userModel.LoginName, userModel.Password);
-            
+            UserDto user = await _userService.VerifyAndGetUserOrNullAsync(userModel.LoginName, userModel.Password);
+
+            if (user == null)
+            {
+                _logger.LogInformation("User not found");
+                return BadRequest(ResponseBase.Create("User not found"));
+            }
+
+            _logger.LogInformation("User ({1}) is accepted", userModel.LoginName);
+
             string token = _tokenService.Generate(user.LoginName, user.Id, user.Role);
 
-            _logger.LogDebug("Generated token: {Token}", token);
-            
+            _logger.LogDebug("Generated token: {1}", token);
             return Ok(new GenericResponse<AuthenticationModel>()
             {
                 Data = new AuthenticationModel()
@@ -78,7 +87,7 @@ public class AccountsController : ControllerBase
         catch (Exception ex) 
         {
             _logger.LogError(ex, ex.Message);
-            return BadRequest(ResponseBase.Create(ex));
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -105,19 +114,23 @@ public class AccountsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
+            _logger.LogWarning("UserChangePasswordModel is not valid");
             BadRequest(ResponseBase.Create("Model is not valid"));
         }
 
         try
         {
             await _userService.ChangePasswordAsync(userModel.OldPassword, userModel.Password);
+            
+            _logger.LogInformation("Password is changed");
+            
             return Ok(ResponseBase.Create("Success"));
         } 
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(ResponseBase.Create(ex));
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -127,17 +140,23 @@ public class AccountsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            BadRequest(ResponseBase.Create("Model is not valid"));
+            _logger.LogWarning("ResetPasswordModel is not valid");
+
+            return BadRequest(ResponseBase.Create("Model is not valid"));
         }
 
         try
         {
             if (!Guid.TryParse(model.UserId, out Guid userId))
             {
-                throw new FormatException("Id identifier is not valid");
+                _logger.LogInformation("Id identifier is not valid");
+
+                return BadRequest(ResponseBase.Create("Id identifier is not valid"));
             }
 
             string newPassword = await _userService.ResetPasswordAsync(userId);
+
+            _logger.LogWarning("Password is reseted for {1}", userId);
 
             return Ok(new GenericResponse<ResetPasswordResultModel>()
             { 
@@ -152,7 +171,7 @@ public class AccountsController : ControllerBase
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(ResponseBase.Create(ex));
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 }

@@ -75,7 +75,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Unhandled exception");
+    Log.Fatal(ex, ex.Message);
     return 1;
 }
 finally

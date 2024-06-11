@@ -3,6 +3,7 @@ using FoodUserAuth.BusinessLogic.Extensions;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.DataAccess.Interfaces;
 using FoodUserAuth.DataAccess.Types;
+using System.Data;
 
 namespace FoodUserAuth.DataAccess.Implementations;
 
@@ -23,4 +24,12 @@ public class UserContactsService : IUserContactsService
         return userContacts.Select(f => f.ToDto());
     }
 
+    public async Task<bool> HasContact(UserContactType сontactType, string contact)
+    {
+        var userContact = await _unitOfWork
+            .GetUserContactsRepository()
+            .FindContact(сontactType, contact, false);
+
+        return userContact != null;
+    }
 }

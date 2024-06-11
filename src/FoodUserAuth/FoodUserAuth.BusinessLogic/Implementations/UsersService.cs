@@ -60,7 +60,7 @@ public class UsersService : IUsersService
             throw new UserNotFoundException();
         }
 
-        await VerifyAndGetUserIfSuccessAsync(currentUser.LoginName, oldPassword);
+        await VerifyAndGetUserOrNullAsync(currentUser.LoginName, oldPassword);
 
         currentUser.Password = _passwordHasher.ComputeHash(newPassword);
 
@@ -72,13 +72,13 @@ public class UsersService : IUsersService
     /// <summary>
     /// This method verify user
     /// </summary>
-    public async Task<UserDto> VerifyAndGetUserIfSuccessAsync(string loginName, string password) 
+    public async Task<UserDto> VerifyAndGetUserOrNullAsync(string loginName, string password) 
     {
         User foundUser = await InternalFindUserByLoginNameAsync(loginName);
 
         if (!_passwordHasher.VerifyHash(password, foundUser.Password))
         {
-            throw new NotValidPasswordException();
+            return null;
         }
 
         return foundUser.ToDto();
