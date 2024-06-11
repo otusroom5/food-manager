@@ -15,7 +15,7 @@ public class ExpiredProductsReport: IReport
 
     public byte[] Prepare()
     {
-        var justForTest = new StringBuilder();
+        var justForTest = new StringBuilder();        
         foreach (var item in _storageRepository.GetExpiredProductsAsync().Result)
         {
             justForTest.AppendLine(item.ProductId.ToString());

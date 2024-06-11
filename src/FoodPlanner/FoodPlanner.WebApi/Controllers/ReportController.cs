@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodPlanner.WebApi.Controllers
 {
-    [Authorize(Roles = UserRole.Manager)]
+   // [Authorize(Roles = UserRole.Manager)]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class ReportController : ControllerBase
