@@ -27,7 +27,7 @@ public class MessageDispatcher : IMessageDispatcher
     {
         if (notification == null) throw new ArgumentNullException(nameof(notification));
 
-        IEnumerable<Recepient> recepients = await _recepientsSource.GetAllByRecepientGroup(notification.Group);
+        IEnumerable<Recepient> recepients = await _recepientsSource.GetAllByRecepientGroupAsync(notification.Group);
 
         foreach (IMessageSender sender in _senderCollection.GetMessageSenders())
         {

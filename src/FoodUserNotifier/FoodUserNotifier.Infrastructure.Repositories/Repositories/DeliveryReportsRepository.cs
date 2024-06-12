@@ -7,25 +7,25 @@ namespace FoodUserNotifier.Infrastucture.Repositories;
 
 internal class DeliveryReportsRepository : IDeliveryReportsRepository
 {
-    private readonly DatabaseContext _databaseContext;
+    private readonly DatabaseContext _context;
 
-    public DeliveryReportsRepository(DatabaseContext databaseContext)
+    public DeliveryReportsRepository(DatabaseContext context)
     {
-        _databaseContext = databaseContext;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public void Create(DeliveryReport report)
     {
-        _databaseContext.Add(report);
+        _context.Add(report);
     }
 
     public async Task<DeliveryReport> FindByNotificationIdAsync(Guid notificationId)
     {
-        return await _databaseContext.DeliveryReports.FirstOrDefaultAsync(r => r.NotificationId == notificationId);
+        return await _context.DeliveryReports.FirstOrDefaultAsync(r => r.NotificationId == notificationId);
     }
 
     public async Task<DeliveryReport> GetAsync(Guid id)
     {
-        return await _databaseContext.DeliveryReports.FirstOrDefaultAsync(r => r.Id == id);
+        return await _context.DeliveryReports.FirstOrDefaultAsync(r => r.Id == id);
     }
 }

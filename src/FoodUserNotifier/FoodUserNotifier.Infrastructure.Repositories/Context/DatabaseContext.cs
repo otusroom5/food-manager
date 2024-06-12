@@ -10,5 +10,4 @@ public class DatabaseContext : DbContext
     }
 
     public DbSet<DeliveryReport> DeliveryReports { get; set; }
-
 }

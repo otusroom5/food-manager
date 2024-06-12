@@ -5,5 +5,6 @@ namespace FoodUserNotifier.Core.Interfaces.Sources;
 
 public interface IRecepientsSource
 {
-    Task<IEnumerable<Recepient>> GetAllByRecepientGroup(RecepientGroupType recepientGroupType);
+    Task<IEnumerable<Recepient>> GetAllByRecepientGroupAsync(RecepientGroupType recepientGroupType);
+    Task<Recepient> FindAsync(ContactType contactType, string contact);
 }
