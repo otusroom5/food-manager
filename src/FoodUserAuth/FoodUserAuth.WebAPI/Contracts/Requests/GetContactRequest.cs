@@ -1,8 +1,8 @@
 ﻿using FoodUserAuth.DataAccess.Types;
 
-namespace FoodUserAuth.WebApi.Models;
+namespace FoodUserAuth.WebApi.Contracts.Requests;
 
-public sealed class HasContactModel
+public sealed class GetContactRequest
 {
     public UserContactType ContactType { get; set; }
     public string Contact { get; set; }

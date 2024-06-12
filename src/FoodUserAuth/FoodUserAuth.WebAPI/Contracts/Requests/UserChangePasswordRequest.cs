@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodUserAuth.WebApi.Models;
+namespace FoodUserAuth.WebApi.Contracts.Requests;
 
-public class UserChangePasswordModel
+public class UserChangePasswordRequest
 {
     [Required]
     public string OldPassword { get; set; }

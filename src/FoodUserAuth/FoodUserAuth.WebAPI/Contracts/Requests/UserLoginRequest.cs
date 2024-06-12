@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace FoodUserAuth.WebApi.Models;
+namespace FoodUserAuth.WebApi.Contracts.Requests;
 
-public class UserLoginModel
+public class UserLoginRequest
 {
     [Required]
     public string LoginName { get; set; }

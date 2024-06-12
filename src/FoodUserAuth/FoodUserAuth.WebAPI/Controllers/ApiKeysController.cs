@@ -2,6 +2,7 @@
 using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.WebApi.Contracts;
+using FoodUserAuth.WebApi.Contracts.Requests;
 using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -30,11 +31,11 @@ public class ApiKeysController : ControllerBase
     }
 
     [HttpPost("RenewToken")]
-    public async Task<ActionResult> RenewApiKey([FromBody] ApiKeyRenewTokenModel model)
+    public async Task<ActionResult> RenewApiKey([FromBody] ApiKeyRenewTokenRequest request)
     {
         try
         {
-            string newToken = await _apiKeyService.RenewApiKeyAsync(model.OldToken);
+            string newToken = await _apiKeyService.RenewApiKeyAsync(request.OldToken);
 
             _logger.LogDebug("New token is generated");
 
@@ -76,11 +77,11 @@ public class ApiKeysController : ControllerBase
 
     [HttpPut]
     [Authorize(Roles = UserRole.Administration)]
-    public async Task<IActionResult> CreateAsync(ApiKeyCreateModel model) 
+    public async Task<IActionResult> CreateAsync(ApiKeyCreateRequest request) 
     {
         try
         {
-            if (!DateTime.TryParseExact(model.ExpiryDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiryDate))
+            if (!DateTime.TryParseExact(request.ExpiryDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiryDate))
             {
                 return BadRequest(ResponseBase.Create("Ivalid date format 'yyyy-MM-dd'"));
             }

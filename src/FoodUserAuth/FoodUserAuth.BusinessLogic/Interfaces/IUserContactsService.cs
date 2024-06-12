@@ -6,5 +6,5 @@ namespace FoodUserAuth.BusinessLogic.Interfaces;
 public interface IUserContactsService
 {
     Task<IEnumerable<UserContactDto>> GetAllForRoleAsync(UserRole role);
-    Task<bool> HasContact(UserContactType сontactType, string contact);
+    Task<UserContactDto> FindContact(UserContactType сontactType, string contact);
 }

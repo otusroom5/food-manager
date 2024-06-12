@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FoodUserAuth.WebApi.Models;
+﻿namespace FoodUserAuth.WebApi.Models;
 
 public class ResetPasswordModel
 {
-    [Required]
-    public string UserId { get; set; }
+    public string Password { get; set; }
 }

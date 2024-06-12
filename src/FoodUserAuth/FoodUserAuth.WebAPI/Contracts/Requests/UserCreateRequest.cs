@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FoodUserAuth.WebApi.Models;
+namespace FoodUserAuth.WebApi.Contracts.Requests;
 
-public class UserUpdateModel
+public class UserCreateRequest
 {
     [Required]
-    public string UserId { get; set; }
+    public string LoginName { get; set; }
     [Required]
     public string FirstName { get; set; }
     [Required]

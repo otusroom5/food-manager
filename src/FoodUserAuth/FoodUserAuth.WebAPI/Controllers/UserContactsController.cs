@@ -1,5 +1,7 @@
-﻿using FoodUserAuth.BusinessLogic.Interfaces;
+﻿using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.WebApi.Contracts;
+using FoodUserAuth.WebApi.Contracts.Requests;
 using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -62,26 +64,23 @@ public class UserContactsController : ControllerBase
         }
     }
 
-    [HttpGet("HasContact")]
-    public async Task<IActionResult> HasContact([FromQuery] HasContactModel model)
+    [HttpGet("GetContact")]
+    public async Task<IActionResult> GetContact([FromQuery] GetContactRequest request)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(model.Contact))
+            if (string.IsNullOrWhiteSpace(request.Contact))
             {
                 _logger.LogInformation("Contact is not defined");
                 return BadRequest(ResponseBase.Create("Contact is not defined"));
             }
 
-            bool hasContacts = await _userContactsService.HasContact(model.ContactType, model.Contact);
+            UserContactDto userContact = await _userContactsService.FindContact(request.ContactType, request.Contact);
 
-            return Ok(new GenericResponse<object>()
+            return Ok(new GenericResponse<UserContactModel>()
             {
-                Data = new
-                {
-                    ContactExist = hasContacts
-                },
-                Message = hasContacts ? "Success" : "Fail"
+                Data = userContact.ToModel(),
+                Message = userContact != null ? "Success" : "Fail"
             });
         }
         catch (Exception ex)

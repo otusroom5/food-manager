@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using FoodManager.Shared.Types;
 using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.WebApi.Contracts.Requests;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -33,7 +34,7 @@ public class AccountsController : ControllerBase
     /// <summary>
     /// Verify user and return response jwt token
     /// </summary>
-    /// <param name="userModel"></param>
+    /// <param name="request"></param>
     /// <returns>Token, Role or error in message property</returns>
     /// <remarks>
     /// Sample request:
@@ -48,7 +49,7 @@ public class AccountsController : ControllerBase
     /// <response code="200">Token is generated</response>
     /// <response code="400">If the user is not valid</response>
     [HttpPost("Login")]
-    public async Task<IActionResult> Login(UserLoginModel userModel)
+    public async Task<IActionResult> Login(UserLoginRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -56,10 +57,10 @@ public class AccountsController : ControllerBase
             BadRequest(ResponseBase.Create("Model is not valid"));
         }
 
-        _logger.LogDebug("Attempt to login {LoginName}", userModel.LoginName);
+        _logger.LogDebug("Attempt to login {LoginName}", request.LoginName);
         try
         {
-            UserDto user = await _userService.VerifyAndGetUserOrNullAsync(userModel.LoginName, userModel.Password);
+            UserDto user = await _userService.VerifyAndGetUserOrNullAsync(request.LoginName, request.Password);
 
             if (user == null)
             {
@@ -67,7 +68,7 @@ public class AccountsController : ControllerBase
                 return BadRequest(ResponseBase.Create("User not found"));
             }
 
-            _logger.LogInformation("User ({1}) is accepted", userModel.LoginName);
+            _logger.LogInformation("User ({1}) is accepted", request.LoginName);
 
             string token = _tokenService.Generate(user.LoginName, user.Id, user.Role);
 
@@ -94,7 +95,7 @@ public class AccountsController : ControllerBase
     /// <summary>
     /// Change password of user by username
     /// </summary>
-    /// <param name="userModel"></param>
+    /// <param name="request"></param>
     /// <remarks>
     /// Sample request:
     ///
@@ -110,7 +111,7 @@ public class AccountsController : ControllerBase
 
     [Authorize(Roles = $"{UserRole.Administration}, {UserRole.Manager}, {UserRole.Cooker}")]
     [HttpPost("ChangePassword")]
-    public async Task<IActionResult> ChangePassword(UserChangePasswordModel userModel)
+    public async Task<IActionResult> ChangePassword(UserChangePasswordRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -120,7 +121,7 @@ public class AccountsController : ControllerBase
 
         try
         {
-            await _userService.ChangePasswordAsync(userModel.OldPassword, userModel.Password);
+            await _userService.ChangePasswordAsync(request.OldPassword, request.Password);
             
             _logger.LogInformation("Password is changed");
             
@@ -136,7 +137,7 @@ public class AccountsController : ControllerBase
 
     [Authorize(Roles = UserRole.Administration)]
     [HttpPost("ResetPassword")]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -147,7 +148,7 @@ public class AccountsController : ControllerBase
 
         try
         {
-            if (!Guid.TryParse(model.UserId, out Guid userId))
+            if (!Guid.TryParse(request.UserId, out Guid userId))
             {
                 _logger.LogInformation("Id identifier is not valid");
 
@@ -158,9 +159,9 @@ public class AccountsController : ControllerBase
 
             _logger.LogWarning("Password is reseted for {1}", userId);
 
-            return Ok(new GenericResponse<ResetPasswordResultModel>()
+            return Ok(new GenericResponse<ResetPasswordModel>()
             { 
-                Data = new ResetPasswordResultModel()
+                Data = new ResetPasswordModel()
                 {
                     Password = newPassword
                 },

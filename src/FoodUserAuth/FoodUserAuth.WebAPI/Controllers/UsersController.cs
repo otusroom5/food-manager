@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FoodManager.Shared.Types;
 using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.WebApi.Contracts.Requests;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -99,7 +100,7 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPut]
-    public async Task<ActionResult> Create([FromBody] UserCreateModel model)
+    public async Task<ActionResult> Create([FromBody] UserCreateRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -110,13 +111,13 @@ public class UsersController : ControllerBase
 
         try
         {
-            var result = await _usersService.CreateUserAsync(model.ToDto());
+            var result = await _usersService.CreateUserAsync(request.ToDto());
 
             _logger.LogDebug("Create user ({Id}) was create", result.User.Id);
 
-            return Ok(new GenericResponse<UserCreateResultModel>()
+            return Ok(new GenericResponse<UserCreateModel>()
             {
-                Data = new UserCreateResultModel()
+                Data = new UserCreateModel()
                 {
                     UserId = result.User.Id,
                     Password = result.Password
@@ -139,7 +140,7 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPost]
-    public async Task<ActionResult> Update([FromBody] UserUpdateModel model)
+    public async Task<ActionResult> Update([FromBody] UserUpdateRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -149,7 +150,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            await _usersService.UpdateUserAsync(model.ToDto());
+            await _usersService.UpdateUserAsync(request.ToDto());
 
             _logger.LogDebug("User was updated");
             return Ok(ResponseBase.CreateSuccess());
