@@ -1,10 +1,10 @@
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using FoodManager.Shared.Extensions;
 using FoodPlanner.BusinessLogic.Interfaces;
-using FoodPlanner.BusinessLogic.Reports;
 using FoodPlanner.BusinessLogic.Services;
 using FoodPlanner.DataAccess.Implementations;
 using FoodPlanner.DataAccess.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
@@ -25,8 +25,10 @@ builder.Services.AddHttpServiceClient(options =>
     options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
 });
 
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 builder.Services.AddHttpClient<IStorageRepository, StorageRepository>("FoodStorageApi");
 builder.Services.AddHttpClient<IUnitOfWork, UnitOfWork>("FoodStorageApi");
+builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.ConfigureAuthentication();

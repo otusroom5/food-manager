@@ -7,14 +7,16 @@ using FoodPlanner.DataAccess.Interfaces;
 namespace FoodPlanner.BusinessLogic.Services;
 
 public class ReportService : IReportService
-{   
+{
+    private readonly IPdfService _pdfService;
     private readonly IStorageRepository _storageRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ReportService(IUnitOfWork unitOfWork)
-    {   
+    public ReportService(IUnitOfWork unitOfWork, IPdfService pdfService)
+    {
+        _pdfService = pdfService;
         _unitOfWork = unitOfWork;
-        _storageRepository = _unitOfWork.GetStorageRepository();
+        _storageRepository = _unitOfWork.GetStorageRepository();       
     }
 
     public Report Create(ReportType reportType, string reportName, string reportDescription, Guid userId)
@@ -24,13 +26,13 @@ public class ReportService : IReportService
 
     public byte[] Generate(ReportType reportType)
     {
-        byte[] reportContent = reportType switch
-        {
-            ReportType.ExpiredProducts => new ExpiredProductsReport(_storageRepository).Prepare(),
-            ReportType.ConsumptionProducts => throw new NotImplementedException(),
-            ReportType.PurchasingProducts => throw new NotImplementedException(),
-            _ => throw new NotImplementedException(),
-        };
+         byte[] reportContent = reportType switch
+         {
+             ReportType.ExpiredProducts => new ExpiredProductsReport(_pdfService, _storageRepository).PrepareAsync().Result,
+             ReportType.ConsumptionProducts => throw new NotImplementedException(),
+             ReportType.PurchasingProducts => throw new NotImplementedException(),
+             _ => throw new NotImplementedException(),
+         };     
         return reportContent;
     }
 }

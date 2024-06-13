@@ -23,9 +23,7 @@ namespace FoodPlanner.WebApi.Controllers
 
         [HttpGet("GenerateExpiredProductsReport")]
         public ActionResult<Report> GenerateExpiredProductsReport()
-        {
-            // Modify to async 
-
+        {     
             var report = _reportService.Create(ReportType.ExpiredProducts,
                 "ExpiredProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
