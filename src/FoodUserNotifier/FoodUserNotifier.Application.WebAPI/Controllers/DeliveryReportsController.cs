@@ -16,9 +16,9 @@ namespace FoodUserNotifier.Application.WebAPI.Controllers;
 public class DeliveryReportsController : ControllerBase
 {
     private readonly IDeliveryReportsRepository _deliveryReportsRepository;
-    public DeliveryReportsController(IUnitOfWork unitOfWork) 
+    public DeliveryReportsController(IDeliveryReportsRepository deliveryReportsRepository) 
     {
-        _deliveryReportsRepository = unitOfWork.GetDeliveryReportsRepository();
+        _deliveryReportsRepository = deliveryReportsRepository;
     }
 
     [HttpGet("GetByNotificationId")]

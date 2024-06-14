@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FoodUserNotifier.Infrastucture.Repositories;
 
-internal class DeliveryReportsRepository : IDeliveryReportsRepository
+public class DeliveryReportsRepository : IDeliveryReportsRepository
 {
     private readonly DatabaseContext _context;
 
@@ -27,5 +27,10 @@ internal class DeliveryReportsRepository : IDeliveryReportsRepository
     public async Task<DeliveryReport> GetAsync(Guid id)
     {
         return await _context.DeliveryReports.FirstOrDefaultAsync(r => r.Id == id);
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }

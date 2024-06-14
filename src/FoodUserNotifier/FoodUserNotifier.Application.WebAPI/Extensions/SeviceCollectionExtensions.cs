@@ -1,6 +1,4 @@
 ﻿using FoodUserNotifier.Core.Interfaces.Sources;
-using FoodUserNotifier.Infrastructure.Services.Implementations;
-using FoodUserNotifier.Infrastructure.Services.Interfaces;
 using FoodUserNotifier.Infrastructure.Sources;
 
 namespace FoodUserNotifier.Application.WebAPI.Extensions;
@@ -12,7 +10,9 @@ public static class SeviceCollectionExtensions
         return serviceDescriptors.AddTransient<IRecepientsSource>(provider =>
         {
             IHttpClientFactory httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
-            return new RecepientsSource(httpClientFactory, serviceName);
+            ILogger<RecepientsSource> logger = provider.GetRequiredService<ILogger<RecepientsSource>>();
+            
+            return new RecepientsSource(httpClientFactory, serviceName, logger);
         });
     } 
 }

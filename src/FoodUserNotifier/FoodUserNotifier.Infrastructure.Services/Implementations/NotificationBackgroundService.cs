@@ -7,7 +7,6 @@ using FoodUserNotifier.Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Channels;
 using FoodManager.Shared.Utils.Interfaces;
 using FoodManager.Shared.Utils.Implementations;
 
@@ -40,14 +39,14 @@ public class NotificationBackgroundService : BackgroundService, INotificationBac
     {
         IAmqpConnection rabbitConnection = AmqpConnectionStringBuilder.Parse(_configuration.GetConnectionString("RabbitMq"));
 
-        var factory = new ConnectionFactory 
-        { 
+        var factory = new ConnectionFactory
+        {
             HostName = rabbitConnection.GetHost(),
             Port = rabbitConnection.GetPort(),
             UserName = rabbitConnection.GetUserName(),
             Password = rabbitConnection.GetUserPassword()
         };
-        
+
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
 

@@ -1,6 +1,7 @@
 ﻿using FoodUserNotifier.Core.Domain.Interfaces;
 using FoodUserNotifier.Core.Entities;
 using FoodUserNotifier.Core.Interfaces;
+using FoodUserNotifier.Core.Interfaces.Repositories;
 using FoodUserNotifier.Core.Interfaces.Sources;
 
 namespace FoodUserNotifier.BusinessLogic.Services;
@@ -9,16 +10,17 @@ public class MessageDispatcher : IMessageDispatcher
 {
     private readonly IDomainLogger _logger;
     private readonly IMessageSenderCollection _senderCollection;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDeliveryReportsRepository _deliveryReportsRepository;
     private readonly IRecepientsSource _recepientsSource;
 
-    public MessageDispatcher(IUnitOfWork unitOfWork,
+    public MessageDispatcher(
+        IDeliveryReportsRepository deliveryReportsRepository,
         IMessageSenderCollection senderCollection,
         IRecepientsSource recepientsSource,
         IDomainLogger logger)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _deliveryReportsRepository = deliveryReportsRepository;
         _senderCollection = senderCollection;
         _recepientsSource = recepientsSource;
     }
@@ -52,10 +54,9 @@ public class MessageDispatcher : IMessageDispatcher
             }
             finally
             {
-                _unitOfWork
-                    .GetDeliveryReportsRepository()
+                _deliveryReportsRepository
                     .Create(report);
-                await _unitOfWork.SaveChangesAsync();
+                await _deliveryReportsRepository.SaveChangesAsync();
             }
         }
     }
