@@ -2,6 +2,7 @@
 using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Models;
 using FoodPlanner.BusinessLogic.Types;
+using FoodPlanner.EventBusRabbitMQ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,17 +14,21 @@ namespace FoodPlanner.WebApi.Controllers
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
+        private readonly IRabbitMQProducer _rabbitMQProducer;  
         private readonly ILogger<ReportController> _logger;
 
-        public ReportController(IReportService reportService, ILogger<ReportController> logger)
+        public ReportController(IReportService reportService, 
+            IRabbitMQProducer rabbitMQProducer,
+            ILogger<ReportController> logger)
         {
             _reportService = reportService;
+            _rabbitMQProducer = rabbitMQProducer;
             _logger = logger;
         }
 
         [HttpGet("GenerateExpiredProductsReport")]
         public ActionResult<Report> GenerateExpiredProductsReport()
-        {     
+        {   
             var report = _reportService.Create(ReportType.ExpiredProducts,
                 "ExpiredProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
@@ -33,9 +38,15 @@ namespace FoodPlanner.WebApi.Controllers
 
             report.Content = new MemoryStream(_reportService.Generate(report.Type));          
             report.State = ReportState.Generated;
-            _logger.LogInformation("Report {ReportGuid} generated successfully", report.Id);
 
-            return Ok(report);
+            _logger.LogInformation("Report {ReportGuid} generated successfully. And publishing to gueue", report.Id);
+            
+            // Rabbit message just for test
+            _rabbitMQProducer.SendReportMessage("TestMessageForNotifier");
+
+            _logger.LogInformation("Report {ReportGuid} published to gueue successfully", report.Id);
+
+            return Ok(report);           
         }
     }
 }

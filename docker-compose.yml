@@ -5,8 +5,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=room5
       - RABBITMQ_DEFAULT_PASS=room5Password
-    ports:
-      - 5672:5672
+    ports:      
       - 15672:15672
     networks:
       - food_net
@@ -94,7 +93,7 @@ services:
         - 8082:80
     depends_on:
        postgres:
-         condition: service_healthy
+         condition: service_healthy     
     restart: unless-stopped
     networks:
         - food_net 
@@ -119,7 +118,7 @@ services:
     ports:
         - 8084:80
     environment:
-        - ASPNETCORE_ENVIRONMENT=development
+        - ASPNETCORE_ENVIRONMENT=development        
         - UserNotifier_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http 
         - UserNotifier_ConnectionStrings__DbConnection=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
         - UserNotifier_ConnectionStrings__RabbitMq=Host=rabbitmq;Port=5672;Queue=notification;Username=test;Password=test

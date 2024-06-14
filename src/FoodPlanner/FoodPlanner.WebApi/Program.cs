@@ -5,6 +5,7 @@ using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Services;
 using FoodPlanner.DataAccess.Implementations;
 using FoodPlanner.DataAccess.Interfaces;
+using FoodPlanner.EventBusRabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
@@ -31,6 +32,7 @@ builder.Services.AddHttpClient<IStorageRepository, StorageRepository>("FoodStora
 builder.Services.AddHttpClient<IUnitOfWork, UnitOfWork>("FoodStorageApi");
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProduce>();
 
 builder.ConfigureAuthentication();
 
