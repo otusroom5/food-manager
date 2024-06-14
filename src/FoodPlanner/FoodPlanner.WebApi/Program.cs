@@ -9,8 +9,9 @@ using FoodPlanner.DataAccess.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
 
-builder.Services.AddControllers();
 builder.Services.AddLogging();
+builder.Logging.AddConsole();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBarerAuth();
 
