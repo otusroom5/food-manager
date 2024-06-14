@@ -86,7 +86,7 @@ public class ServiceConnectionBuilder : IServiceConnection
         var result = new Dictionary<string, string>();
 
 
-        foreach (var keyValue in connectionString.ToLower().Split(';'))
+        foreach (var keyValue in connectionString.Split(';'))
         {
             var tokens = keyValue.Split('=');
 
@@ -95,7 +95,7 @@ public class ServiceConnectionBuilder : IServiceConnection
                 continue;
             }
 
-            result.Add(tokens[0], tokens[1]);
+            result.Add(tokens[0]?.ToLower(), tokens[1]);
         }
 
         return new ServiceConnectionBuilder(result);

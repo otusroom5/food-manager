@@ -1,6 +1,6 @@
 ﻿namespace FoodManager.Shared.Utils.Interfaces;
 
-public interface IAmqpConnectionString
+public interface IAmqpConnection
 {
     string GetHost();
     int GetPort();

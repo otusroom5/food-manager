@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Protocols.Configuration;
 
 namespace FoodManager.Shared.Utils.Implementations;
 
-public class AmqpConnectionStringBuilder : IAmqpConnectionString
+public class AmqpConnectionStringBuilder : IAmqpConnection
 {
     private const string HostArg = "host";
     private const string UserNameArg = "username";
@@ -37,12 +37,12 @@ public class AmqpConnectionStringBuilder : IAmqpConnectionString
         return _dict.TryGetValue(UserPasswordArg, out var userPassword) ? userPassword : throw new InvalidConfigurationException();
     }
 
-    public static IAmqpConnectionString Parse(string connectionString)
+    public static IAmqpConnection Parse(string connectionString)
     {
         var result = new Dictionary<string, string>();
 
 
-        foreach (var keyValue in connectionString.ToLower().Split(';'))
+        foreach (var keyValue in connectionString.Split(';'))
         {
             var tokens = keyValue.Split('=');
 
@@ -51,7 +51,7 @@ public class AmqpConnectionStringBuilder : IAmqpConnectionString
                 continue;
             }
 
-            result.Add(tokens[0], tokens[1]);
+            result.Add(tokens[0]?.ToLower(), tokens[1]);
         }
 
         return new AmqpConnectionStringBuilder(result);

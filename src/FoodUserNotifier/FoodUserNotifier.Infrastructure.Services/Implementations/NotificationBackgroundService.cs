@@ -38,7 +38,7 @@ public class NotificationBackgroundService : BackgroundService, INotificationBac
 
     public void StartListen()
     {
-        IAmqpConnectionString rabbitConnection = AmqpConnectionStringBuilder.Parse(_configuration.GetConnectionString("RabbitMq"));
+        IAmqpConnection rabbitConnection = AmqpConnectionStringBuilder.Parse(_configuration.GetConnectionString("RabbitMq"));
 
         var factory = new ConnectionFactory 
         { 
