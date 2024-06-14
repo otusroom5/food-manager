@@ -79,7 +79,7 @@ public class UserContactsController : ControllerBase
 
             return Ok(new GenericResponse<UserContactModel>()
             {
-                Data = userContact.ToModel(),
+                Data = userContact?.ToModel(),
                 Message = userContact != null ? "Success" : "Fail"
             });
         }

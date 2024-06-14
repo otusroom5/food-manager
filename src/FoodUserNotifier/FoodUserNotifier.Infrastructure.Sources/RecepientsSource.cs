@@ -15,6 +15,7 @@ namespace FoodUserNotifier.Infrastructure.Sources;
 public partial class RecepientsSource : IRecepientsSource
 {
     private const string UserAuthGetAllForRoleUrl = "/api/v1/UserContacts/GetAllForRole";
+    private const string UserAuthGetContact = "/api/v1/UserContacts/GetContact";
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _serviceName;
     private static JsonSerializerOptions _serializerOptions;
@@ -31,7 +32,7 @@ public partial class RecepientsSource : IRecepientsSource
 
         Uri requestUri = new UriBuilder(httpClient.BaseAddress)
         {
-            Path = UserAuthGetAllForRoleUrl,
+            Path = UserAuthGetContact,
             Query = new FindRecepientRequest()
             {
                 ContactType = contactType,
@@ -54,6 +55,11 @@ public partial class RecepientsSource : IRecepientsSource
         catch (HttpRequestException ex)
         {
             throw new HttpRequestException(recepientResponse.Message ?? ex.Message, ex);
+        }
+
+        if (recepientResponse.Data == null)
+        {
+            return null;
         }
 
         return new Recepient()

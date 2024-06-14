@@ -30,6 +30,6 @@ public class UserContactsService : IUserContactsService
             .GetUserContactsRepository()
             .FindContact(сontactType, contact, false);
 
-        return userContact.ToDto();
+        return userContact?.ToDto();
     }
 }
