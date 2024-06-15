@@ -1,6 +1,6 @@
 ﻿namespace FoodPlanner.EventBusRabbitMQ;
 
-public interface IRabbitMQProducer
+public interface IRabbitMqProducer
 {
     public void SendReportMessage<T>(T message);
 }

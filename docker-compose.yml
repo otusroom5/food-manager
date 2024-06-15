@@ -136,6 +136,7 @@ services:
         - ASPNETCORE_ENVIRONMENT=development 
         - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http
         - FoodPlanner_ConnectionStrings__FoodStorageApi=Host=foodstorage;Port=80;Schema=http
+        - FoodPlanner_ConnectionStrings__RabbitMq=Host=rabbitmq;Port=5672;Queue=notification;Username=room5;Password=room5Password
     restart: unless-stopped
     networks:
         - food_net 

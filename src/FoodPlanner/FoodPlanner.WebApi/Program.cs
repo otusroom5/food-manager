@@ -32,7 +32,7 @@ builder.Services.AddHttpClient<IStorageRepository, StorageRepository>("FoodStora
 builder.Services.AddHttpClient<IUnitOfWork, UnitOfWork>("FoodStorageApi");
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IReportService, ReportService>();
-builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProduce>();
+builder.Services.AddScoped<IRabbitMqProducer, RabbitMqProduce>();
 
 builder.ConfigureAuthentication();
 
