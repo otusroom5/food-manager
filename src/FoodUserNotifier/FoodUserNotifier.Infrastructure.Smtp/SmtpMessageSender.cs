@@ -21,6 +21,5 @@ public sealed class SmtpMessageSender : IMessageSender
     public Task SendAsync(Message message, DeliveryReport report)
     {
         return Task.CompletedTask;
-        //throw new NotImplementedException();
     }
 }

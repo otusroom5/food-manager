@@ -19,6 +19,6 @@ public sealed class TelegramMessageSender : IMessageSender
 
     public async Task SendAsync(Core.Entities.Message message, DeliveryReport report)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }

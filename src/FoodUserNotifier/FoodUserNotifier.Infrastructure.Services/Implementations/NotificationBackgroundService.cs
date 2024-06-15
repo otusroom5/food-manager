@@ -62,10 +62,10 @@ public class NotificationBackgroundService : BackgroundService, INotificationBac
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += async (model, ea) =>
         {
-            using (var serviceScope = _serviceProvider.CreateAsyncScope())
+            using (var serviceScope = _serviceProvider.CreateScope())
             {
-                var messageDispatcher = _serviceProvider.GetRequiredService<IMessageDispatcher>();
-                var notificationConverter = _serviceProvider.GetRequiredService<INotificationConverter>();
+                var messageDispatcher = serviceScope.ServiceProvider.GetRequiredService<IMessageDispatcher>();
+                var notificationConverter = serviceScope.ServiceProvider.GetRequiredService<INotificationConverter>();
 
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);

@@ -53,7 +53,7 @@ try
     builder.Services.AddScoped<IMessageDispatcher, MessageDispatcher>();
     builder.Services.AddTransient<INotificationConverter, JsonNotificationConverter>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
- //   builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
+    builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
     builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
     builder.Services.AddTransient<IMessageSenderCollection, MessageSenderCollection>();
     builder.Services.AddSingleton<IDomainLogger, DomainLogger>();
