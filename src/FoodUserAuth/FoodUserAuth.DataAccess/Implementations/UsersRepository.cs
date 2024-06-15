@@ -50,7 +50,7 @@ public class UsersRepository : IUsersRepository, IDisposable
     /// <returns>IEnumerable<User></returns>
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _dbContext.Users.OrderBy(f => f.Id).ToListAsync();
+        return await _dbContext.Users.OrderBy(f => f.Id).Include(f => f.UserContacts).ToListAsync();
     }
 
     /// <summary>
@@ -62,8 +62,9 @@ public class UsersRepository : IUsersRepository, IDisposable
     {
         return await (from users in _dbContext.Users
                       where EF.Functions.ILike(users.LoginName,$"%{loginName}%")
-                      select users).FirstOrDefaultAsync();
+                      select users).Include(f=>f.UserContacts).FirstOrDefaultAsync();
     }
+
 
     /// <summary>
     /// Get user by id, throw exception if user is not found
@@ -74,7 +75,7 @@ public class UsersRepository : IUsersRepository, IDisposable
     {
         return await (from users in _dbContext.Users
                       where users.Id == id
-                      select users).FirstOrDefaultAsync();
+                      select users).Include(f => f.UserContacts).FirstOrDefaultAsync();
     }
 
     protected virtual void Dispose(bool disposing)

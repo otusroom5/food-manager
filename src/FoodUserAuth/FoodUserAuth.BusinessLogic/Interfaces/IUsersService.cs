@@ -11,5 +11,5 @@ public interface IUsersService
     Task UpdateUserAsync(UserDto user);
     Task DisableUserAsync(Guid id);
     Task ChangePasswordAsync(string oldPassword, string newPassword);
-    Task<UserDto> VerifyAndGetUserIfSuccessAsync(string loginName, string password);
+    Task<UserDto> VerifyAndGetUserOrNullAsync(string loginName, string password);
 }

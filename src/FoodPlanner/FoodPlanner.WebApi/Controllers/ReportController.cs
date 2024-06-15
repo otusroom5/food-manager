@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodPlanner.WebApi.Controllers
 {
-    [Authorize(Roles = UserRole.Manager)]
-    [Route("api/v1/[controller]")]
+   // [Authorize(Roles = UserRole.Manager)]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class ReportController : ControllerBase
     {
@@ -20,9 +20,10 @@ namespace FoodPlanner.WebApi.Controllers
             _reportService = reportService;
             _logger = logger;
         }
-             
+
+        [HttpGet("GenerateExpiredProductsReport")]
         public ActionResult<Report> GenerateExpiredProductsReport()
-        {
+        {     
             var report = _reportService.Create(ReportType.ExpiredProducts,
                 "ExpiredProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
@@ -30,7 +31,7 @@ namespace FoodPlanner.WebApi.Controllers
              );
             _logger.LogInformation("Report created: {ReportGuid}", report.Id);
 
-            report.Content = new MemoryStream(_reportService.Generate());          
+            report.Content = new MemoryStream(_reportService.Generate(report.Type));          
             report.State = ReportState.Generated;
             _logger.LogInformation("Report {ReportGuid} generated successfully", report.Id);
 

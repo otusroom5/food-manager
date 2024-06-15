@@ -1,8 +1,8 @@
-﻿using FoodStorage.Application.Services;
-using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.Domain.Entities.ProductItemEntity;
-using FoodStorage.WebApi.Models.Extensions;
-using FoodStorage.WebApi.Models.ProductItemModels;
+﻿using FoodManager.Shared.Types;
+using FoodStorage.Application.Services;
+using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
@@ -10,7 +10,7 @@ namespace FoodStorage.WebApi.Controllers;
 [Route("api/[controller]")]
 [Produces("application/json")]
 [ApiController]
-public class ProductItemController : ControllerBase
+public class ProductItemController : BaseController
 {
     private readonly IProductItemService _productItemService;
 
@@ -24,13 +24,13 @@ public class ProductItemController : ControllerBase
     /// </summary>
     /// <param name="productItem">Модель единицы продукта</param>
     /// <returns>Идентиикатор созданной единицы продукта</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(CreateProductItemModel productItem)
+    public async Task<ActionResult<Guid>> CreateAsync(ProductItemCreateRequestModel productItem)
     {
-        ProductItem productItemToCreate = productItem.ToEntity();
-        ProductItemId id = _productItemService.Create(productItemToCreate);
+        Guid id = await _productItemService.CreateAsync(productItem, UserId.ToGuid());
 
-        return Ok(id.ToGuid());
+        return Ok(id);
     }
 
     /// <summary>
@@ -38,11 +38,11 @@ public class ProductItemController : ControllerBase
     /// </summary>
     /// <param name="productItemId">Идентификатор единицы продукта</param>
     /// <returns>Единица продукта</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpGet("GetById/{productItemId}")]
-    public ActionResult<ProductItemModel> GetById(Guid productItemId)
+    public async Task<ActionResult<ProductItemViewModel>> GetByIdAsync(Guid productItemId)
     {
-        ProductItem productItem = _productItemService.GetById(ProductItemId.FromGuid(productItemId));
-        ProductItemModel result = productItem.ToModel();
+        ProductItemViewModel result = await _productItemService.GetByIdAsync(productItemId);
 
         return Ok(result);
     }
@@ -52,11 +52,11 @@ public class ProductItemController : ControllerBase
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Список единиц продукта</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetByProductId/{productId}")]
-    public ActionResult<List<ProductItemModel>> GetByProductId(Guid productId)
+    public async Task<ActionResult<List<ProductItemViewModel>>> GetByProductIdAsync(Guid productId)
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetByProductId(ProductId.FromGuid(productId));
-        List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
+        List<ProductItemViewModel> result = await _productItemService.GetByProductIdAsync(productId);
 
         return Ok(result);
     }
@@ -65,24 +65,37 @@ public class ProductItemController : ControllerBase
     /// Получить все единицы продуктов
     /// </summary>
     /// <returns>Список единиц продукта</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetAll")]
-    public ActionResult<List<ProductItemModel>> GetAll()
+    public async Task<ActionResult<List<ProductItemViewModel>>> GetAllAsync()
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetAll();
-        List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
+        List<ProductItemViewModel> result = await _productItemService.GetAllAsync();
 
         return Ok(result);
     }
 
     /// <summary>
-    /// Получить список единиц продуктов с истекшим сроком годности
+    /// Получить список единиц продуктов с истекающим сроком годности, если 0 - то с истекшим
     /// </summary>
     /// <returns>Список единиц продукта</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey")] // Need to check how config to work with Roles together
     [HttpGet("GetExpiredProductItems")]
-    public ActionResult<List<ProductItemModel>> GetExpiredProductItems()
+    public async Task<ActionResult<List<ProductItemViewModel>>> GetExpireProductItemsAsync(int daysBeforeExpired = 0)
     {
-        IEnumerable<ProductItem> productItems = _productItemService.GetExpiredProductItems();
-        List<ProductItemModel> result = productItems.Select(pi => pi.ToModel()).ToList();
+        List<ProductItemViewModel> result = await _productItemService.GetExpireProductItemsAsync(daysBeforeExpired);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Получить список заканчивающихся единиц продуктов в холодильнике
+    /// </summary>
+    /// <returns>Список единиц продукта</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
+    [HttpGet("GetEndingProductItems")]
+    public async Task<ActionResult<List<ProductItemViewModel>>> GetEndingProductItemsAsync()
+    {
+        List<ProductItemViewModel> result = await _productItemService.GetEndingProductItemsAsync();
 
         return Ok(result);
     }
@@ -93,10 +106,11 @@ public class ProductItemController : ControllerBase
     /// <param name="productId">Идентификатор продукта</param>
     /// <param name="count">Количество продукта</param>
     /// <returns>ок</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPost("TakePartOf/{productId}/{count}")]
-    public ActionResult TakePartOf(Guid productId, int count)
+    public async Task<ActionResult> TakePartOfAsync(Guid productId, int count)
     {
-        _productItemService.TakePartOf(ProductId.FromGuid(productId), count);
+        await _productItemService.TakePartOfAsync(productId, count, UserId.ToGuid());
 
         return Ok();
     }
@@ -106,11 +120,11 @@ public class ProductItemController : ControllerBase
     /// </summary>
     /// <param name="productItemIds">Идентификаторы единиц продукта</param>
     /// <returns>ок</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPost("WriteOff")]
-    public ActionResult WriteOff(List<Guid> productItemIds)
+    public async Task<ActionResult> WriteOffAsync(List<Guid> productItemIds)
     {
-        IEnumerable<ProductItemId> ids = productItemIds.Select(ProductItemId.FromGuid);
-        _productItemService.WriteOff(ids);
+        await _productItemService.WriteOffAsync(productItemIds, UserId.ToGuid());
 
         return Ok();
     }
@@ -120,10 +134,11 @@ public class ProductItemController : ControllerBase
     /// </summary>
     /// <param name="productItemId">Идентификатор единицы продукта</param>
     /// <returns>ок</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpDelete("Delete/{productItemId}")]
-    public ActionResult Delete(Guid productItemId)
+    public async Task<ActionResult> DeleteAsync(Guid productItemId)
     {
-        _productItemService.Delete(ProductItemId.FromGuid(productItemId));
+        await _productItemService.DeleteAsync(productItemId);
 
         return Ok();
     }

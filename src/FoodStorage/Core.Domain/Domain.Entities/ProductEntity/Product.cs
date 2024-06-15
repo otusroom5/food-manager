@@ -38,12 +38,12 @@ public record Product
     {
         if (minAmountPerDay <= 0)
         {
-            throw new InvalidArgumentValueException("Минимальный остаток должен быть положительным числом", nameof(MinAmountPerDay));
+            throw new InvalidArgumentValueException("The minimum balance must be a positive number", nameof(MinAmountPerDay));
         }
 
         if (bestBeforeDate <= 0)
         {
-            throw new InvalidArgumentValueException("Срок годности должен быть положительным числом", nameof(BestBeforeDate));
+            throw new InvalidArgumentValueException("Expiration date must be a positive number", nameof(BestBeforeDate));
         }
 
         return new()

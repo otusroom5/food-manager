@@ -20,24 +20,17 @@ public class ProductHistoryTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'ProductHistoryId': Передан пустой Guid")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'ProductHistoryId': Empty Guid passed")]
     public void IncorrectProductHistoryIdTest()
     {
         ProductHistoryId.FromGuid(Guid.Empty);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'UserId': Передан пустой Guid")]
-    public void IncorrectUserIdTest()
-    {
-        UserId.FromGuid(Guid.Empty);
-    }
-
-    [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
     [ExpectedException(typeof(InvalidArgumentValueException),
-        "Некорректное значение аргумента 'Count': Количество продукта должно быть положительным числом")]
+        "Invalid argument value 'Count': Product quantity must be a positive number")]
     public void EmptyProductHistoryCountTest(int count)
     {
         ProductHistory.CreateNew(ProductHistoryId.CreateNew(), ProductId.CreateNew(),
@@ -46,7 +39,7 @@ public class ProductHistoryTest
 
     [TestMethod]
     [ExpectedException(typeof(InvalidArgumentValueException),
-        "Некорректное значение аргумента 'CreatedAt': Дата операции не может быть из будущего")]
+        "Invalid argument value 'CreatedAt': Created date cannot be from the future")]
     public void IncorrectProductHistoryCreatedAtTest()
     {
         ProductHistory.CreateNew(ProductHistoryId.CreateNew(), ProductId.CreateNew(),

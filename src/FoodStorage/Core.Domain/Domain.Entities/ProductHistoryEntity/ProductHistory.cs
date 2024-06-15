@@ -44,12 +44,12 @@ public record ProductHistory
     {
         if (count <= 0)
         {
-            throw new InvalidArgumentValueException("Количество продукта должно быть положительным числом", nameof(Count));
+            throw new InvalidArgumentValueException("Product quantity must be a positive number", nameof(Count));
         }
 
         if (createdAt > DateTime.UtcNow)
         {
-            throw new InvalidArgumentValueException("Дата операции не может быть из будущего", nameof(CreatedAt));
+            throw new InvalidArgumentValueException("Created date cannot be from the future", nameof(CreatedAt));
         }
 
         return new()

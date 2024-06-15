@@ -17,7 +17,7 @@ public class ProductTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'ProductId': Передан пустой Guid")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'ProductId': Empty Guid passed")]
     public void IncorrectProductIdTest()
     {
         ProductId.FromGuid(Guid.Empty);
@@ -26,7 +26,7 @@ public class ProductTest
     [TestMethod]
     [DataRow("a")]
     [DataRow("многобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобуквмногобукв")]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'ProductName': Передано некорректное значение")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'ProductName': Incorrect value passed")]
     public void IncorrectProductNameTest(string name)
     {
         ProductName.FromString(name);
@@ -36,7 +36,7 @@ public class ProductTest
     [DataRow(null)]
     [DataRow("")]
     [DataRow("   ")]
-    [ExpectedException(typeof(InvalidArgumentValueException), "Некорректное значение аргумента 'ProductName': Передано пустое значение")]
+    [ExpectedException(typeof(InvalidArgumentValueException), "Invalid argument value 'ProductName': Empty Guid passed")]
     public void EmptyProductNameTest(string name)
     {
         ProductName.FromString(name);
@@ -46,7 +46,7 @@ public class ProductTest
     [DataRow(-1)]
     [DataRow(0)]
     [ExpectedException(typeof(InvalidArgumentValueException),
-        "Некорректное значение аргумента 'MinAmountPerDay': Минимальный остаток должен быть положительным числом")]
+        "Invalid argument value 'MinAmountPerDay': The minimum balance must be a positive number")]
     public void IncorrectProductMinAmountPerDayTest(int minAmountPerDay)
     {
         Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), ProductUnit.Gram, minAmountPerDay, 45.6);
@@ -56,7 +56,7 @@ public class ProductTest
     [DataRow(-1.3)]
     [DataRow(0)]
     [ExpectedException(typeof(InvalidArgumentValueException),
-        "Некорректное значение аргумента 'BestBeforeDate': Срок годности должен быть положительным числом")]
+        "Invalid argument value 'BestBeforeDate': Expiration date must be a positive number")]
     public void IncorrectProductBestBeforeDateTest(double bestBeforeDate)
     {
         Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), ProductUnit.Gram, 4, bestBeforeDate);

@@ -18,7 +18,8 @@ public record UserId
 
     public static UserId FromGuid(Guid value)
     {
-        value.ValidateOrThrow(nameof(UserId));
+        // У пользователя не делаем проверку на пустой гуид,
+        // т.к. пустой гуид будет "системным пользователем" 
         return new UserId(value);
     }
 }

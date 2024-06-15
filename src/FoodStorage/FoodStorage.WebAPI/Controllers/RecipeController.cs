@@ -1,8 +1,8 @@
-﻿using FoodStorage.Application.Services;
-using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.Domain.Entities.RecipeEntity;
-using FoodStorage.WebApi.Models.Extensions;
-using FoodStorage.WebApi.Models.RecipeModels;
+﻿using FoodManager.Shared.Types;
+using FoodStorage.Application.Services;
+using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStorage.WebApi.Controllers;
@@ -10,7 +10,7 @@ namespace FoodStorage.WebApi.Controllers;
 [Route("api/[controller]")]
 [Produces("application/json")]
 [ApiController]
-public class RecipeController : ControllerBase
+public class RecipeController : BaseController
 {
     private readonly IRecipeService _recipeService;
 
@@ -24,13 +24,13 @@ public class RecipeController : ControllerBase
     /// </summary>
     /// <param name="recipet">Модель рецепта</param>
     /// <returns>Идентификатор созданного рецепта</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPost("Create")]
-    public ActionResult<Guid> Create(CreateRecipeModel recipe)
+    public async Task<ActionResult<Guid>> CreateAsync(RecipeCreateRequestModel recipe)
     {
-        Recipe recipeToCreate = recipe.ToEntity();
-        RecipeId id = _recipeService.Create(recipeToCreate);
+        Guid id = await _recipeService.CreateAsync(recipe);
 
-        return Ok(id.ToGuid());
+        return Ok(id);
     }
 
     /// <summary>
@@ -38,11 +38,11 @@ public class RecipeController : ControllerBase
     /// </summary>
     /// <param name="recipeId">Идентификатор рецепта</param>
     /// <returns>Рецепт</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpGet("GetById/{recipeId}")]
-    public ActionResult<RecipeModel> GetById(Guid recipeId)
+    public async Task<ActionResult<RecipeViewModel>> GetByIdAsync(Guid recipeId)
     {
-        Recipe recipe = _recipeService.GetById(RecipeId.FromGuid(recipeId));
-        RecipeModel result = recipe.ToModel();
+        RecipeViewModel result = await _recipeService.GetByIdAsync(recipeId);
 
         return Ok(result);
     }
@@ -52,11 +52,11 @@ public class RecipeController : ControllerBase
     /// </summary>
     /// <param name="recipeName">Наименование рецепта</param>
     /// <returns>Рецепт</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetByName/{recipeName}")]
-    public ActionResult<RecipeModel> GetByName(string recipeName)
+    public async Task<ActionResult<RecipeViewModel>> GetByNameAsync(string recipeName)
     {
-        Recipe recipe = _recipeService.GetByName(RecipeName.FromString(recipeName));
-        RecipeModel result = recipe.ToModel();
+        RecipeViewModel result = await _recipeService.GetByNameAsync(recipeName);
 
         return Ok(result);
     }
@@ -65,11 +65,11 @@ public class RecipeController : ControllerBase
     /// Получить все рецепты
     /// </summary>
     /// <returns>Список всех рецептов</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetAll")]
-    public ActionResult<List<RecipeModel>> GetAll()
+    public async Task<ActionResult<List<RecipeViewModel>>> GetAllAsync()
     {
-        IEnumerable<Recipe> Recipes = _recipeService.GetAll();
-        List<RecipeModel> result = Recipes.Select(r => r.ToModel()).ToList();
+        List<RecipeViewModel> result = await _recipeService.GetAllAsync();
 
         return Ok(result);
     }
@@ -79,11 +79,11 @@ public class RecipeController : ControllerBase
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
     /// <returns>Список рецептов</returns>
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
     [HttpGet("GetByProductId/{productId}")]
-    public ActionResult<List<RecipeModel>> GetByProductId(Guid productId)
+    public async Task<ActionResult<List<RecipeViewModel>>> GetByProductIdAsync(Guid productId)
     {
-        IEnumerable<Recipe> Recipes = _recipeService.GetByProductId(ProductId.FromGuid(productId));
-        List<RecipeModel> result = Recipes.Select(r => r.ToModel()).ToList();
+        List<RecipeViewModel> result = await _recipeService.GetByProductIdAsync(productId);
 
         return Ok(result);
     }
@@ -93,11 +93,11 @@ public class RecipeController : ControllerBase
     /// </summary>
     /// <param name="recipe">Модель рецепта</param>
     /// <returns>ок</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpPut("Update")]
-    public ActionResult Update(RecipeModel recipe)
+    public async Task<ActionResult> UpdateAsync(RecipeUpdateRequestModel recipe)
     {
-        Recipe recipeToUpdate = recipe.ToEntity();
-        _recipeService.Update(recipeToUpdate);
+        await _recipeService.UpdateAsync(recipe);
 
         return Ok();
     }
@@ -107,10 +107,11 @@ public class RecipeController : ControllerBase
     /// </summary>
     /// <param name="recipeId">Идентификатор рецепта</param>
     /// <returns>ок</returns>
+    [Authorize(Roles = UserRole.Cooker)]
     [HttpDelete("Delete/{recipeId}")]
-    public ActionResult Delete(Guid recipeId)
+    public async Task<ActionResult> DeleteAsync(Guid recipeId)
     {
-        _recipeService.Delete(RecipeId.FromGuid(recipeId));
+        await _recipeService.DeleteAsync(recipeId);
 
         return Ok();
     }

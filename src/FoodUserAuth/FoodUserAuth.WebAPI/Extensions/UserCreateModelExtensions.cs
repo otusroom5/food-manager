@@ -1,13 +1,13 @@
 ﻿using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.DataAccess.Types;
-using FoodUserAuth.WebApi.Models;
+using FoodUserAuth.WebApi.Contracts.Requests;
 using System;
 
 namespace FoodUserAuth.WebApi.Extensions;
 
 internal static class UserCreateModelExtensions
 {
-    public static UserDto ToDto(this UserCreateModel model) 
+    public static UserDto ToDto(this UserCreateRequest model) 
     {
         return new UserDto()
         {

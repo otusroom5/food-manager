@@ -1,5 +1,4 @@
-﻿using FoodManager.Shared.Utils;
-using Microsoft.IdentityModel.Protocols.Configuration;
+﻿using Microsoft.IdentityModel.Protocols.Configuration;
 using System.Net;
 using FoodManager.Shared.Exceptions;
 using System.Net.Http.Headers;
@@ -7,6 +6,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
+using FoodManager.Shared.Utils.Interfaces;
+using FoodManager.Shared.Utils.Implementations;
 
 namespace FoodManager.Shared.Extensions;
 

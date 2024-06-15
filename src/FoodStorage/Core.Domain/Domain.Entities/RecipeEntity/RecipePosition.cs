@@ -24,7 +24,7 @@ public record RecipePosition
     {
         if (productCount <= 0)
         {
-            throw new InvalidArgumentValueException("Количество продукта в рецепте должно быть больше 0", nameof(ProductCount));
+            throw new InvalidArgumentValueException("The amount of product in the recipe must be greater than 0", nameof(ProductCount));
         }
 
         return new()

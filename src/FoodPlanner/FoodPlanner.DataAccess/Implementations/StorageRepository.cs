@@ -17,7 +17,7 @@ public class StorageRepository: IStorageRepository
     {
         var products = new List<ProductDto>();
 
-        var productsJson = await _httpClient.GetStringAsync("GetExpiredProductItems");
+        var productsJson = await _httpClient.GetStringAsync("api/ProductItem/GetExpiredProductItems");
         var productsDeserialized = JsonSerializer.Deserialize<List<ProductDto>>(productsJson);
 
         if (productsDeserialized != null)

@@ -42,7 +42,6 @@ public class UsersService : IUsersService
         {
             Id = Guid.NewGuid(),
             LoginName = "predefined",
-            Email = "predefined@foodmanager.com",
             Role = DataAccess.Types.UserRole.Administrator,
             IsDisabled = usersRepository.GetAllAsync().Result.Any(),
             Password = passwordHasher.ComputeHash("predefined")
@@ -61,7 +60,7 @@ public class UsersService : IUsersService
             throw new UserNotFoundException();
         }
 
-        await VerifyAndGetUserIfSuccessAsync(currentUser.LoginName, oldPassword);
+        await VerifyAndGetUserOrNullAsync(currentUser.LoginName, oldPassword);
 
         currentUser.Password = _passwordHasher.ComputeHash(newPassword);
 
@@ -73,18 +72,17 @@ public class UsersService : IUsersService
     /// <summary>
     /// This method verify user
     /// </summary>
-    public async Task<UserDto> VerifyAndGetUserIfSuccessAsync(string loginName, string password) 
+    public async Task<UserDto> VerifyAndGetUserOrNullAsync(string loginName, string password) 
     {
         User foundUser = await InternalFindUserByLoginNameAsync(loginName);
 
         if (!_passwordHasher.VerifyHash(password, foundUser.Password))
         {
-            throw new NotValidPasswordException();
+            return null;
         }
 
         return foundUser.ToDto();
     }
-
 
     private async Task<User> InternalFindUserByLoginNameAsync(string loginName)
     {   
@@ -133,7 +131,15 @@ public class UsersService : IUsersService
         entity.Password = _passwordHasher.ComputeHash(newPassword);
 
         _unitOfWork.GetUsersRepository().Create(entity);
-        
+
+        _unitOfWork.GetUserContactsRepository().Create(new UserContact()
+        {
+            Id = user.Id,
+            UserId = entity.Id,
+            ContactType = DataAccess.Types.UserContactType.Email,
+            Contact = user.Email
+        });
+
         await _unitOfWork.SaveChangesAsync();
 
         var result = entity.ToDto();
@@ -189,7 +195,15 @@ public class UsersService : IUsersService
         item.FirstName = user.FirstName;
         item.LastName = user.LastName;
         item.Role = user.Role;
-        item.Email = user.Email;
+
+        var eMailContact = await _unitOfWork
+            .GetUserContactsRepository()
+            .GetByUserIdAndContactTypeAsync(item.Id, DataAccess.Types.UserContactType.Email, false);
+
+        if (eMailContact != null)
+        {
+            eMailContact.Contact = user.Email;
+        }
 
         await _unitOfWork.SaveChangesAsync();
     }

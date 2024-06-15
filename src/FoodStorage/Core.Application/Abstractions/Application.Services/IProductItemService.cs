@@ -1,16 +1,17 @@
-﻿using FoodStorage.Domain.Entities.ProductEntity;
-using FoodStorage.Domain.Entities.ProductItemEntity;
+﻿using FoodStorage.Application.Services.RequestModels;
+using FoodStorage.Application.Services.ViewModels;
 
 namespace FoodStorage.Application.Services;
 
 public interface IProductItemService
 {
-    public ProductItemId Create(ProductItem productItem);
-    public ProductItem GetById(ProductItemId productItemId);
-    public IEnumerable<ProductItem> GetByProductId(ProductId productId);
-    public IEnumerable<ProductItem> GetAll();
-    public IEnumerable<ProductItem> GetExpiredProductItems();
-    public void TakePartOf(ProductId productId, int count);
-    public void WriteOff(IEnumerable<ProductItemId> productItemIds);
-    public void Delete(ProductItemId productItemId);
+    public Task<Guid> CreateAsync(ProductItemCreateRequestModel productItem, Guid userId);
+    public Task<ProductItemViewModel> GetByIdAsync(Guid productItemId);
+    public Task<List<ProductItemViewModel>> GetByProductIdAsync(Guid productId);
+    public Task<List<ProductItemViewModel>> GetAllAsync();
+    public Task<List<ProductItemViewModel>> GetExpireProductItemsAsync(int daysBeforeExpired = 0);
+    public Task<List<ProductItemViewModel>> GetEndingProductItemsAsync();
+    public Task TakePartOfAsync(Guid productId, int count, Guid userId);
+    public Task WriteOffAsync(IEnumerable<Guid> productItemIds, Guid userId);
+    public Task DeleteAsync(Guid productItemId);
 }

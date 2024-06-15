@@ -41,11 +41,11 @@ try
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGenWithBarerAuth();
     builder.Services.AddScoped<IUsersService, UsersService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+    builder.Services.AddScoped<IUserContactsService, UserContactsService>();
     builder.Services.AddScoped<ITokenHandler, JwtTokenHandler>();
     builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();
     builder.Services.AddScoped<IPasswordHasher, Sha256PasswordHasher>();
@@ -71,11 +71,11 @@ try
 
     app.UseEfMigration();
 
-    app.Run();
+    await app.RunAsync();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Unhandled exception");
+    Log.Fatal(ex, ex.Message);
     return 1;
 }
 finally

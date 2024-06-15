@@ -12,6 +12,7 @@ public class DatabaseContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<ApiKey> ApiKeys { get; set; }
+    public DbSet<UserContact> UserContacts {  get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
