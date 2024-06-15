@@ -15,7 +15,7 @@ namespace FoodUserNotifier.Core.Interfaces.Repositories
         public void UpdateRecepient(Recepient recepient);
         public void DeleteRecepient(Guid id);
         public Task<Recepient> GetRecepientById(Guid id);
-        public IEnumerable<Recepient> GetAllForRoleRecepient(Role role);
+        
 
     }
 }

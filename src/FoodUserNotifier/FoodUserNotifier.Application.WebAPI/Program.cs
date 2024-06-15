@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using FoodUserNotifier.Infrastructure.Repositories.Context;
 using Microsoft.EntityFrameworkCore;
 using FoodManager.Shared.Extensions;
@@ -16,6 +17,10 @@ using FoodUserNotifier.Infrastructure.Services.Utils;
 using FoodUserNotifier.Infrastructure.Sender.Smtp.Options;
 using FoodUserNotifier.Infrastructure.Sender.Telegram.Options;
 using FoodUserNotifier.BusinessLogic.Services;
+using FoodUserNotifier.Core.Interfaces.Repositories;
+using FoodUserNotifier.Infrastructure.Repositories.Repositories;
+using FoodUserNotifier.Application.WebAPI.Interfaces;
+using FoodUserNotifier.Application.WebAPI.Controllers;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -36,9 +41,15 @@ try
             x => x.MigrationsAssembly("FoodUserNotifier.Infrastructure.Repositories"));
     });
 
+
+
+
     builder.Services.AddControllers();
-    
+
     builder.Services.AddHttpMessageHandlers();
+
+    
+
     builder.Services.AddHttpServiceClient(options =>
     {
         options.ServiceName = "UserAuthApi";
@@ -57,9 +68,16 @@ try
     builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
     builder.Services.AddTransient<IMessageSenderCollection, MessageSenderCollection>();
     builder.Services.AddSingleton<IDomainLogger, DomainLogger>();
+    builder.Services.AddSingleton<IRecepientRepository, RecepientRepository>();
+    builder.Services.AddSingleton<IDeliveryReportsRepository, DeliveryReportsRepository>();
+    builder.Services.AddSingleton<IRecepientController, RecepientController>();
+
+
     builder.Services.AddRecepientsSource("UserAuthApi");
     builder.Services.AddSwaggerGenWithBarerAuth();
 
+    builder.Services.AddWebEncoders();
+    builder.Services.AddSwaggerGen();
 
     builder.ConfigureAuthentication();
 
@@ -75,6 +93,19 @@ try
         });
     }
     app.UseAuthorization();
+
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseHsts();
+
+
+
+    app.UseStaticFiles();
+
+    app.UseRouting();
 
     app.UseLogMediator();
 
