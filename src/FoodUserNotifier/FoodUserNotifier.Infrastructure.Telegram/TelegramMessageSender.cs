@@ -17,7 +17,7 @@ public sealed class TelegramMessageSender : IMessageSender
         
     }
 
-    public async Task SendAsync(Core.Entities.Message message, DeliveryReport report)
+    public Task SendAsync(Core.Entities.Message message, DeliveryReport report)
     {
         return Task.CompletedTask;
     }

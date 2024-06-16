@@ -15,6 +15,7 @@ public static class UserExtensions
             LastName = user.LastName,
             IsDisabled = user.IsDisabled,
             LoginName = user.LoginName,
+            Telegram = user.Telegram,
             Role = user.Role
         };
     }

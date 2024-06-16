@@ -8,6 +8,7 @@ using System.Data;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using FoodUserAuth.DataAccess.Types;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -55,8 +56,8 @@ public class UsersService : IUsersService
     {
         User currentUser = await GetCurrentUserAsync();
 
-        if (currentUser == null) 
-        { 
+        if (currentUser == null)
+        {
             throw new UserNotFoundException();
         }
 
@@ -65,14 +66,14 @@ public class UsersService : IUsersService
         currentUser.Password = _passwordHasher.ComputeHash(newPassword);
 
         _unitOfWork.GetUsersRepository().Update(currentUser);
-        
+
         await _unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>
     /// This method verify user
     /// </summary>
-    public async Task<UserDto> VerifyAndGetUserOrNullAsync(string loginName, string password) 
+    public async Task<UserDto> VerifyAndGetUserOrNullAsync(string loginName, string password)
     {
         User foundUser = await InternalFindUserByLoginNameAsync(loginName);
 
@@ -85,14 +86,14 @@ public class UsersService : IUsersService
     }
 
     private async Task<User> InternalFindUserByLoginNameAsync(string loginName)
-    {   
+    {
         User foundUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
 
         if (foundUser == null)
         {
             if (!IsPredefinedLoginName(loginName))
             {
-                throw new UserNotFoundException(); 
+                throw new UserNotFoundException();
             }
 
             foundUser = _predefinedUser;
@@ -123,22 +124,36 @@ public class UsersService : IUsersService
         }
 
         string newPassword = _passwordGenerator.GeneratePassword(user.LoginName);
-        
+
         var entity = user.ToEntity();
-        
+
         entity.Id = Guid.NewGuid();
         entity.IsDisabled = false;
         entity.Password = _passwordHasher.ComputeHash(newPassword);
 
         _unitOfWork.GetUsersRepository().Create(entity);
 
-        _unitOfWork.GetUserContactsRepository().Create(new UserContact()
+        if (user.Email != null)
         {
-            Id = user.Id,
-            UserId = entity.Id,
-            ContactType = DataAccess.Types.UserContactType.Email,
-            Contact = user.Email
-        });
+            _unitOfWork.GetUserContactsRepository().Create(new UserContact()
+            {
+                Id = Guid.NewGuid(),
+                UserId = entity.Id,
+                ContactType = UserContactType.Email,
+                Contact = user.Email
+            });
+        }
+
+        if (user.Telegram != null)
+        {
+            _unitOfWork.GetUserContactsRepository().Create(new UserContact()
+            {
+                Id = Guid.NewGuid(),
+                UserId = entity.Id,
+                ContactType = UserContactType.Telegram,
+                Contact = user.Telegram
+            });
+        }
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -158,7 +173,7 @@ public class UsersService : IUsersService
     public async Task DisableUserAsync(Guid id)
     {
         User currentUser = await GetCurrentUserAsync();
-       
+
         if (id.Equals(currentUser?.Id))
         {
             throw new NotValidUserException("You can not possibility you disabled this user");
@@ -196,17 +211,35 @@ public class UsersService : IUsersService
         item.LastName = user.LastName;
         item.Role = user.Role;
 
-        var eMailContact = await _unitOfWork
-            .GetUserContactsRepository()
-            .GetByUserIdAndContactTypeAsync(item.Id, DataAccess.Types.UserContactType.Email, false);
-
-        if (eMailContact != null)
-        {
-            eMailContact.Contact = user.Email;
-        }
+        await UpdateContact(item.Id, UserContactType.Email, user.Email);
+        await UpdateContact(item.Id, UserContactType.Telegram, user.Telegram);
 
         await _unitOfWork.SaveChangesAsync();
     }
+
+    async Task UpdateContact(Guid userId, UserContactType contactType, string contactAddress)
+    {
+        var contact = await _unitOfWork
+            .GetUserContactsRepository()
+            .GetByUserIdAndContactTypeAsync(userId, contactType, false);
+
+        if (contact != null)
+        {
+            contact.Contact = contactAddress;
+        }
+        else
+        {
+            _unitOfWork.GetUserContactsRepository().Create(new UserContact()
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                ContactType = contactType,
+                Contact = contactAddress
+            });
+        }
+    }
+
+
 
     private async Task<User> InternalGetAsync(Guid id)
     {
@@ -224,7 +257,7 @@ public class UsersService : IUsersService
     {
         Guid currentId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
 
-        if (currentId == Guid.Empty) 
+        if (currentId == Guid.Empty)
         {
             throw new InvalidUserIdException();
         }

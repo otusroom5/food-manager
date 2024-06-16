@@ -16,5 +16,7 @@ public class UserModel
     
     public string Email { get; set; }
     
+    public string Telegram { get; set; }
+
     public bool IsDisabled { get; set; }
 }

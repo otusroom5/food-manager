@@ -15,6 +15,7 @@ internal static class UserCreateModelExtensions
             FirstName = model.FirstName,
             LastName = model.LastName,
             Email = model.Email,
+            Telegram = model.Telegram,
             Role = Enum.Parse<UserRole>(model.Role)
         };
     }

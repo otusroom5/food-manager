@@ -14,6 +14,7 @@ internal static class UserUpdateModelExtension
             FirstName = model.FirstName,
             LastName = model.LastName,
             Email = model.Email,
+            Telegram = model.Telegram,
             Role = Enum.Parse<DataAccess.Types.UserRole>(model.Role)
         };
     }

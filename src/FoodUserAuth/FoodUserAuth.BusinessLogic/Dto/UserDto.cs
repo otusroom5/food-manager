@@ -10,6 +10,7 @@ public sealed class UserDto : IEquatable<UserDto>, ICloneable
     public string LastName { get; set; }
     public UserRole Role { get; set; }
     public string Email { get; set; }
+    public string Telegram { get; set; }
     public bool IsDisabled { get; set; }
 
     public object Clone()
@@ -30,11 +31,12 @@ public sealed class UserDto : IEquatable<UserDto>, ICloneable
                FirstName == other.FirstName &&
                LastName == other.LastName &&
                Email == other.Email &&
+               Telegram == other.Telegram &&
                IsDisabled == other.IsDisabled;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Id, LoginName, FirstName, LastName, Email, IsDisabled);
+        return HashCode.Combine(Id, LoginName, FirstName, LastName, Email, Telegram, IsDisabled);
     }
 }
