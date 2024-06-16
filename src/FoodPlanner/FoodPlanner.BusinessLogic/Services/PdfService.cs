@@ -27,7 +27,7 @@ public class PdfService: IPdfService
                 ColorMode = ColorMode.Color,
                 Orientation = Orientation.Portrait,
                 PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 20, Left = 30, Right = 30, Bottom = 20 }
+                Margins = new MarginSettings { Top = 20, Left = 15, Right = 15, Bottom = 20 }
             };
 
             var objectSettings = new ObjectSettings()

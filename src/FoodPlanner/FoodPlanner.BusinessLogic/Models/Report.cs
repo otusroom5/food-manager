@@ -8,7 +8,7 @@ public class Report
     public ReportName Name { get; init; }
     public ReportType Type { get; init; }
     public ReportState State { get; set; }
-    public MemoryStream Content { get; set; }
+    public byte[] Content { get; set; }
     public string Description { get; init; }
     public UserId CreatedBy { get; init; }
     public DateTime CreatedAt { get; init; }

@@ -5,13 +5,12 @@ using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Services;
 using FoodPlanner.DataAccess.Implementations;
 using FoodPlanner.DataAccess.Interfaces;
-using FoodPlanner.EventBusRabbitMQ;
+using FoodPlanner.MessageBroker;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
 
 builder.Services.AddLogging();
-builder.Logging.AddConsole();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBarerAuth();
@@ -28,6 +27,7 @@ builder.Services.AddHttpServiceClient(options =>
 });
 
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
 builder.Services.AddHttpClient<IStorageRepository, StorageRepository>("FoodStorageApi");
 builder.Services.AddHttpClient<IUnitOfWork, UnitOfWork>("FoodStorageApi");
 builder.Services.AddScoped<IPdfService, PdfService>();

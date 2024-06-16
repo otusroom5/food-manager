@@ -23,6 +23,8 @@ public class ExpiredProductsReport: IReport
     private Task<string> GetHtmlAsync()
     {
         var htmlContent = new StringBuilder();
+        htmlContent.AppendLine("<head><meta charset=utf-8></head>");
+        htmlContent.AppendLine("<body>");
         htmlContent.AppendLine("<div style = 'border: 1px solid #ccc; background-color: #FFFFFF; font-family: Arial, sans-serif;' >");
         htmlContent.AppendLine("<h1> Товары с закончившимся сроком использования </h1>");
         htmlContent.AppendLine("<table style = 'width: 100%; border-collapse: collapse;'>");
@@ -44,6 +46,7 @@ public class ExpiredProductsReport: IReport
         htmlContent.AppendLine("</tbody>");
         htmlContent.AppendLine("</table>");
         htmlContent.AppendLine("</div>");
+        htmlContent.AppendLine("</body>");
 
         return Task.FromResult(htmlContent.ToString());
     }
