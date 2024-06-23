@@ -35,5 +35,5 @@ public class ReportRepository: IReportRepository
     public byte[]? GetAttachmentById(Guid id)
     {
         return _dbSet.Find(id)?.ReportContent;        
-    }
+    }   
 }
