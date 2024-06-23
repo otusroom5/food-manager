@@ -9,18 +9,16 @@ namespace FoodPlanner.BusinessLogic.Services;
 
 public class ReportService : IReportService
 {
+    private readonly IStorageRepository _storageRepository;   
     private readonly IPdfService _pdfService;
-    private readonly IStorageRepository _storageRepository;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ReportService> _logger;
 
     public ReportService(IUnitOfWork unitOfWork,
          IPdfService pdfService,
          ILogger<ReportService> logger)
     {
-        _pdfService = pdfService;
-        _unitOfWork = unitOfWork;
-        _storageRepository = _unitOfWork.GetStorageRepository();
+        _pdfService = pdfService;   
+        _storageRepository = unitOfWork.GetStorageRepository();
         _logger = logger;
 
         _logger.LogInformation("'{0}' handling.", GetType().Name);
@@ -57,7 +55,7 @@ public class ReportService : IReportService
             LogError("Generate", exception);
             throw;
         }
-    }
+    }    
 
     private void LogError(string methodName, Exception exception)
     {

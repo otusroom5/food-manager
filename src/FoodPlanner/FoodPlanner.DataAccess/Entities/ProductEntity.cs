@@ -2,7 +2,7 @@
 
 namespace FoodPlanner.DataAccess.Models;
 
-public class ProductDto
+public sealed class ProductEntity
 {
     public Guid Id { get; set; }  
     public Guid ProductId { get; set; }   

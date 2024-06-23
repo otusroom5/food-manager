@@ -6,6 +6,8 @@ using FoodPlanner.BusinessLogic.Services;
 using FoodPlanner.DataAccess.Implementations;
 using FoodPlanner.DataAccess.Interfaces;
 using FoodPlanner.MessageBroker;
+using Microsoft.EntityFrameworkCore;
+using FoodPlanner.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
@@ -33,6 +35,13 @@ builder.Services.AddHttpClient<IUnitOfWork, UnitOfWork>("FoodStorageApi");
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IRabbitMqProducer, RabbitMqProduce>();
+
+builder.Services.AddDbContext<InMemoryDbContext>(options =>
+{
+    options.UseInMemoryDatabase("FoodPlannerDb");
+});
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IReportStorageSerivce, ReportStorageSerivce>();
 
 builder.ConfigureAuthentication();
 
