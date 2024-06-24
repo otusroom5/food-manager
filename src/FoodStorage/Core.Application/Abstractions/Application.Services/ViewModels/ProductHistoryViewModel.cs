@@ -18,7 +18,12 @@ public sealed record ProductHistoryViewModel
     /// <summary>
     /// Количество продукта
     /// </summary>
-    public int Count { get; init; }
+    public double Count { get; init; }
+
+    /// <summary>
+    /// Единица измерения
+    /// </summary>
+    public string Unit { get; set; }
 
     /// <summary>
     /// Кто провел действие с продуктом

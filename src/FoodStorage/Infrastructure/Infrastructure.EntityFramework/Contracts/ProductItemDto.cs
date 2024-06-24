@@ -15,7 +15,7 @@ public sealed record ProductItemDto
 
     [Column("amount")]
     [Required]
-    public int Amount { get; set; }
+    public double Amount { get; set; }
 
     [Column("creating_date")]
     [Required]

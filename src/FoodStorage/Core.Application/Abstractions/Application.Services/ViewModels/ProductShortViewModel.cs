@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FoodStorage.Application.Services.ViewModels;
+﻿namespace FoodStorage.Application.Services.ViewModels;
 
 /// <summary>
 /// Укороченная модель продукта

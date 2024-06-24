@@ -13,9 +13,9 @@ public sealed record ProductDto
     [Required]
     public string Name { get; set; }
 
-    [Column("unit"), MaxLength(20)]
+    [Column("unit_type"), MaxLength(20)]
     [Required]
-    public string Unit { get; set; }
+    public string UnitType { get; set; }
 
     [Column("min_amount_per_day")]
     [Required]

@@ -13,7 +13,12 @@ public sealed record ProductItemCreateRequestModel
     /// <summary>
     /// Количество продукта в холодильнике
     /// </summary>
-    public int Amount { get; set; }
+    public double Amount { get; set; }
+
+    /// <summary>
+    /// Идентификатор единицы измерения
+    /// </summary>
+    public string UnitId { get; set; }
 
     /// <summary>
     /// Дата изготовления

@@ -19,7 +19,7 @@ public sealed record ProductHistoryDto
 
     [Column("count")]
     [Required]
-    public int Count { get; set; }
+    public double Count { get; set; }
 
     [Column("created_by")]
     [Required]

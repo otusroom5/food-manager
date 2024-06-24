@@ -19,4 +19,8 @@ public sealed record RecipePositionDto
     [Column("product_count")]
     [Required]
     public int ProductCount { get; set; }
+
+    [Column("unit_id")]
+    [Required]
+    public string UnitId { get; set; }
 }

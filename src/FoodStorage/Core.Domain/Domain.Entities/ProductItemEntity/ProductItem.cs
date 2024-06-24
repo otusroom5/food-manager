@@ -22,7 +22,7 @@ public record ProductItem
     /// <summary>
     /// Количество продукта в холодильнике
     /// </summary>
-    public int Amount { get; private set; }
+    public double Amount { get; private set; }
 
     /// <summary>
     /// Дата изготовления
@@ -40,7 +40,7 @@ public record ProductItem
     /// </summary>
     public List<BaseDomainEvent> DomainEvents => _domainEvents;
 
-    private ProductItem(ProductId productId, int amount, UserId userId = null) 
+    private ProductItem(ProductId productId, double amount, UserId userId = null) 
     {
         ProductId = productId;
         Amount = amount;
@@ -55,7 +55,7 @@ public record ProductItem
         }
     }
 
-    public static ProductItem CreateNew(ProductItemId id, ProductId productId, int amount, DateTime creatingDate, DateTime expiryDate, UserId userId = null)
+    public static ProductItem CreateNew(ProductItemId id, ProductId productId, double amount, DateTime creatingDate, DateTime expiryDate, UserId userId = null)
     {
         if (amount <= 0)
         {
@@ -83,8 +83,9 @@ public record ProductItem
     /// <summary>
     /// Забрать часть продукта из холодильника
     /// </summary>
-    /// <param name="amount"></param>
-    public void ReduceAmount(int amount, UserId userId)
+    /// <param name="amount">Количество, которое забрать</param>
+    /// <param name="userId">Кто забирает</param>
+    public void ReduceAmount(double amount, UserId userId)
     {
         if (amount > Amount)
         {
@@ -99,7 +100,7 @@ public record ProductItem
     /// <summary>
     /// Списать единицу продукта
     /// </summary>
-    /// <param name="amount"></param>
+    /// <param name="userId">Пользователь, выполнивший действие</param>
     public void WriteOff(UserId userId)
     {
         RegisterEvent(new WritedOffProductItemDomainEvent(this, userId, DateTime.UtcNow));

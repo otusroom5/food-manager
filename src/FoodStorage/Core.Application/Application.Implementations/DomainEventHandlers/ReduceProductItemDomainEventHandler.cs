@@ -50,7 +50,7 @@ public class ReduceProductItemDomainEventHandler : BaseDomainEventHandler<Reduce
         }
 
         var productItems = await _productItemRepository.GetByProductIdAsync(productId);
-        int countProductInBase = productItems.Sum(pi => pi.Amount);
+        double countProductInBase = productItems.Sum(pi => pi.Amount);
         if (countProductInBase <= product.MinAmountPerDay)
         {
             throw new NotImplementedException("Will be rabbit message"); //TODO

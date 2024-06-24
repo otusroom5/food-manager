@@ -37,12 +37,13 @@ public class ProductItemController : BaseController
     /// Получить единицу продукта по идентификатору
     /// </summary>
     /// <param name="productItemId">Идентификатор единицы продукта</param>
+    /// <param name="unit">Единица измерения</param>
     /// <returns>Единица продукта</returns>
     [Authorize(Roles = UserRole.Cooker)]
-    [HttpGet("GetById/{productItemId}")]
-    public async Task<ActionResult<ProductItemViewModel>> GetByIdAsync(Guid productItemId)
+    [HttpGet("GetById/{productItemId}/{unit}")]
+    public async Task<ActionResult<ProductItemViewModel>> GetByIdAsync(Guid productItemId, string unit)
     {
-        ProductItemViewModel result = await _productItemService.GetByIdAsync(productItemId);
+        ProductItemViewModel result = await _productItemService.GetByIdAsync(productItemId, unit);
 
         return Ok(result);
     }
@@ -51,12 +52,13 @@ public class ProductItemController : BaseController
     /// Получить единицы продукта по идентификатору самого продукта
     /// </summary>
     /// <param name="productId">Идентификатор продукта</param>
+    /// <param name="unit">Единица измерения</param>
     /// <returns>Список единиц продукта</returns>
     [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Cooker)]
-    [HttpGet("GetByProductId/{productId}")]
-    public async Task<ActionResult<List<ProductItemViewModel>>> GetByProductIdAsync(Guid productId)
+    [HttpGet("GetByProductId/{productId}/{unit}")]
+    public async Task<ActionResult<List<ProductItemViewModel>>> GetByProductIdAsync(Guid productId, string unit)
     {
-        List<ProductItemViewModel> result = await _productItemService.GetByProductIdAsync(productId);
+        List<ProductItemViewModel> result = await _productItemService.GetByProductIdAsync(productId, unit);
 
         return Ok(result);
     }
@@ -107,10 +109,10 @@ public class ProductItemController : BaseController
     /// <param name="count">Количество продукта</param>
     /// <returns>ок</returns>
     [Authorize(Roles = UserRole.Cooker)]
-    [HttpPost("TakePartOf/{productId}/{count}")]
-    public async Task<ActionResult> TakePartOfAsync(Guid productId, int count)
+    [HttpPost("TakePartOf")]
+    public async Task<ActionResult> TakePartOfAsync(ProductItemTakePartOfRequestModel request)
     {
-        await _productItemService.TakePartOfAsync(productId, count, UserId.ToGuid());
+        await _productItemService.TakePartOfAsync(request, UserId.ToGuid());
 
         return Ok();
     }

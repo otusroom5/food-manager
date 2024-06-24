@@ -14,15 +14,18 @@ public class ProductHistoryService : IProductHistoryService
 {
     private readonly IProductHistoryRepository _productHistoryRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IUnitRepository _unitRepository;
     private readonly ILogger<ProductHistoryService> _logger;
 
     public ProductHistoryService(
         IProductHistoryRepository productHistoryRepository,
         IProductRepository productRepository,
+        IUnitRepository unitRepository,
         ILogger<ProductHistoryService> logger)
     {
         _productHistoryRepository = productHistoryRepository;
         _productRepository = productRepository;
+        _unitRepository = unitRepository;
         _logger = logger;
 
         _logger.LogInformation("'{0}' handling.", GetType().Name);
@@ -40,11 +43,14 @@ public class ProductHistoryService : IProductHistoryService
                 throw new EntityNotFoundException(nameof(Product), productId.ToString());
             }
 
+            var units = await _unitRepository.GetByTypeAsync(product.UnitType);
+            var unit = units.FirstOrDefault(u => u.IsMain);
+
             var productHistories = await _productHistoryRepository.GetByProductIdAsync(productIdEntity);
 
 
             return productHistories.Where(ph => ph.CreatedAt.Date == date.Date)
-                                   .Select(ph => ph.ToViewModel(product))
+                                   .Select(ph => ph.ToViewModel(product, unit))
                                    .ToList();
         }
         catch (Exception exception)
@@ -58,12 +64,23 @@ public class ProductHistoryService : IProductHistoryService
     {
         try
         {
+            List<ProductHistoryViewModel> result = new();
+
             var productHistories = await _productHistoryRepository.GetByUserIdAsync(UserId.FromGuid(userId));
             productHistories = productHistories.Where(ph => ph.CreatedAt.Date == date.Date);
 
             var products = await _productRepository.GetByIdsAsync(productHistories.Select(pi => pi.ProductId).Distinct());
+            var units = await _unitRepository.GetAllAsync();
 
-            return productHistories.Select(pi => pi.ToViewModel(products.FirstOrDefault(p => p.Id == pi.ProductId))).ToList();
+            foreach(var productHistory in productHistories)
+            {
+                var product = products.FirstOrDefault(p => p.Id == productHistory.ProductId);
+                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
+
+                result.Add(productHistory.ToViewModel(product, unit));
+            }
+
+            return result;
         }
         catch (Exception exception)
         {
@@ -76,6 +93,8 @@ public class ProductHistoryService : IProductHistoryService
     {
         try
         {
+            List<ProductHistoryViewModel> result = new();
+
             if (!Enum.TryParse<ProductState>(state, true, out var productState))
             {
                 throw new InvalidEnumValueException(nameof(state), state, nameof(ProductState));
@@ -85,9 +104,17 @@ public class ProductHistoryService : IProductHistoryService
             productHistories = productHistories.Where(ph => ph.CreatedAt.Date >= dateStart && ph.CreatedAt.Date <= dateEnd);
 
             var products = await _productRepository.GetByIdsAsync(productHistories.Select(pi => pi.ProductId).Distinct());
+            var units = await _unitRepository.GetAllAsync();
 
-            return productHistories.Select(pi => pi.ToViewModel(products.FirstOrDefault(p => p.Id == pi.ProductId)))
-                                   .ToList();
+            foreach (var productHistory in productHistories)
+            {
+                var product = products.FirstOrDefault(p => p.Id == productHistory.ProductId);
+                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
+
+                result.Add(productHistory.ToViewModel(product, unit));
+            }
+
+            return result;
         }
         catch (Exception exception)
         {
