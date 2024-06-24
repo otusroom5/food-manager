@@ -5,7 +5,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=room5
       - RABBITMQ_DEFAULT_PASS=room5Password
-    ports:
+    ports:      
       - 15672:15672
     networks:
       - food_net
@@ -87,12 +87,13 @@ services:
       context: .
       dockerfile: src/FoodStorage/FoodStorage.WebAPI/Dockerfile
     environment:
+      - ASPNETCORE_ENVIRONMENT=development
       - FoodStorage_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodstoragedb;Username=room5;Password=room5Password
     ports:
         - 8082:80
     depends_on:
        postgres:
-         condition: service_healthy
+         condition: service_healthy     
     restart: unless-stopped
     networks:
         - food_net 
@@ -101,6 +102,9 @@ services:
     build:
       context: .
       dockerfile: src/FoodSupplier/FoodSupplier.WebAPI/Dockerfile  
+    environment:
+      - ASPNETCORE_ENVIRONMENT=development
+      - FoodSupplier_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodsupplierdb;Username=room5;Password=room5Password
     ports:
         - 8083:80
     restart: unless-stopped
@@ -114,7 +118,10 @@ services:
     ports:
         - 8084:80
     environment:
-        - FoodNotifier_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http 
+        - ASPNETCORE_ENVIRONMENT=development        
+        - UserNotifier_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http 
+        - UserNotifier_ConnectionStrings__DbConnection=Host=postgres;Port=5432;Database=foodmanagerdb;Username=room5;Password=room5Password
+        - UserNotifier_ConnectionStrings__RabbitMq=Host=rabbitmq;Port=5672;Queue=notification;Username=room5;Password=room5Password
     restart: unless-stopped
     networks:
         - food_net 
@@ -129,6 +136,7 @@ services:
         - ASPNETCORE_ENVIRONMENT=development 
         - FoodPlanner_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http
         - FoodPlanner_ConnectionStrings__FoodStorageApi=Host=foodstorage;Port=80;Schema=http
+        - FoodPlanner_ConnectionStrings__RabbitMq=Host=rabbitmq;Port=5672;Queue=notification;Username=room5;Password=room5Password
     restart: unless-stopped
     networks:
         - food_net 

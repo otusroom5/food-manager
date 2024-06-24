@@ -2,5 +2,5 @@
 
 public interface IReport
 {
-    byte[] Prepare();
+    Task <byte[]> PrepareAsync();
 }

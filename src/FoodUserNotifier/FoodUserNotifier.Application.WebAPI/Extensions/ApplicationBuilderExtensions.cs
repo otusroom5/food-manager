@@ -2,7 +2,8 @@
 
 using FoodUserNotifier.Application.WebAPI.Utils;
 using FoodUserNotifier.Core.Interfaces;
-using FoodUserNotifier.Infrastructure.Services.Interfaces;
+using FoodUserNotifier.Infrastructure.Repositories.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodUserNotifier.WebApi.Extensions;
 
@@ -10,12 +11,13 @@ public static class ApplicationBuilderExtensions
 {
     static LogMediator _logMediator;
 
-    public static void UseNotificationService(this WebApplication app)
+    public static void UseEfMigration(this WebApplication application)
     {
-        
-
-        //INotificationService notificationService = app.Services.GetService<INotificationService>();
-        //notificationService.StartListen();
+        using (var databaseContextScope = application.Services.CreateScope())
+        {
+            var database = databaseContextScope.ServiceProvider.GetRequiredService<DatabaseContext>();
+            database.Database.Migrate();
+        }
     }
 
     public static void UseLogMediator(this IApplicationBuilder app)
@@ -25,7 +27,7 @@ public static class ApplicationBuilderExtensions
             throw new InvalidOperationException();
         }
 
-        IDomainLogger domailLogger = app.ApplicationServices.GetService<IDomainLogger>();
+        IDomainLogger domailLogger = app.ApplicationServices.GetRequiredService<IDomainLogger>();
         _logMediator = new LogMediator(Log.Logger, domailLogger);
     }
 }

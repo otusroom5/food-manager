@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Shared\FoodManager.Shared\FoodManager.Shared.csproj" />
 		<ProjectReference Include="..\FoodUserAuth.DataAccess\FoodUserAuth.DataAccess.csproj" />
 	</ItemGroup>
 </Project>

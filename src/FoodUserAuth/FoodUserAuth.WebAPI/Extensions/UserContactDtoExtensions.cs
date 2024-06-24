@@ -10,6 +10,7 @@ public static class UserContactDtoExtensions
         return new UserContactModel()
         {
             Id = contactDto.Id,
+            UserId = contactDto.UserId,
             Contact = contactDto.Contact,
             ContactType = contactDto.ContactType
         };

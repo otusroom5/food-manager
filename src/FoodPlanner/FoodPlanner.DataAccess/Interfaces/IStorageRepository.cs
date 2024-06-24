@@ -4,5 +4,5 @@ namespace FoodPlanner.DataAccess.Interfaces;
 
 public interface IStorageRepository
 {    
-    Task<List<ProductDto>> GetExpiredProductsAsync();
+    Task<List<ProductEntity>> GetExpiredProductsAsync();
 }

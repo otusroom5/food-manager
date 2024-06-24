@@ -22,7 +22,7 @@ namespace FoodUserNotifier.Infrastructure.Repositories.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FoodUserNotifier.Core.Entities.Report", b =>
+            modelBuilder.Entity("FoodUserNotifier.Core.Entities.DeliveryReport", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,9 +34,29 @@ namespace FoodUserNotifier.Infrastructure.Repositories.Migrations
                     b.Property<Guid>("NotificationId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Success")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Reports");
+                    b.ToTable("DeliveryReports");
+                });
+
+            modelBuilder.Entity("FoodUserNotifier.Core.Entities.Entities.TelegramSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("ChatId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("RecepientId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TelegramSessions");
                 });
 #pragma warning restore 612, 618
         }

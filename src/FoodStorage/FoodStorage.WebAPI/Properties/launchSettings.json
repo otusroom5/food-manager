@@ -4,9 +4,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development",
+            "FoodStorage_ConnectionStrings__Default": "test"
+        },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5128"
     },

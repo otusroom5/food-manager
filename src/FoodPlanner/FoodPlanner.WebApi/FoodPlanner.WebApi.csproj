@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\FoodManager.Shared\FoodManager.Shared.csproj" />
     <ProjectReference Include="..\FoodPlanner.BusinessLogic\FoodPlanner.BusinessLogic.csproj" />
+    <ProjectReference Include="..\FoodPlanner.MessageBroker\FoodPlanner.MessageBroker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

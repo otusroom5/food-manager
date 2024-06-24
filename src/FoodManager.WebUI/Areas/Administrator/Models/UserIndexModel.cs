@@ -29,6 +29,9 @@ public class UserModel
     [HttpTableColumn("Email")]
     public string Email { get; set; }
 
+    [HttpTableColumn("Telegram")]
+    public string Telegram { get; set; }
+
     [HttpTableColumn("Disabled")]
     public bool IsDisabled { get; set; }
 }

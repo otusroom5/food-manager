@@ -14,6 +14,7 @@ internal static class UserDtoExtensions
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             Email = dto.Email,
+            Telegram = dto.Telegram,
             IsDisabled = dto.IsDisabled,
             Role = dto.Role
         };

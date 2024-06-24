@@ -1,6 +1,7 @@
 ﻿using FoodUserNotifier.Core.Domain.Interfaces;
 using FoodUserNotifier.Core.Entities;
 using FoodUserNotifier.Core.Interfaces;
+using FoodUserNotifier.Core.Interfaces.Repositories;
 using FoodUserNotifier.Core.Interfaces.Sources;
 
 namespace FoodUserNotifier.BusinessLogic.Services;
@@ -9,16 +10,17 @@ public class MessageDispatcher : IMessageDispatcher
 {
     private readonly IDomainLogger _logger;
     private readonly IMessageSenderCollection _senderCollection;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDeliveryReportsRepository _deliveryReportsRepository;
     private readonly IRecepientsSource _recepientsSource;
 
-    public MessageDispatcher(IUnitOfWork unitOfWork,
+    public MessageDispatcher(
+        IDeliveryReportsRepository deliveryReportsRepository,
         IMessageSenderCollection senderCollection,
         IRecepientsSource recepientsSource,
         IDomainLogger logger)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _deliveryReportsRepository = deliveryReportsRepository;
         _senderCollection = senderCollection;
         _recepientsSource = recepientsSource;
     }
@@ -27,7 +29,7 @@ public class MessageDispatcher : IMessageDispatcher
     {
         if (notification == null) throw new ArgumentNullException(nameof(notification));
 
-        IEnumerable<Recepient> recepients = await _recepientsSource.GetAllByRecepientGroup(notification.Group);
+        IEnumerable<Recepient> recepients = await _recepientsSource.GetAllByRecepientGroupAsync(notification.Group);
 
         foreach (IMessageSender sender in _senderCollection.GetMessageSenders())
         {
@@ -38,7 +40,7 @@ public class MessageDispatcher : IMessageDispatcher
                 AttachmentIds = notification.AttachmentIds,
             };
 
-            var report = GenerateReport(notification);
+            var report = GenerateDeliveryReport(notification);
 
             try
             {
@@ -47,24 +49,26 @@ public class MessageDispatcher : IMessageDispatcher
             catch (Exception ex)
             {
                 report.Message = ex.Message;
+                report.Success = false;
                 _logger.Error(ex.Message);
             }
             finally
             {
-                _unitOfWork
-                    .GetReportsRepository()
+                _deliveryReportsRepository
                     .Create(report);
+                await _deliveryReportsRepository.SaveChangesAsync();
             }
         }
     }
 
-    private Report GenerateReport(Notification notification)
+    private DeliveryReport GenerateDeliveryReport(Notification notification)
     {
-        return new Report()
+        return new DeliveryReport()
         {
             Id = Guid.NewGuid(),
             NotificationId = notification.Id,
-            Message = "Success"
+            Message = "Success",
+            Success = true
         };
     }
 }

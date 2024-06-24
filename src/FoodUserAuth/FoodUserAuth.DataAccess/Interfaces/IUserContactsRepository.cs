@@ -11,4 +11,5 @@ public interface IUserContactsRepository
     Task<UserContact> GetByUserIdAndContactTypeAsync(Guid userId, UserContactType contactType, bool include);
     Task<IEnumerable<UserContact>> GetAllAsync();
     Task<IEnumerable<UserContact>> GetAllForRoleAsync(UserRole role, bool include);
+    Task<UserContact> FindContact(UserContactType contactType, string contact, bool include);
 }

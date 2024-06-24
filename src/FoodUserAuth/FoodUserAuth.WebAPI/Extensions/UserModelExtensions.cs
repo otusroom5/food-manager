@@ -15,6 +15,7 @@ internal static class UserModelExtensions
             FirstName = model.FirstName,
             LastName = model.LastName,
             Email = model.Email,
+            Telegram = model.Telegram,
             IsDisabled = model.IsDisabled,
             Role = model.Role
         };

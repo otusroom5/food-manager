@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FoodManager.Shared.Types;
 using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.WebApi.Contracts.Requests;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -37,27 +38,59 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserModel>>> Get(string id = "")
+    public async Task<ActionResult<IEnumerable<UserModel>>> Get()
     {
-
-        if (!string.IsNullOrWhiteSpace(id)) 
+        try
         {
-            if (Guid.TryParse(id, out Guid employeeId))
+            var items = await _usersService.GetAllAsync();
+
+            return Ok(new GenericResponse<UserModel[]>()
             {
-                UserDto foundUser = await _usersService.GetAsync(employeeId);
-                return new UserModel[] { foundUser.ToModel() };
+                Data = items.Select(f => f.ToModel()).ToArray(),
+                Message = "Success"
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return BadRequest(ResponseBase.CreateFailure());
+        }
+    }
+
+
+    [HttpGet("GetById")]
+    public async Task<ActionResult<IEnumerable<UserModel>>> GetById(string id)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                _logger.LogInformation("Id is not valid");
+                return BadRequest(ResponseBase.CreateFailure());
             }
 
-            throw new ArgumentException(nameof(id));
-        }
+            if (!Guid.TryParse(id, out Guid employeeId))
+            {
+                _logger.LogInformation("Id is not Guid");
+                return BadRequest(ResponseBase.CreateFailure());
+            }
 
-        var items = await _usersService.GetAllAsync();
-        return Ok(new GenericResponse<UserModel[]>()
+            UserDto foundUser = await _usersService.GetAsync(employeeId);
+
+            return Ok(new GenericResponse<UserModel[]>()
+            {
+                Data = new UserModel[] { foundUser.ToModel() },
+                Message = "Success"
+            });
+
+        }
+        catch (Exception ex)
         {
-            Data = items.Select(f => f.ToModel()).ToArray(),
-            Message = "Ok"
-        });
+            _logger.LogError(ex, ex.Message);
+            return BadRequest(ResponseBase.CreateFailure());
+        }
     }
+
 
     /// <summary>
     /// Create a new user
@@ -67,34 +100,35 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPut]
-    public async Task<ActionResult> Create([FromBody] UserCreateModel model)
+    public async Task<ActionResult> Create([FromBody] UserCreateRequest request)
     {
         if (!ModelState.IsValid)
         {
-            BadRequest(ResponseBase.Create("Model is not valid"));
+            _logger.LogInformation("UserCreateModel is not valid");
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
 
         try
         {
-            var result = await _usersService.CreateUserAsync(model.ToDto());
+            var result = await _usersService.CreateUserAsync(request.ToDto());
 
             _logger.LogDebug("Create user ({Id}) was create", result.User.Id);
 
-            return Ok(new GenericResponse<UserCreateResultModel>()
+            return Ok(new GenericResponse<UserCreateModel>()
             {
-                Data = new UserCreateResultModel()
+                Data = new UserCreateModel()
                 {
                     UserId = result.User.Id,
                     Password = result.Password
                 },
-                Message = "Ok"
+                Message = "Success"
             });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-
-            return BadRequest(ResponseBase.Create(ex));
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -106,24 +140,25 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpPost]
-    public async Task<ActionResult> Update([FromBody] UserUpdateModel model)
+    public async Task<ActionResult> Update([FromBody] UserUpdateRequest request)
     {
         if (!ModelState.IsValid)
         {
-            BadRequest(ResponseBase.Create("Model is not valid"));
+            _logger.LogInformation("UserUpdateModel is not valid");
+            return BadRequest(ResponseBase.Create("UserUpdateModel is not valid"));
         }
 
         try
         {
-            await _usersService.UpdateUserAsync(model.ToDto());
+            await _usersService.UpdateUserAsync(request.ToDto());
 
             _logger.LogDebug("User was updated");
-            return Ok(ResponseBase.Create("Success"));
+            return Ok(ResponseBase.CreateSuccess());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return BadRequest(ResponseBase.Create(ex));
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -135,20 +170,20 @@ public class UsersController : ControllerBase
     /// <response code="200">Success</response>
     /// <response code="400">If error</response>
     [HttpDelete]
-    public async Task<ActionResult> Delete(string userId)
+    public async Task<ActionResult> Disable(string userId)
     {
         try
         {
             await _usersService.DisableUserAsync(Guid.Parse(userId));
 
             _logger.LogDebug("User ({Id}) was disabled", userId);
-            return Ok(ResponseBase.Create("Success"));
+
+            return Ok(ResponseBase.CreateSuccess());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-
-            return BadRequest(ResponseBase.Create(ex));
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 }

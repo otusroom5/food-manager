@@ -6,6 +6,16 @@ internal abstract class ResponseBase
 {
     public string Message { get; set; }
 
+    public static ResponseBase CreateFailure()
+    {
+        return Create("Something wrong. Please contact administrator");
+    }
+    public static ResponseBase CreateSuccess()
+    {
+        return Create("Success");
+    }
+
+
     public static ResponseBase Create(string message)
     {
         return new SimpleResponse()

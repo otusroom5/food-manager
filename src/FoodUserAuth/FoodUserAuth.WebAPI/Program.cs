@@ -41,7 +41,6 @@ try
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGenWithBarerAuth();
     builder.Services.AddScoped<IUsersService, UsersService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -76,7 +75,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Unhandled exception");
+    Log.Fatal(ex, ex.Message);
     return 1;
 }
 finally

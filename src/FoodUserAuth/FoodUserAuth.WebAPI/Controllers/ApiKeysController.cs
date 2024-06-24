@@ -1,12 +1,13 @@
 ﻿using FoodManager.Shared.Types;
 using FoodUserAuth.BusinessLogic.Dto;
-using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.BusinessLogic.Interfaces;
 using FoodUserAuth.WebApi.Contracts;
+using FoodUserAuth.WebApi.Contracts.Requests;
 using FoodUserAuth.WebApi.Extensions;
 using FoodUserAuth.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,29 +19,37 @@ namespace FoodUserAuth.WebApi.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
-public partial class ApiKeysController : ControllerBase
+public class ApiKeysController : ControllerBase
 {
     private readonly IApiKeyService _apiKeyService;
+    private readonly ILogger<ApiKeysController> _logger;
 
-    public ApiKeysController(IApiKeyService apiKeyService)
+    public ApiKeysController(IApiKeyService apiKeyService, ILogger<ApiKeysController> logger)
     {
         _apiKeyService = apiKeyService;
+        _logger = logger;
     }
 
     [HttpPost("RenewToken")]
-    public async Task<ActionResult> RenewApiKey([FromBody] ApiKeyRenewTokenModel model)
+    public async Task<ActionResult> RenewApiKey([FromBody] ApiKeyRenewTokenRequest request)
     {
         try
         {
+            string newToken = await _apiKeyService.RenewApiKeyAsync(request.OldToken);
+
+            _logger.LogDebug("New token is generated");
+
             return Ok(new GenericResponse<string>()
             {
-               Data = await _apiKeyService.RenewApiKeyAsync(model.OldToken),
+               Data = newToken,
                Message = "Success"
             });
         } 
         catch (Exception ex)
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -60,22 +69,27 @@ public partial class ApiKeysController : ControllerBase
         } 
         catch (Exception ex) 
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
     [HttpPut]
     [Authorize(Roles = UserRole.Administration)]
-    public async Task<IActionResult> CreateAsync(ApiKeyCreateModel model) 
+    public async Task<IActionResult> CreateAsync(ApiKeyCreateRequest request) 
     {
         try
         {
-            if (!DateTime.TryParseExact(model.ExpiryDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiryDate))
+            if (!DateTime.TryParseExact(request.ExpiryDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiryDate))
             {
                 return BadRequest(ResponseBase.Create("Ivalid date format 'yyyy-MM-dd'"));
             }
 
             ApiKeyDto key = await _apiKeyService.CreateApiKeyAsync(expiryDate);
+
+
+            _logger.LogInformation("New Api key is added {Id}", key.Id);
 
             return Ok(new GenericResponse<ApiKeyModel>()
             {
@@ -86,7 +100,9 @@ public partial class ApiKeysController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
@@ -108,7 +124,9 @@ public partial class ApiKeysController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ResponseBase.Create(ex.Message));
+            _logger.LogError(ex, ex.Message);
+
+            return BadRequest(ResponseBase.CreateFailure());
         }
     }
 
