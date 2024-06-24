@@ -15,7 +15,8 @@ public static class Inject
         services.AddScoped<IProductRepository, ProductRepository>()
                 .AddScoped<IProductItemRepository, ProductItemRepository>()
                 .AddScoped<IProductHistoryRepository, ProductHistoryRepository>()
-                .AddScoped<IRecipeRepository, RecipeRepository>();
+                .AddScoped<IRecipeRepository, RecipeRepository>()
+                .AddScoped<IUnitRepository, UnitRepository>();
 
         return services;
     }

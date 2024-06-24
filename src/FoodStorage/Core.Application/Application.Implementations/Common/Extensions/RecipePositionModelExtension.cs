@@ -2,6 +2,7 @@
 using FoodStorage.Application.Services.ViewModels;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.RecipeEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 
 namespace FoodStorage.Application.Implementations.Common.Extensions;
 
@@ -11,9 +12,12 @@ public static class RecipePositionModelExtension
         new()
         {
             Product = product.ToShortViewModel(),
-            ProductCount = recipePosition.ProductCount
+            ProductCount = recipePosition.ProductCount,
+            Unit = recipePosition.UnitId.ToString()
         };
 
     public static RecipePosition ToEntity(this RecipePositionRequestModel recipePositionModel) =>
-        RecipePosition.CreateNew(ProductId.FromGuid(recipePositionModel.ProductId), recipePositionModel.ProductCount);
+        RecipePosition.CreateNew(ProductId.FromGuid(recipePositionModel.ProductId), 
+                                 recipePositionModel.ProductCount,
+                                 UnitId.FromString(recipePositionModel.UnitId));
 }

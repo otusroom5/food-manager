@@ -7,6 +7,7 @@ using FoodStorage.Application.Services.ViewModels;
 using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
@@ -16,15 +17,18 @@ public class ProductItemService : IProductItemService
 {
     private readonly IProductItemRepository _productItemRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IUnitRepository _unitRepository;
     private readonly ILogger<ProductItemService> _logger;
 
     public ProductItemService(
         IProductItemRepository productItemRepository,
         IProductRepository productRepository,
+        IUnitRepository unitRepository,
         ILogger<ProductItemService> logger)
     {
         _productItemRepository = productItemRepository;
         _productRepository = productRepository;
+        _unitRepository = unitRepository;
         _logger = logger;
 
         _logger.LogInformation("'{0}' handling.", GetType().Name);
@@ -32,17 +36,25 @@ public class ProductItemService : IProductItemService
 
     public async Task<Guid> CreateAsync(ProductItemCreateRequestModel productItem, Guid userId)
     {
-        ProductItem productItemEntity = productItem.ToEntity(UserId.FromGuid(userId));
-
         try
         {
-            // проверка существования продукта, единицу которого хотим положить в холодильник
-            Product product = await _productRepository.FindByIdAsync(productItemEntity.ProductId);
+            // Идентификатор продукта для удобства
+            ProductId productId = ProductId.FromGuid(productItem.ProductId);
 
+            // проверка существования продукта, единицу которого хотим положить в холодильник
+            Product product = await _productRepository.FindByIdAsync(productId);
             if (product is null)
             {
-                throw new EntityNotFoundException(nameof(Product), productItemEntity.ProductId.ToString());
+                throw new EntityNotFoundException(nameof(Product), productId.ToString());
             }
+            
+            // Получение единицы измерения
+            var unit = await GetUnit(product.UnitType, productItem.UnitId);
+            // Конвертация количества продукта в главный тип
+            productItem.Amount = unit.ConvertToMain(productItem.Amount);
+
+            // преобразование в бизнес-модель единицы продукта и сохранение в базу
+            ProductItem productItemEntity = productItem.ToEntity(UserId.FromGuid(userId));
 
             await _productItemRepository.CreateAsync(productItemEntity);
 
@@ -55,7 +67,7 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task<ProductItemViewModel> GetByIdAsync(Guid productItemId)
+    public async Task<ProductItemViewModel> GetByIdAsync(Guid productItemId, string unit)
     {
         try
         {
@@ -68,7 +80,10 @@ public class ProductItemService : IProductItemService
 
             Product product = await _productRepository.FindByIdAsync(productItem.ProductId);
 
-            return productItem.ToViewModel(product);
+            // Получение единицы измерения
+            var unitFromBase = await GetUnit(product.UnitType, unit);
+
+            return productItem.ToViewModel(product, unitFromBase);
         }
         catch (Exception exception)
         {
@@ -77,7 +92,7 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task<List<ProductItemViewModel>> GetByProductIdAsync(Guid productId)
+    public async Task<List<ProductItemViewModel>> GetByProductIdAsync(Guid productId, string unit)
     {
         try
         {
@@ -90,9 +105,12 @@ public class ProductItemService : IProductItemService
                 throw new EntityNotFoundException(nameof(Product), productId.ToString());
             }
 
+            // Получение единицы измерения
+            var unitFromBase = await GetUnit(product.UnitType, unit);
+
             var productItems = await _productItemRepository.GetByProductIdAsync(productIdEntity);
 
-            return productItems.Select(pi => pi.ToViewModel(product)).ToList();
+            return productItems.Select(pi => pi.ToViewModel(product, unitFromBase)).ToList();
         }
         catch (Exception exception)
         {
@@ -105,10 +123,22 @@ public class ProductItemService : IProductItemService
     {
         try
         {
+            // Т.к. мы заранее не знаем какие продукты запрошены - то все из холодильника выводится в стандартных единицах измерения
+            List<ProductItemViewModel> result = new();
+
             var productItems = await _productItemRepository.GetAllAsync();
             var products = await _productRepository.GetByIdsAsync(productItems.Select(pi => pi.ProductId).Distinct());
+            var units = await _unitRepository.GetAllAsync();
 
-            return productItems.Select(pi => pi.ToViewModel(products.FirstOrDefault(p => p.Id == pi.ProductId))).ToList();
+            foreach (var productItem in productItems)
+            {
+                var product = products.FirstOrDefault(p => p.Id == productItem.ProductId);
+                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
+
+                result.Add(productItem.ToViewModel(product, unit));
+            }
+
+            return result;
         }
         catch (Exception exception)
         {
@@ -121,13 +151,23 @@ public class ProductItemService : IProductItemService
     {
         try
         {
+            List<ProductItemViewModel> result = new();
+
             var productItems = await _productItemRepository.GetAllAsync();
             productItems = productItems.Where(r => r.ExpiryDate.AddDays(-daysBeforeExpired).Date <= DateTime.UtcNow.Date);
 
             var products = await _productRepository.GetByIdsAsync(productItems.Select(pi => pi.ProductId).Distinct());
+            var units = await _unitRepository.GetAllAsync();
 
-            return productItems.Select(pi => pi.ToViewModel(products.FirstOrDefault(p => p.Id == pi.ProductId)))
-                               .ToList();
+            foreach (var productItem in productItems)
+            {
+                var product = products.FirstOrDefault(p => p.Id == productItem.ProductId);
+                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
+
+                result.Add(productItem.ToViewModel(product, unit));
+            }
+
+            return result;
         }
         catch (Exception exception)
         {
@@ -145,6 +185,7 @@ public class ProductItemService : IProductItemService
             // Получение всех единиц продуктов и по ним продуктов
             var productItems = await _productItemRepository.GetAllAsync();
             var products = await _productRepository.GetByIdsAsync(productItems.Select(pi => pi.ProductId).Distinct());
+            var units = await _unitRepository.GetAllAsync();
 
             foreach (var productItem in productItems)
             {
@@ -157,7 +198,9 @@ public class ProductItemService : IProductItemService
                 // Если кол-во продукта в холодильнике больше чем мин остаток на день то норм, иначе в выборку
                 if (productItem.Amount > product.MinAmountPerDay) continue;
 
-                result.Add(productItem.ToViewModel(product));
+                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
+
+                result.Add(productItem.ToViewModel(product, unit));
             }
 
             return result;
@@ -169,26 +212,30 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task TakePartOfAsync(Guid productId, int count, Guid userId)
+    public async Task TakePartOfAsync(ProductItemTakePartOfRequestModel request, Guid userId)
     {
         try
         {
-            ProductId productIdEntity = ProductId.FromGuid(productId);
+            ProductId productIdEntity = ProductId.FromGuid(request.ProductId);
             UserId userIdEntity = UserId.FromGuid(userId);
 
             Product product = await _productRepository.FindByIdAsync(productIdEntity);
 
             if (product is null)
             {
-                throw new EntityNotFoundException(nameof(Product), productId.ToString());
+                throw new EntityNotFoundException(nameof(Product), request.ProductId.ToString());
             }
+
+            // Получение единицы измерения и конвертация количества продукта, кот. хотят взять в стандартную единицу измерения
+            var unitFromBase = await GetUnit(product.UnitType, request.UnitId);
+            double count = unitFromBase.ConvertToMain(request.Count);
 
             // получаем все единицы продукта из холодильника, не просроченные
             var productItems = await _productItemRepository.GetByProductIdAsync(productIdEntity);
             productItems = productItems.Where(pi => pi.ExpiryDate.Date > DateTime.UtcNow.Date);
 
             // общее кол-во продукта в холодильнике
-            int commonCount = productItems.Sum(pi => pi.Amount);
+            double commonCount = productItems.Sum(pi => pi.Amount);
 
             // если общее кол-во продукта в холодильнике меньше запрашиваемого - ошибка
             if (commonCount < count)
@@ -269,6 +316,19 @@ public class ProductItemService : IProductItemService
             LogError("Delete", exception);
             throw;
         }
+    }
+
+    private async Task<Unit> GetUnit(UnitTypeE unitType, string unit)
+    {
+        // проверка существования указанной единицы измерения в типе
+        var units = await _unitRepository.GetByTypeAsync(unitType);
+        Unit unitFromBase = units.FirstOrDefault(u => u.Id == UnitId.FromString(unit));
+        if (unitFromBase is null)
+        {
+            throw new EntityNotFoundException(nameof(Unit), unit);
+        }
+
+        return unitFromBase;
     }
 
     private void LogError(string methodName, Exception exception)

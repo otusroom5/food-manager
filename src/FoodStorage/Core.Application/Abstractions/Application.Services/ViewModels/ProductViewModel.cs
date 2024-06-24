@@ -16,9 +16,9 @@ public sealed record ProductViewModel
     public string Name { get; set; }
 
     /// <summary>
-    /// Единица изменерения
+    /// Тип единицы изменерения
     /// </summary>
-    public string Unit { get; set; }
+    public string UnitType { get; set; }
 
     /// <summary>
     /// Минимальный остаток на день

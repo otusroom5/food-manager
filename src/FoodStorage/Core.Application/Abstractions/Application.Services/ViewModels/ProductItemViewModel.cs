@@ -18,7 +18,12 @@ public sealed record ProductItemViewModel
     /// <summary>
     /// Количество продукта в холодильнике
     /// </summary>
-    public int Amount { get; init; }
+    public double Amount { get; init; }
+
+    /// <summary>
+    /// Единица измерения
+    /// </summary>
+    public string Unit { get; set; }
 
     /// <summary>
     /// Дата изготовления

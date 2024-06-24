@@ -9,6 +9,7 @@ public class DatabaseContext : DbContext
     public DbSet<ProductItemDto> ProductItems { get; set; }
     public DbSet<ProductHistoryDto> ProductHistoryItems { get; set; }
     public DbSet<RecipeDto> Recipes { get; set; }
+    public DbSet<UnitDto> Units { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     { }
@@ -41,6 +42,13 @@ public class DatabaseContext : DbContext
                    .OnDelete(DeleteBehavior.Restrict)
                    .HasForeignKey(p => p.ProductId)
                    .HasConstraintName("fk_recipeposition_productid")
+                   .IsRequired();
+
+                navBuilder.HasOne<UnitDto>()
+                   .WithMany()
+                   .OnDelete(DeleteBehavior.Restrict)
+                   .HasForeignKey(u => u.UnitId)
+                   .HasConstraintName("fk_recipeposition_unitid")
                    .IsRequired();
             });
 

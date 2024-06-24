@@ -15,9 +15,9 @@ public class ReducedProductItemDomainEvent : BaseDomainEvent
     /// <summary>
     /// Количество взятого продукта
     /// </summary>
-    public int ProductCount { get; }
+    public double ProductCount { get; }
 
-    public ReducedProductItemDomainEvent(ProductItem productItem, int productCount, UserId reducedBy, DateTime reducedAt) : base(reducedBy, reducedAt)
+    public ReducedProductItemDomainEvent(ProductItem productItem, double productCount, UserId reducedBy, DateTime reducedAt) : base(reducedBy, reducedAt)
     {
         ProductItem = productItem;
         ProductCount = productCount;

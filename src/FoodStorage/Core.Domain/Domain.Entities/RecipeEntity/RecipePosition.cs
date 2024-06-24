@@ -1,10 +1,11 @@
 ﻿using FoodStorage.Domain.Entities.Common.Exceptions;
 using FoodStorage.Domain.Entities.ProductEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 
 namespace FoodStorage.Domain.Entities.RecipeEntity;
 
 /// <summary>
-/// Позиция в рецепте: продукт, количество продукта
+/// Позиция в рецепте: продукт, количество продукта, единица измерения
 /// </summary>
 public record RecipePosition
 {
@@ -18,9 +19,14 @@ public record RecipePosition
     /// </summary>
     public int ProductCount { get; init; }
 
+    /// <summary>
+    /// Единица измерения
+    /// </summary>
+    public UnitId UnitId { get; init; }
+
     private RecipePosition() { }
 
-    public static RecipePosition CreateNew(ProductId productId, int productCount)
+    public static RecipePosition CreateNew(ProductId productId, int productCount, UnitId unitId)
     {
         if (productCount <= 0)
         {
@@ -30,7 +36,8 @@ public record RecipePosition
         return new()
         {
             ProductId = productId,
-            ProductCount = productCount
+            ProductCount = productCount,
+            UnitId = unitId
         };
     }
 }

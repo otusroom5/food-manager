@@ -1,5 +1,6 @@
 ﻿using FoodStorage.Domain.Entities.Common.Exceptions;
 using FoodStorage.Domain.Entities.ProductEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FoodStorage.Domain.Tests;
@@ -10,7 +11,7 @@ public class ProductTest
     [TestMethod]
     public void CreateProductEntityTest()
     {
-        Product product = Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), ProductUnit.Gram, 4, 45.6);
+        Product product = Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitTypeE.Mass, 4, 45.6);
 
         Assert.IsNotNull(product);
         Assert.IsInstanceOfType(product, typeof(Product));
@@ -49,7 +50,7 @@ public class ProductTest
         "Invalid argument value 'MinAmountPerDay': The minimum balance must be a positive number")]
     public void IncorrectProductMinAmountPerDayTest(int minAmountPerDay)
     {
-        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), ProductUnit.Gram, minAmountPerDay, 45.6);
+        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitTypeE.Mass, minAmountPerDay, 45.6);
     }
 
     [TestMethod]
@@ -59,6 +60,6 @@ public class ProductTest
         "Invalid argument value 'BestBeforeDate': Expiration date must be a positive number")]
     public void IncorrectProductBestBeforeDateTest(double bestBeforeDate)
     {
-        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), ProductUnit.Gram, 4, bestBeforeDate);
+        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitTypeE.Mass, 4, bestBeforeDate);
     }
 }

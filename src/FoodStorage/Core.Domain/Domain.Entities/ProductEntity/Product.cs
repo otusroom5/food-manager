@@ -1,4 +1,5 @@
 ﻿using FoodStorage.Domain.Entities.Common.Exceptions;
+using FoodStorage.Domain.Entities.UnitEntity;
 
 namespace FoodStorage.Domain.Entities.ProductEntity;
 
@@ -18,9 +19,9 @@ public record Product
     public ProductName Name { get; init; }
 
     /// <summary>
-    /// Единица изменерения
+    /// Тип единиц изменерения
     /// </summary>
-    public ProductUnit Unit { get; init; }
+    public UnitTypeE UnitType { get; init; }
 
     /// <summary>
     /// Минимальный остаток на день
@@ -34,7 +35,7 @@ public record Product
 
     private Product() { }
 
-    public static Product CreateNew(ProductId id, ProductName name, ProductUnit unit, int minAmountPerDay, double bestBeforeDate)
+    public static Product CreateNew(ProductId id, ProductName name, UnitTypeE unitType, int minAmountPerDay, double bestBeforeDate)
     {
         if (minAmountPerDay <= 0)
         {
@@ -50,7 +51,7 @@ public record Product
         {
             Id = id,
             Name = name,
-            Unit = unit,
+            UnitType = unitType,
             MinAmountPerDay = minAmountPerDay,
             BestBeforeDate = bestBeforeDate
         };

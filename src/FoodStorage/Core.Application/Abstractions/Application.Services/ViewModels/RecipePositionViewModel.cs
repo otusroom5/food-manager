@@ -14,4 +14,9 @@ public sealed record RecipePositionViewModel
     /// Количество продукта
     /// </summary>
     public int ProductCount { get; init; }
+
+    /// <summary>
+    /// Единица измерения
+    /// </summary>
+    public string Unit { get; set; }
 }

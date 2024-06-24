@@ -3,17 +3,19 @@ using FoodStorage.Application.Services.ViewModels;
 using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 
 namespace FoodStorage.Application.Implementations.Common.Extensions;
 
 public static class ProductItemModelExtension
 {
-    public static ProductItemViewModel ToViewModel(this ProductItem productItem, Product product) =>
+    public static ProductItemViewModel ToViewModel(this ProductItem productItem, Product product, Unit unit) =>
         new()
         {
             Id = productItem.Id.ToGuid(),
             Product = product.ToShortViewModel(),
-            Amount = productItem.Amount,
+            Amount = productItem.Amount / unit.Coefficient, // конвертация в нужную единицу измерения
+            Unit = unit.Id.ToString(),
             CreatingDate = productItem.CreatingDate,
             ExpiryDate = productItem.ExpiryDate
         };

@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Infrastructure.EntityFramework\FoodStorage.Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="UnitsNet" Version="5.49.0" />
-  </ItemGroup>
-
 </Project>
