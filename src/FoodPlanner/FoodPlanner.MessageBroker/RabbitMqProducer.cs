@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace FoodPlanner.MessageBroker;
 
-public class RabbitMqProduce : IRabbitMqProducer, IDisposable
+public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
 {
     private readonly ILogger<RabbitMqProduce> _logger;
     private readonly IConnection _connection;
@@ -44,15 +44,15 @@ public class RabbitMqProduce : IRabbitMqProducer, IDisposable
         properties.Persistent = true;
 
         channel.BasicPublish(exchange: "",
-                                routingKey: "notification",
-                                basicProperties: properties,
-                                body: body);         
+                             routingKey: "notification",
+                             basicProperties: properties,
+                             body: body);         
 
-        _logger.LogInformation($" Report sent to quue 'notification'");
+        _logger.LogInformation(" Report sent to quue 'notification'");
     }
 
     public void Dispose()
     {
-        _connection.Dispose();
-    }
+        _connection.Dispose();    
+    }   
 }

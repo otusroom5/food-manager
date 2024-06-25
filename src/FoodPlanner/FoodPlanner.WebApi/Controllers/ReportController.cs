@@ -60,7 +60,7 @@ namespace FoodPlanner.WebApi.Controllers
             };
             messageDto.AttachmentIds.Add(attachment.AttachmentId);
 
-            _rabbitMqProducer.SendReportMessage(JsonSerializer.Serialize(messageDto));
+            _rabbitMqProducer.SendReportMessage(messageDto);
 
             _logger.LogInformation("Report {ReportGuid} published to gueue successfully", report.Id);
 
