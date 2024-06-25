@@ -35,7 +35,7 @@ public class WriteOffProductItemDomainEventHandler : BaseDomainEventHandler<Writ
         ProductHistory productHistoryItem = ProductHistory.CreateNew(
             id: ProductHistoryId.CreateNew(),
             productId: productId,
-            state: ProductState.WriteOff,
+            state: ProductActionType.WriteOff,
             count: domainEvent.ProductItem.Amount,
             createdBy: domainEvent.OccuredBy,
             createdAt: domainEvent.OccuredOn);

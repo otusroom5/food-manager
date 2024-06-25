@@ -20,16 +20,29 @@ public class ProductHistoryController : BaseController
     }
 
     /// <summary>
-    /// Вывести все продукты с определенным статусом в интервале дат
+    /// Получить все типы единиц измерения
     /// </summary>
-    /// <param name="state">Статус продукта</param>
+    /// <returns>Список типов единиц измерения</returns>
+    [Authorize(Roles = UserRole.Cooker)]
+    [HttpGet("GetActionTypesList")]
+    public async Task<ActionResult<List<string>>> GetActionTypesListAsync()
+    {
+        List<string> result = await _productHistoryService.GetActionTypesListAsync();
+
+        return Ok(result);
+    }
+    /// <summary>
+    /// Вывести все продукты с определенным действием в интервале дат
+    /// </summary>
+    /// <param name="actionType">Действие над продуктом</param>
     /// <param name="dateStart">Начало интервала</param>
     /// <param name="dateEnd">Конец интервала</param>
     /// <returns>Продукт</returns>
-    [HttpGet("GetProductsByStateInDateInterval")]
-    public async Task<ActionResult<List<ProductHistoryViewModel>>> GetProductsByStateInDateIntervalAsync(string state, DateTime dateStart, DateTime dateEnd)
+    [HttpGet("GetProductsByActionTypeInDateInterval")]
+    public async Task<ActionResult<List<ProductHistoryViewModel>>> GetProductsByActionTypeInDateIntervalAsync(
+        string actionType, DateTime dateStart, DateTime dateEnd)
     {
-        List<ProductHistoryViewModel> result = await _productHistoryService.GetProductsByStateInDateIntervalAsync(state, dateStart, dateEnd);
+        List<ProductHistoryViewModel> result = await _productHistoryService.GetProductsByActionTypeInDateIntervalAsync(actionType, dateStart, dateEnd);
 
         return Ok(result);
     }

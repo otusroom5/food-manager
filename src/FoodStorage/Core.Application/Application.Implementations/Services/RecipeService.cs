@@ -6,6 +6,7 @@ using FoodStorage.Application.Services.RequestModels;
 using FoodStorage.Application.Services.ViewModels;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.RecipeEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 using Microsoft.Extensions.Logging;
 
 namespace FoodStorage.Application.Implementations.Services;
@@ -14,12 +15,18 @@ public class RecipeService : IRecipeService
 {
     private readonly IRecipeRepository _recipeRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IUnitRepository _unitRepository;
     private readonly ILogger<RecipeService> _logger;
 
-    public RecipeService(IRecipeRepository recipeRepository, IProductRepository productRepository, ILogger<RecipeService> logger)
+    public RecipeService(
+        IRecipeRepository recipeRepository, 
+        IProductRepository productRepository, 
+        IUnitRepository unitRepository, 
+        ILogger<RecipeService> logger)
     {
         _recipeRepository = recipeRepository;
         _productRepository = productRepository;
+        _unitRepository = unitRepository;
         _logger = logger;
 
         _logger.LogInformation("'{0}' handling.", GetType().Name);
@@ -46,6 +53,9 @@ public class RecipeService : IRecipeService
                 {
                     throw new EntityNotFoundException(nameof(Product), recipePosition.ProductId.ToString());
                 }
+
+                // Проверка указанной для продукта единицы измерения
+                await GetUnit(product.UnitType, recipePosition.UnitId.ToString());
             }
 
             await _recipeRepository.CreateAsync(recipeEntity);
@@ -176,10 +186,22 @@ public class RecipeService : IRecipeService
 
             // проверка на существование этого рецепта в базе
             var recipeFromBase = await _recipeRepository.FindByIdAsync(recipeEntity.Id);
-
             if (recipeFromBase is null)
             {
                 throw new EntityNotFoundException(nameof(Recipe), recipe.Id.ToString());
+            }
+
+            // проверка существования продуктов, кот. будут в рецепте
+            foreach (var recipePosition in recipeEntity.Positions)
+            {
+                Product product = await _productRepository.FindByIdAsync(recipePosition.ProductId);
+                if (product is null)
+                {
+                    throw new EntityNotFoundException(nameof(Product), recipePosition.ProductId.ToString());
+                }
+
+                // Проверка указанной для продукта единицы измерения
+                await GetUnit(product.UnitType, recipePosition.UnitId.ToString());
             }
 
             await _recipeRepository.ChangeAsync(recipeEntity);
@@ -212,6 +234,19 @@ public class RecipeService : IRecipeService
             LogError("Delete", exception);
             throw;
         }
+    }
+    
+    private async Task<Unit> GetUnit(UnitTypeE unitType, string unit)
+    {
+        // проверка существования указанной единицы измерения в типе
+        var units = await _unitRepository.GetByTypeAsync(unitType);
+        Unit unitFromBase = units.FirstOrDefault(u => u.Id == UnitId.FromString(unit));
+        if (unitFromBase is null)
+        {
+            throw new EntityNotFoundException(nameof(Unit), unit);
+        }
+
+        return unitFromBase;
     }
 
     private void LogError(string methodName, Exception exception)

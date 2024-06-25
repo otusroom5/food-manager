@@ -21,7 +21,7 @@ public class AddProductItemDomainEventHandler : BaseDomainEventHandler<AddedProd
         ProductHistory productHistoryItem = ProductHistory.CreateNew(
             id: ProductHistoryId.CreateNew(),
             productId: domainEvent.ProductId,
-            state: ProductState.Added,
+            state: ProductActionType.Added,
             count: domainEvent.ProductCount,
             createdBy: domainEvent.OccuredBy,
             createdAt: domainEvent.OccuredOn);

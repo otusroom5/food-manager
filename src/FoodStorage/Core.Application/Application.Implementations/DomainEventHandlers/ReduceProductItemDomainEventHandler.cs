@@ -35,7 +35,7 @@ public class ReduceProductItemDomainEventHandler : BaseDomainEventHandler<Reduce
         ProductHistory productHistoryItem = ProductHistory.CreateNew(
             id: ProductHistoryId.CreateNew(),
             productId: productId,
-            state: ProductState.Taken,
+            state: ProductActionType.Taken,
             count: domainEvent.ProductCount,
             createdBy: domainEvent.OccuredBy,
             createdAt: domainEvent.OccuredOn);

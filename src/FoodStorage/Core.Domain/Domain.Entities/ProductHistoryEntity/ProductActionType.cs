@@ -3,7 +3,7 @@
 /// <summary>
 /// Вид действия с продуктом
 /// </summary>
-public enum ProductState
+public enum ProductActionType
 {
     Added,
     WriteOff,

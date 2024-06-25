@@ -14,7 +14,7 @@ public static class ProductItemModelExtension
         {
             Id = productItem.Id.ToGuid(),
             Product = product.ToShortViewModel(),
-            Amount = productItem.Amount / unit.Coefficient, // конвертация в нужную единицу измерения
+            Amount = productItem.Amount * unit.Coefficient, // конвертация в нужную единицу измерения
             Unit = unit.Id.ToString(),
             CreatingDate = productItem.CreatingDate,
             ExpiryDate = productItem.ExpiryDate

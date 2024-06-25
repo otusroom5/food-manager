@@ -13,7 +13,7 @@ public class ProductHistoryTest
     public void CreateProductHistoryEntityTest()
     {
         var productHistory = ProductHistory.CreateNew(ProductHistoryId.CreateNew(), ProductId.CreateNew(), 
-            ProductState.Added, 4, UserId.FromGuid(Guid.NewGuid()), DateTime.UtcNow);
+            ProductActionType.Added, 4, UserId.FromGuid(Guid.NewGuid()), DateTime.UtcNow);
 
         Assert.IsNotNull(productHistory);
         Assert.IsInstanceOfType(productHistory, typeof(ProductHistory));
@@ -34,7 +34,7 @@ public class ProductHistoryTest
     public void EmptyProductHistoryCountTest(int count)
     {
         ProductHistory.CreateNew(ProductHistoryId.CreateNew(), ProductId.CreateNew(),
-            ProductState.Added, count, UserId.FromGuid(Guid.NewGuid()), DateTime.UtcNow);
+            ProductActionType.Added, count, UserId.FromGuid(Guid.NewGuid()), DateTime.UtcNow);
     }
 
     [TestMethod]
@@ -43,6 +43,6 @@ public class ProductHistoryTest
     public void IncorrectProductHistoryCreatedAtTest()
     {
         ProductHistory.CreateNew(ProductHistoryId.CreateNew(), ProductId.CreateNew(),
-            ProductState.Added, 4, UserId.FromGuid(Guid.NewGuid()), DateTime.Now.AddDays(10));
+            ProductActionType.Added, 4, UserId.FromGuid(Guid.NewGuid()), DateTime.Now.AddDays(10));
     }
 }

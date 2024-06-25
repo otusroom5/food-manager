@@ -31,6 +31,52 @@ public class ProductHistoryService : IProductHistoryService
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
+    public Task<List<string>> GetActionTypesListAsync()
+    {
+        List<string> result = new();
+
+        foreach (var value in Enum.GetValues(typeof(ProductActionType)))
+        {
+            result.Add(value.ToString());
+        }
+
+        return Task.FromResult(result);
+    }
+
+    public async Task<List<ProductHistoryViewModel>> GetProductsByActionTypeInDateIntervalAsync(string actionType, DateTime dateStart, DateTime dateEnd)
+    {
+        try
+        {
+            List<ProductHistoryViewModel> result = new();
+
+            if (!Enum.TryParse<ProductActionType>(actionType, true, out var productState))
+            {
+                throw new InvalidEnumValueException(nameof(actionType), actionType, nameof(ProductActionType));
+            }
+
+            var productHistories = await _productHistoryRepository.GetByStateAsync(productState);
+            productHistories = productHistories.Where(ph => ph.CreatedAt.Date >= dateStart && ph.CreatedAt.Date <= dateEnd);
+
+            var products = await _productRepository.GetByIdsAsync(productHistories.Select(pi => pi.ProductId).Distinct());
+            var units = await _unitRepository.GetAllAsync();
+
+            foreach (var productHistory in productHistories)
+            {
+                var product = products.FirstOrDefault(p => p.Id == productHistory.ProductId);
+                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
+
+                result.Add(productHistory.ToViewModel(product, unit));
+            }
+
+            return result;
+        }
+        catch (Exception exception)
+        {
+            LogError("GetProductsByActionTypeInDateInterval", exception);
+            throw;
+        }
+    }
+
     public async Task<List<ProductHistoryViewModel>> GetActionsWithProductByDateAsync(Guid productId, DateTime date)
     {
         try
@@ -72,40 +118,6 @@ public class ProductHistoryService : IProductHistoryService
             var products = await _productRepository.GetByIdsAsync(productHistories.Select(pi => pi.ProductId).Distinct());
             var units = await _unitRepository.GetAllAsync();
 
-            foreach(var productHistory in productHistories)
-            {
-                var product = products.FirstOrDefault(p => p.Id == productHistory.ProductId);
-                var unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain);
-
-                result.Add(productHistory.ToViewModel(product, unit));
-            }
-
-            return result;
-        }
-        catch (Exception exception)
-        {
-            LogError("GetActionsWithProductByUserInDate", exception);
-            throw;
-        }
-    }
-
-    public async Task<List<ProductHistoryViewModel>> GetProductsByStateInDateIntervalAsync(string state, DateTime dateStart, DateTime dateEnd)
-    {
-        try
-        {
-            List<ProductHistoryViewModel> result = new();
-
-            if (!Enum.TryParse<ProductState>(state, true, out var productState))
-            {
-                throw new InvalidEnumValueException(nameof(state), state, nameof(ProductState));
-            }
-
-            var productHistories = await _productHistoryRepository.GetByStateAsync(productState);
-            productHistories = productHistories.Where(ph => ph.CreatedAt.Date >= dateStart && ph.CreatedAt.Date <= dateEnd);
-
-            var products = await _productRepository.GetByIdsAsync(productHistories.Select(pi => pi.ProductId).Distinct());
-            var units = await _unitRepository.GetAllAsync();
-
             foreach (var productHistory in productHistories)
             {
                 var product = products.FirstOrDefault(p => p.Id == productHistory.ProductId);
@@ -118,7 +130,7 @@ public class ProductHistoryService : IProductHistoryService
         }
         catch (Exception exception)
         {
-            LogError("GetProductsByStateInDateInterval", exception);
+            LogError("GetActionsWithProductByUserInDate", exception);
             throw;
         }
     }
