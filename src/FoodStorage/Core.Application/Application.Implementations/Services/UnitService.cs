@@ -110,7 +110,7 @@ public class UnitService : IUnitService
 
         foreach (var value in Enum.GetValues(typeof(UnitTypeE)))
         {
-            result.Add(value.ToString()); //(UnitTypeE)value
+            result.Add(value.ToString());
         }
 
         return Task.FromResult(result);

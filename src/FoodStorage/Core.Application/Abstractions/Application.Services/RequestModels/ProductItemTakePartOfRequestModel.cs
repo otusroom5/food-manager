@@ -19,9 +19,4 @@ public sealed record ProductItemTakePartOfRequestModel
     /// Идентификатор единицы измерения, в которой забирается продукт
     /// </summary>
     public string UnitId { get; set; }
-
-    /// <summary>
-    /// Пользователь, забирающий продукт
-    /// </summary>
-    public Guid UserId { get; set; }
 }

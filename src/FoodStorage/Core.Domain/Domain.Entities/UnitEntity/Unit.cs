@@ -20,7 +20,7 @@ public record Unit
     /// </summary>
     public UnitTypeE UnitType { get; init; }
     /// <summary>
-    /// Коэффициент, на который нужно умножить чтобы получить стандартное значение в этой группе измерения
+    /// Коэффициент, на который нужно разделить чтобы получить стандартное значение в этой группе измерения
     /// </summary>
     public double Coefficient { get; init; }
     /// <summary>
@@ -46,5 +46,5 @@ public record Unit
         };
     }
 
-    public double ConvertToMain(double value) => value * Coefficient;
+    public double ConvertToMain(double value) => value / Coefficient;
 }

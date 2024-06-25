@@ -24,7 +24,7 @@ public record UnitId
             throw new InvalidArgumentValueException("Empty value passed", nameof(UnitId));
         }
 
-        if (unitName.Length is < 2 or > 4)
+        if (unitName.Length is < 1 or > 4)
         {
             throw new InvalidArgumentValueException("Incorrect value passed", nameof(UnitId));
         }

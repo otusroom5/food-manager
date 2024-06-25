@@ -21,7 +21,7 @@ public record ProductHistory
     /// <summary>
     /// Действие с продуктом (статус продукта в истории)
     /// </summary>
-    public ProductState State { get; init; }
+    public ProductActionType State { get; init; }
 
     /// <summary>
     /// Количество продукта
@@ -40,7 +40,7 @@ public record ProductHistory
 
     private ProductHistory() { }
 
-    public static ProductHistory CreateNew(ProductHistoryId id, ProductId productId, ProductState state, double count, UserId createdBy, DateTime createdAt)
+    public static ProductHistory CreateNew(ProductHistoryId id, ProductId productId, ProductActionType state, double count, UserId createdBy, DateTime createdAt)
     {
         if (count <= 0)
         {

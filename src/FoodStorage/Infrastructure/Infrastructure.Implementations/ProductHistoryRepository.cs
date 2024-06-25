@@ -55,7 +55,7 @@ internal class ProductHistoryRepository : IProductHistoryRepository
         return productHistoryDtos.Select(ph => ph.ToEntity()).ToList();
     }
 
-    public async Task<IEnumerable<ProductHistory>> GetByStateAsync(ProductState state)
+    public async Task<IEnumerable<ProductHistory>> GetByStateAsync(ProductActionType state)
     {
         IEnumerable<ProductHistoryDto> productHistoryDtos =
             await _databaseContext.ProductHistoryItems.Where(ph => ph.State == state.ToString()).ToListAsync();

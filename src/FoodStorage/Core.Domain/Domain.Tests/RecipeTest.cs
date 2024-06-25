@@ -1,6 +1,7 @@
 ﻿using FoodStorage.Domain.Entities.Common.Exceptions;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.RecipeEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FoodStorage.Domain.Tests;
@@ -22,7 +23,7 @@ public class RecipeTest
     [TestMethod]
     public void CreateRecipeEntityWithPositionTest()
     {
-        List<RecipePosition> positions = new() { RecipePosition.CreateNew(ProductId.CreateNew(), 4) };
+        List<RecipePosition> positions = new() { RecipePosition.CreateNew(ProductId.CreateNew(), 4, UnitId.FromString("kg") ) };
         Recipe recipe = Recipe.CreateNew(RecipeId.CreateNew(), RecipeName.FromString("SomeName"), positions);
 
         Assert.IsNotNull(recipe);
@@ -65,7 +66,7 @@ public class RecipeTest
         "Invalid argument value 'ProductCount': The amount of product in the recipe must be greater than 0")]
     public void IncorrectRecipeProductCountTest(int count)
     {
-        RecipePosition.CreateNew(ProductId.CreateNew(), count);
+        RecipePosition.CreateNew(ProductId.CreateNew(), count, UnitId.FromString("kg"));
     }
     #endregion
 
@@ -73,7 +74,7 @@ public class RecipeTest
     [TestMethod]
     public void RecipeAddPositionSuccessTest()
     {
-        RecipePosition position =RecipePosition.CreateNew(ProductId.CreateNew(), 4);
+        RecipePosition position =RecipePosition.CreateNew(ProductId.CreateNew(), 4, UnitId.FromString("kg"));
         Recipe recipe = Recipe.CreateNew(RecipeId.CreateNew(), RecipeName.FromString("SomeName"));
 
         recipe.AddPosition(position);
@@ -85,7 +86,7 @@ public class RecipeTest
     [TestMethod]
     public void RecipeRemovePositionSuccessTest()
     {
-        RecipePosition position = RecipePosition.CreateNew(ProductId.CreateNew(), 4);
+        RecipePosition position = RecipePosition.CreateNew(ProductId.CreateNew(), 4, UnitId.FromString("kg"));
         Recipe recipe = Recipe.CreateNew(RecipeId.CreateNew(), RecipeName.FromString("SomeName"));
 
         recipe.AddPosition(position);
@@ -98,7 +99,7 @@ public class RecipeTest
     [TestMethod]
     public void RecipeAddPositionThrowExceptionTest()
     {
-        RecipePosition position = RecipePosition.CreateNew(ProductId.CreateNew(), 4);
+        RecipePosition position = RecipePosition.CreateNew(ProductId.CreateNew(), 4, UnitId.FromString("kg"));
         Recipe recipe = Recipe.CreateNew(RecipeId.CreateNew(), RecipeName.FromString("SomeName"), new List<RecipePosition>() { position });
 
         try
@@ -115,7 +116,7 @@ public class RecipeTest
     [TestMethod]
     public void RecipeRemovePositionThrowExceptionTest()
     {
-        RecipePosition position = RecipePosition.CreateNew(ProductId.CreateNew(), 4);
+        RecipePosition position = RecipePosition.CreateNew(ProductId.CreateNew(), 4, UnitId.FromString("kg"));
         Recipe recipe = Recipe.CreateNew(RecipeId.CreateNew(), RecipeName.FromString("SomeName"), new List<RecipePosition>() { position });
 
         var newProductId = ProductId.CreateNew();
