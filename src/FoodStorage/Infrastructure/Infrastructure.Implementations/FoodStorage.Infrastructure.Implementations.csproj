@@ -7,9 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\FoodManager.Shared\FoodManager.Shared.csproj" />
     <ProjectReference Include="..\..\Core.Application\Abstractions\Application.Repositories\FoodStorage.Application.Repositories.csproj" />
     <ProjectReference Include="..\Infrastructure.EntityFramework\FoodStorage.Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
