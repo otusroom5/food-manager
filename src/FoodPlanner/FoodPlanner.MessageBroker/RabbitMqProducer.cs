@@ -12,6 +12,8 @@ public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
 {
     private readonly ILogger<RabbitMqProduce> _logger;
     private readonly IConnection _connection;
+    private readonly string _queueName;
+
     public RabbitMqProduce(ILogger<RabbitMqProduce> logger, 
         IConfiguration configuration)
     {
@@ -26,6 +28,7 @@ public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
             Password = rabbitConnection.GetUserPassword()
         };
 
+        _queueName = rabbitConnection.GetQueueName();
         _connection = factory.CreateConnection();
     }
                 
@@ -33,7 +36,7 @@ public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
     {   
         using var channel = _connection.CreateModel();
 
-        channel.QueueDeclare(queue: "notification",
+        channel.QueueDeclare(queue: _queueName,
                         durable: false,
                         exclusive: false,
                         autoDelete: false,

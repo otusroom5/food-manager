@@ -35,7 +35,7 @@ public static class AuthenticationWebApplicationBuilderExtensions
             })
             .AddApiAuthentication(options =>
             {
-                options.Audience = authenticationOptions.Audience;
+                options.Audience = authenticationOptions.ApiAudience;
                 options.TokenIssuer = authenticationOptions.TokenIssuer;
                 options.TokenExpirySec = authenticationOptions.TokenExpirySec;
                 options.SecurityKey = authenticationOptions.SecurityKey;

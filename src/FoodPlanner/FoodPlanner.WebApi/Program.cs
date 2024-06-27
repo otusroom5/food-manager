@@ -18,13 +18,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBarerAuth();
 
 builder.Services.AddHttpMessageHandlers();
-builder.Services.AddHttpServiceClient("UserAuthApi", builder.Configuration.GetConnectionString("UserAuthApi"));
+builder.Services.AddHttpServiceClient(options =>
+{
+    options.ServiceName = "UserAuthApi";
+    options.ConnectionString = builder.Configuration.GetConnectionString("UserAuthApi");
+    options.AuthenticationType = AuthenticationType.ApiKey;
+    options.AuthServiceName = "UserAuthApi";
+    options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
+});
 builder.Services.AddHttpServiceClient(options =>
 {
     options.ServiceName = "FoodStorageApi";
     options.ConnectionString = builder.Configuration.GetConnectionString("FoodStorageApi");
     options.AuthenticationType = AuthenticationType.ApiKey;
-    options.AuthServiceName = "UserAuthApi";
+    options.AuthServiceName = "UserAuthApi";    
     options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
 });
 

@@ -5,13 +5,10 @@ using FoodPlanner.DataAccess.Entities;
 using FoodPlanner.MessageBroker;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Net.Mail;
-using System.Text.Json;
 
 namespace FoodPlanner.WebApi.Controllers
 {
-    // [Authorize(Roles = UserRole.Manager)]
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class ReportController : ControllerBase
@@ -31,7 +28,7 @@ namespace FoodPlanner.WebApi.Controllers
             _rabbitMqProducer = rabbitMqProducer;
             _logger = logger;
         }
-
+              
         [HttpGet("GenerateExpiredProductsReport")]
         public ActionResult<Guid> GenerateExpiredProductsReport()
         {

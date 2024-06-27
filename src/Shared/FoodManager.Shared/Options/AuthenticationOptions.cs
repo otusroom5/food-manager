@@ -6,5 +6,6 @@ public class AuthenticationOptions
     public string TokenIssuer { get; set; }
     public string SecurityKey { get; set; }
     public string Audience { get; set; }
+    public string ApiAudience { get; set; }
     public int TokenExpirySec { get; set; }
 }
