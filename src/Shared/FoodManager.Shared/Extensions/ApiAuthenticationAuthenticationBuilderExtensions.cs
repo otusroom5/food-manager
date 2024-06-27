@@ -1,4 +1,5 @@
 ﻿using FoodManager.Shared.Auth.Utils;
+using FoodManager.Shared.Types;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text.Encodings.Web;
 
 namespace FoodManager.Shared.Extensions;
@@ -45,10 +47,8 @@ public static class ApiAuthenticationAuthenticationBuilderExtensions
 
         protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-
             if (TryToExtractApiKeyAuthorizationHeaderValue(Request.Headers.Authorization, out var headerVaue))
             {
-
                 TokenValidationResult validationResult = await new JwtSecurityTokenHandler().ValidateTokenAsync(headerVaue.Parameter, new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
@@ -60,19 +60,24 @@ public static class ApiAuthenticationAuthenticationBuilderExtensions
                     ValidateIssuerSigningKey = true
                 });
 
-
                 if (!validationResult.IsValid)
                 {
                     return AuthenticateResult.Fail("Invalid Api Key");
                 }
 
                 var claims = new List<Claim>(validationResult.Claims.Select(f => new Claim(f.Key, f.Value.ToString())));
-                var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, ApiKeyAuthentication));
+                string roles = GetRolesFromClaimsOrDefault(claims, UserRole.All);
+                var principal = new GenericPrincipal(new ClaimsIdentity(claims, ApiKeyAuthentication), roles.Split(','));
                 var ticket = new AuthenticationTicket(principal, this.Scheme.Name);
                 return AuthenticateResult.Success(ticket);
             }
 
             return AuthenticateResult.NoResult();
+        }
+
+        private string GetRolesFromClaimsOrDefault(IEnumerable<Claim> claims, string defaultRoles)
+        {
+            return claims.FirstOrDefault(cl => cl.Type == ClaimTypes.Role)?.Value ?? defaultRoles;
         }
 
 

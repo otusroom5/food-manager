@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
+using FoodManager.Shared.Types;
 
 namespace FoodUserAuth.WebApi.Utils;
 
@@ -15,7 +17,8 @@ public class ApiKeyClaimsHelper
         return new List<Claim>()
         {
             new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
-            new Claim(ClaimTypes.UserData, KeyId.ToString())
+            new Claim(ClaimTypes.UserData, KeyId.ToString()),
+            new Claim(ClaimTypes.Role, UserRole.All),
         };
     }
 

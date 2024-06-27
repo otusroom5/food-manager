@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using FoodUserAuth.DataAccess.Types;
 using FoodManager.Shared.Auth.Utils;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodManager.Shared.Options;
 
@@ -43,7 +41,6 @@ internal class JwtTokenHandler: ITokenHandler
         }
     }
 
-
     public string Generate(string loginName, Guid id, UserRole role)
     {
         var claims = new List<Claim>
@@ -53,7 +50,7 @@ internal class JwtTokenHandler: ITokenHandler
             new Claim(ClaimTypes.Role, role.ToString()),
         };
 
-        return Generate(claims, _options.TokenExpirySec);
+        return Generate(claims, _options.TokenExpirySec, _options.Audience);
     }
 
     public string GenerateApiToken(Guid apiKeyId, Guid userId)
@@ -64,15 +61,15 @@ internal class JwtTokenHandler: ITokenHandler
             UserId = userId
         };
 
-        return Generate(claims.ToList(), ExpiryTokenTimeSec);
+        return Generate(claims.ToList(), ExpiryTokenTimeSec, _options.ApiAudience);
     }
 
-    private string Generate(IEnumerable<Claim> claims, int expiryTokenTimeSec)
+    private string Generate(IEnumerable<Claim> claims, int expiryTokenTimeSec, string audience)
     {
         var jwtSecToken = new JwtSecurityToken(
                 issuer: _options.TokenIssuer,
                 claims: claims,
-                audience: _options.Audience,
+                audience: audience,
                 expires: CalculateExpiryTime(expiryTokenTimeSec),
                 signingCredentials: CreateCredentials(_options.SecurityKey));
 
