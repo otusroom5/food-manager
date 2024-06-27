@@ -1,5 +1,7 @@
-﻿using FoodStorage.Application.Services;
+﻿using FoodStorage.Application.Repositories.MessageBroker;
+using FoodStorage.Application.Services;
 using FoodStorage.Domain.Entities;
+using FoodStorage.Domain.Entities.Common.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -15,8 +17,8 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
     private Timer _timer = null;
 
     public CheckExpiredProductsBackgroundService(IServiceProvider services,
-        CheckExpiredProductsConfiguration configuration,
-        ILogger<CheckExpiredProductsBackgroundService> logger)
+                                                 CheckExpiredProductsConfiguration configuration,
+                                                 ILogger<CheckExpiredProductsBackgroundService> logger)
     {
         _services = services;
         _configuration = configuration;
@@ -61,6 +63,7 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
 
         using IServiceScope scope = _services.CreateScope();
         IProductItemService productItemService = scope.ServiceProvider.GetRequiredService<IProductItemService>();
+        IMessageProducer messageProducer = scope.ServiceProvider.GetRequiredService<IMessageProducer>();
 
         // Получаем все просроченные продукты и списываем их
         _logger.LogInformation("Writing off expired products");
@@ -74,7 +77,27 @@ public sealed class CheckExpiredProductsBackgroundService : IHostedService, IDis
 
         var expireProductItems = await productItemService.GetExpireProductItemsAsync(countDays);
 
-        throw new NotImplementedException("Will be rabbit message"); //TODO
+        if (!expireProductItems.Any()) return;
+
+        // Создание сообщения и отправка его в брокер
+        List<ExpiringProduct> expiringProducts = new();
+        foreach (var productItem in expireProductItems)
+        {
+            ExpiringProduct expiringProduct = new() 
+            { 
+                Id = productItem.Id,
+                ProductName = productItem.Product.Name,
+                Amount = productItem.Amount,
+                Unit = productItem.Unit,
+                CreatingDate = productItem.CreatingDate,
+                ExpiryDate = productItem.ExpiryDate
+            };
+            expiringProducts.Add(expiringProduct);
+        }
+        ProductExpiringEventMessage productExpiringEvent = new(expiringProducts, DateTime.Now);
+
+        _logger.LogInformation("Sending info about product items that expire after {0} days", countDays);
+        messageProducer.Send(productExpiringEvent);
     }
 
     public void Dispose() => _timer?.Dispose();

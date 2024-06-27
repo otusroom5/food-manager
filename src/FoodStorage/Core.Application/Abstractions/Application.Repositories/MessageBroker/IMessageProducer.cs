@@ -1,6 +1,6 @@
 ﻿namespace FoodStorage.Application.Repositories.MessageBroker;
 
-public interface IMessageProducer<in T> where T : class
+public interface IMessageProducer
 {
-    Task ProduceMessageAsync(T message);
+    void Send<T>(T message);
 }

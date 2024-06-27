@@ -1,8 +1,12 @@
 ﻿using FoodStorage.Application.Implementations.Common.Exceptions;
 using FoodStorage.Application.Repositories;
+using FoodStorage.Application.Repositories.MessageBroker;
+using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.Common.DomainEvents;
+using FoodStorage.Domain.Entities.Common.Events;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductHistoryEntity;
+using FoodStorage.Domain.Entities.UnitEntity;
 using Microsoft.Extensions.Logging;
 
 namespace FoodStorage.Application.Implementations.DomainEventHandlers;
@@ -15,29 +19,35 @@ public class WriteOffProductItemDomainEventHandler : BaseDomainEventHandler<Writ
     private readonly IProductItemRepository _productItemRepository;
     private readonly IProductHistoryRepository _productHistoryRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IUnitRepository _unitRepository;
+    private readonly IMessageProducer _messageProducer;
 
     public WriteOffProductItemDomainEventHandler(
         IProductItemRepository productItemRepository,
         IProductHistoryRepository productHistoryRepository,
         IProductRepository productRepository,
+        IUnitRepository unitRepository,
+        IMessageProducer messageProducer,
         ILogger<WriteOffProductItemDomainEventHandler> logger) : base(logger)
     {
         _productItemRepository = productItemRepository;
         _productHistoryRepository = productHistoryRepository;
         _productRepository = productRepository;
+        _unitRepository = unitRepository;
+        _messageProducer = messageProducer;
     }
 
     protected override async Task HandleDomainEventAsync(WritedOffProductItemDomainEvent domainEvent, CancellationToken cancellationToken)
     {
-        ProductId productId = domainEvent.ProductItem.ProductId;
+        var productId = ProductId.FromGuid(domainEvent.ProductId);
 
         // запись в историю о списании продукта
         ProductHistory productHistoryItem = ProductHistory.CreateNew(
             id: ProductHistoryId.CreateNew(),
             productId: productId,
             state: ProductActionType.WriteOff,
-            count: domainEvent.ProductItem.Amount,
-            createdBy: domainEvent.OccuredBy,
+            count: domainEvent.Amount,
+            createdBy: UserId.FromGuid(domainEvent.OccuredBy),
             createdAt: domainEvent.OccuredOn);
 
         await _productHistoryRepository.CreateAsync(productHistoryItem);
@@ -53,7 +63,15 @@ public class WriteOffProductItemDomainEventHandler : BaseDomainEventHandler<Writ
         double countProductInBase = productItems.Sum(pi => pi.Amount);
         if (countProductInBase <= product.MinAmountPerDay)
         {
-            throw new NotImplementedException("Will be rabbit message"); //TODO
+            // Определяем основную единицу измерения для этого продукта, чтобы отправить сообщение с этой инфой
+            var units = await _unitRepository.GetByTypeAsync(product.UnitType);
+            Unit unit = units.FirstOrDefault(u => u.IsMain);
+
+            // Формирование сообщения и отправка его
+            ProductEndingEventMessage productEndingEvent =
+                new(product.Name.ToString(), product.MinAmountPerDay, countProductInBase, unit?.Id.ToString(), domainEvent.OccuredOn);
+
+            _messageProducer.Send(productEndingEvent);
         }
     }
 }

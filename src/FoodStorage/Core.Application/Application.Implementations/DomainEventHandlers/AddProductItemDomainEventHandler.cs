@@ -1,5 +1,7 @@
 ﻿using FoodStorage.Application.Repositories;
+using FoodStorage.Domain.Entities;
 using FoodStorage.Domain.Entities.Common.DomainEvents;
+using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductHistoryEntity;
 using Microsoft.Extensions.Logging;
 
@@ -20,10 +22,10 @@ public class AddProductItemDomainEventHandler : BaseDomainEventHandler<AddedProd
         // запись в историю о добавлении продукта
         ProductHistory productHistoryItem = ProductHistory.CreateNew(
             id: ProductHistoryId.CreateNew(),
-            productId: domainEvent.ProductId,
+            productId: ProductId.FromGuid(domainEvent.ProductId),
             state: ProductActionType.Added,
             count: domainEvent.ProductCount,
-            createdBy: domainEvent.OccuredBy,
+            createdBy: UserId.FromGuid(domainEvent.OccuredBy),
             createdAt: domainEvent.OccuredOn);
 
         await _productHistoryRepository.CreateAsync(productHistoryItem);
