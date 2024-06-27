@@ -10,7 +10,7 @@ public abstract class BaseDomainEvent : INotification
     /// <summary>
     /// Произошло кем
     /// </summary>
-    public UserId OccuredBy { get; }
+    public Guid OccuredBy { get; }
 
     /// <summary>
     /// Произошло когда
@@ -19,7 +19,7 @@ public abstract class BaseDomainEvent : INotification
 
     protected BaseDomainEvent(UserId occuredBy, DateTime occuredOn)
     {
-        OccuredBy = occuredBy;
+        OccuredBy = occuredBy.ToGuid();
         OccuredOn = occuredOn;
     }
 }

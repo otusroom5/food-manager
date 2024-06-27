@@ -89,6 +89,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=development
       - FoodStorage_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodstoragedb;Username=room5;Password=room5Password
+      - FoodStorage_ConnectionStrings__RabbitMq=Host=rabbitmq;Port=5672;Queue=storage;Username=room5;Password=room5Password
     ports:
         - 8082:80
     depends_on:

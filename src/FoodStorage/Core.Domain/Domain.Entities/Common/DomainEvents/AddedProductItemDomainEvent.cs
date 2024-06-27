@@ -10,7 +10,7 @@ public class AddedProductItemDomainEvent : BaseDomainEvent
     /// <summary>
     /// Идентификатор продукта
     /// </summary>
-    public ProductId ProductId { get; }
+    public Guid ProductId { get; }
 
     /// <summary>
     /// Количество продукта
@@ -19,7 +19,7 @@ public class AddedProductItemDomainEvent : BaseDomainEvent
 
     public AddedProductItemDomainEvent(ProductId productId, double productCount, UserId reducedBy, DateTime reducedAt) : base(reducedBy, reducedAt)
     {
-        ProductId = productId;
+        ProductId = productId.ToGuid();
         ProductCount = productCount;
     }
 }

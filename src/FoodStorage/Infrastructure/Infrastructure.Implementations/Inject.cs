@@ -1,5 +1,7 @@
 ﻿using FoodStorage.Application.Repositories;
+using FoodStorage.Application.Repositories.MessageBroker;
 using FoodStorage.Infrastructure.EntityFramework;
+using FoodStorage.Infrastructure.Implementations.MessageBroker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,8 @@ public static class Inject
                 .AddScoped<IProductHistoryRepository, ProductHistoryRepository>()
                 .AddScoped<IRecipeRepository, RecipeRepository>()
                 .AddScoped<IUnitRepository, UnitRepository>();
+
+        services.AddScoped<IMessageProducer, MessageProducer>();
 
         return services;
     }

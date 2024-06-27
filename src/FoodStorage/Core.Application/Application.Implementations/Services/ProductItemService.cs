@@ -261,9 +261,9 @@ public class ProductItemService : IProductItemService
                 }
                 else
                 {
+                    count -= productItem.Amount;
                     productItem.ReduceAmount(productItem.Amount, userIdEntity);
                     await _productItemRepository.DeleteAsync(productItem);
-                    count -= productItem.Amount;
                 }
             }
         }
