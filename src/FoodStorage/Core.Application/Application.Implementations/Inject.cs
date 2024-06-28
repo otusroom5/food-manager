@@ -1,4 +1,5 @@
 ﻿using FoodStorage.Application.Implementations.Common;
+using FoodStorage.Application.Implementations.Common.CatalogsInitialize;
 using FoodStorage.Application.Implementations.DomainEventHandlers;
 using FoodStorage.Application.Implementations.Services;
 using FoodStorage.Application.Services;
@@ -53,6 +54,11 @@ public static class Inject
             .GetSection(CheckExpiredProductsConfiguration.ReportExpireProductsConfig)
             .Bind(checkExpiredProductsConfiguration);
 
-        return services.AddHostedService<CheckExpiredProductsBackgroundService>().AddSingleton(checkExpiredProductsConfiguration);
+        services.AddHostedService<CheckExpiredProductsBackgroundService>().AddSingleton(checkExpiredProductsConfiguration);
+
+        // Заполнение начальных справочных данных
+        services.AddScoped<IJsonReader, JsonReader>().AddHostedService<FillInitialDataBackgroundService>();
+
+        return services;
     }
 }

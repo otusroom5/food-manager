@@ -10,7 +10,7 @@ public sealed class ProductEndingEventMessage : BaseEventMessage
     /// <summary>
     /// Минимальный остаток на день
     /// </summary>
-    public int MinAmountPerDay { get; }
+    public double MinAmountPerDay { get; }
 
     /// <summary>
     /// Количество оставшегося продукта
@@ -22,7 +22,7 @@ public sealed class ProductEndingEventMessage : BaseEventMessage
     /// </summary>
     public string Unit { get; }
 
-    public ProductEndingEventMessage(string productName, int minAmountPerDay, double amount, string unit, DateTime occuredOn) 
+    public ProductEndingEventMessage(string productName, double minAmountPerDay, double amount, string unit, DateTime occuredOn) 
         : base(occuredOn)
     {
         ProductName = productName;

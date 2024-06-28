@@ -18,7 +18,7 @@ public record Unit
     /// <summary>
     /// Тип единиц измерения
     /// </summary>
-    public UnitTypeE UnitType { get; init; }
+    public UnitType UnitType { get; init; }
     /// <summary>
     /// Коэффициент, на который нужно разделить чтобы получить стандартное значение в этой группе измерения
     /// </summary>
@@ -30,7 +30,7 @@ public record Unit
 
     private Unit() { }
 
-    public static Unit CreateNew(UnitId id, UnitName name, UnitTypeE unitType, double coefficient)
+    public static Unit CreateNew(UnitId id, UnitName name, UnitType unitType, double coefficient)
     {
         if (coefficient <= 0)
         {

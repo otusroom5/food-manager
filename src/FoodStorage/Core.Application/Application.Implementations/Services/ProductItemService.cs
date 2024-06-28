@@ -318,7 +318,7 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    private async Task<Unit> GetUnit(UnitTypeE unitType, string unit)
+    private async Task<Unit> GetUnit(UnitType unitType, string unit)
     {
         // проверка существования указанной единицы измерения в типе
         var units = await _unitRepository.GetByTypeAsync(unitType);

@@ -19,11 +19,11 @@ public sealed record ProductDto
 
     [Column("min_amount_per_day")]
     [Required]
-    public int MinAmountPerDay { get; set; }
+    public double MinAmountPerDay { get; set; }
 
     [Column("best_before_date")]
     [Required]
-    public double BestBeforeDate { get; set; }
+    public int BestBeforeDate { get; set; }
 
     // Navigation property
     public ICollection<ProductItemDto> ProductItems { get; set; }

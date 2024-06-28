@@ -44,7 +44,7 @@ internal class UnitRepository : IUnitRepository
         return unitDto?.ToEntity();
     }
 
-    public async Task<IEnumerable<Unit>> GetByTypeAsync(UnitTypeE unitType)
+    public async Task<IEnumerable<Unit>> GetByTypeAsync(UnitType unitType)
     {
         var units = _databaseContext.Units.Where(u => u.UnitType.ToLower() == unitType.ToString().ToLower());
         var result = await units.Select(u => u.ToEntity()).ToListAsync();
