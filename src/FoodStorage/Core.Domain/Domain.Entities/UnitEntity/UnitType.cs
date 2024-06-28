@@ -3,7 +3,7 @@
 /// <summary>
 /// Тип единиц измерения продукта
 /// </summary>
-public enum UnitTypeE
+public enum UnitType
 {
     Volume,
     Mass,

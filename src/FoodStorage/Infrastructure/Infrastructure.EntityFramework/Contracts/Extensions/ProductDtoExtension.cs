@@ -8,9 +8,9 @@ public static class ProductDtoExtension
 {
     public static Product ToEntity(this ProductDto productDto)
     {
-        if (!Enum.TryParse<UnitTypeE>(productDto.UnitType, out var unit))
+        if (!Enum.TryParse<UnitType>(productDto.UnitType, out var unit))
         {
-            throw new InvalidEnumValueException(nameof(productDto.UnitType), productDto.UnitType, nameof(UnitTypeE));
+            throw new InvalidEnumValueException(nameof(productDto.UnitType), productDto.UnitType, nameof(UnitType));
         }
 
         return Product.CreateNew(ProductId.FromGuid(productDto.Id), ProductName.FromString(productDto.Name), unit, productDto.MinAmountPerDay, productDto.BestBeforeDate);

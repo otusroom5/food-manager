@@ -7,9 +7,9 @@ public static class UnitDtoExtension
 {
     public static Unit ToEntity(this UnitDto unitDto)
     {
-        if (!Enum.TryParse<UnitTypeE>(unitDto.UnitType, out var unitType))
+        if (!Enum.TryParse<UnitType>(unitDto.UnitType, out var unitType))
         {
-            throw new InvalidEnumValueException(nameof(unitDto.UnitType), unitDto.UnitType, nameof(UnitTypeE));
+            throw new InvalidEnumValueException(nameof(unitDto.UnitType), unitDto.UnitType, nameof(UnitType));
         }
 
         return Unit.CreateNew(UnitId.FromString(unitDto.Id), UnitName.FromString(unitDto.Name), unitType, unitDto.Coefficient);

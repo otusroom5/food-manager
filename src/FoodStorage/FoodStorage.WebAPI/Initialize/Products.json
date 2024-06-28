@@ -1,0 +1,170 @@
+[
+	{
+		"name": "Milk",
+		"unitType": "Volume",
+		"minAmountPerDay": 3,
+		"bestBeforeDate": 10
+	},
+	{
+		"name": "Water",
+		"unitType": "Volume",
+		"minAmountPerDay": 10,
+		"bestBeforeDate": 160
+	},
+	{
+		"name": "Rice",
+		"unitType": "Mass",
+		"minAmountPerDay": 1,
+		"bestBeforeDate": 720
+	},
+	{
+		"name": "Chiken",
+		"unitType": "Mass",
+		"minAmountPerDay": 2,
+		"bestBeforeDate": 5
+	},
+	{
+		"name": "Beaf",
+		"unitType": "Mass",
+		"minAmountPerDay": 3,
+		"bestBeforeDate": 5
+	},
+	{
+		"name": "Pork",
+		"unitType": "Mass",
+		"minAmountPerDay": 3,
+		"bestBeforeDate": 5
+	},
+	{
+		"name": "Bread",
+		"unitType": "Mass",
+		"minAmountPerDay": 0.5,
+		"bestBeforeDate": 8
+	},
+	{
+		"name": "Onion",
+		"unitType": "Mass",
+		"minAmountPerDay": 3,
+		"bestBeforeDate": 20
+	},
+	{
+		"name": "Dill",
+		"unitType": "Mass",
+		"minAmountPerDay": 0.5,
+		"bestBeforeDate": 6
+	},
+	{
+		"name": "Oil",
+		"unitType": "Volume",
+		"minAmountPerDay": 1,
+		"bestBeforeDate": 700
+	},
+	{
+		"name": "Olive oil",
+		"unitType": "Volume",
+		"minAmountPerDay": 0.3,
+		"bestBeforeDate": 700
+	},
+	{
+		"name": "Fish",
+		"unitType": "Mass",
+		"minAmountPerDay": 1.5,
+		"bestBeforeDate": 4
+	},
+	{
+		"name": "Butter",
+		"unitType": "Mass",
+		"minAmountPerDay": 0.6,
+		"bestBeforeDate": 60
+	},
+	{
+		"name": "Potato",
+		"unitType": "Mass",
+		"minAmountPerDay": 5,
+		"bestBeforeDate": 50
+	},
+	{
+		"name": "Flour",
+		"unitType": "Mass",
+		"minAmountPerDay": 3,
+		"bestBeforeDate": 630
+	},
+	{
+		"name": "Solt",
+		"unitType": "Mass",
+		"minAmountPerDay": 0.2,
+		"bestBeforeDate": 1500
+	},
+	{
+		"name": "Pasta",
+		"unitType": "Mass",
+		"minAmountPerDay": 1.5,
+		"bestBeforeDate": 946
+	},
+	{
+		"name": "Eggs",
+		"unitType": "Piece",
+		"minAmountPerDay": 15,
+		"bestBeforeDate": 21
+	},
+	{
+		"name": "Carrot",
+		"unitType": "Mass",
+		"minAmountPerDay": 4,
+		"bestBeforeDate": 54
+	},
+	{
+		"name": "Sugar",
+		"unitType": "Mass",
+		"minAmountPerDay": 2,
+		"bestBeforeDate": 914
+	},
+	{
+		"name": "Tomato",
+		"unitType": "Mass",
+		"minAmountPerDay": 1,
+		"bestBeforeDate": 12
+	},
+	{
+		"name": "Cheese",
+		"unitType": "Mass",
+		"minAmountPerDay": 1.3,
+		"bestBeforeDate": 65
+	},
+	{
+		"name": "Milk cream",
+		"unitType": "Volume",
+		"minAmountPerDay": 0.5,
+		"bestBeforeDate": 35
+	},
+	{
+		"name": "Sour cream",
+		"unitType": "Volume",
+		"minAmountPerDay": 0.4,
+		"bestBeforeDate": 12
+	},
+	{
+		"name": "Tomato paste",
+		"unitType": "Volume",
+		"minAmountPerDay": 0.6,
+		"bestBeforeDate": 46
+	},
+	{
+		"name": "Cucumber",
+		"unitType": "Mass",
+		"minAmountPerDay": 1.2,
+		"bestBeforeDate": 9
+	},
+	{
+		"name": "Lemon",
+		"unitType": "Mass",
+		"minAmountPerDay": 0.2,
+		"bestBeforeDate": 24
+	},
+	{
+		"name": "Pepper",
+		"unitType": "Mass",
+		"minAmountPerDay": 0.1,
+		"bestBeforeDate": 1600
+	}
+]

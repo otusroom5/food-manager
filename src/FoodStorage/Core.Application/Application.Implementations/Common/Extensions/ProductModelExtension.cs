@@ -27,9 +27,9 @@ public static class ProductModelExtension
 
     public static Product ToEntity(this ProductCreateRequestModel productModel)
     {
-        if (!Enum.TryParse<UnitTypeE>(productModel.UnitType, true, out var unitType))
+        if (!Enum.TryParse<UnitType>(productModel.UnitType, true, out var unitType))
         {
-            throw new InvalidEnumValueException(nameof(productModel.UnitType), productModel.UnitType, nameof(UnitTypeE));
+            throw new InvalidEnumValueException(nameof(productModel.UnitType), productModel.UnitType, nameof(UnitType));
         }
 
         return Product.CreateNew(ProductId.CreateNew(), ProductName.FromString(productModel.Name), unitType,

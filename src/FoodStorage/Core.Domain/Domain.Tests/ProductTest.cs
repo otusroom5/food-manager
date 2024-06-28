@@ -11,7 +11,7 @@ public class ProductTest
     [TestMethod]
     public void CreateProductEntityTest()
     {
-        Product product = Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitTypeE.Mass, 4, 45.6);
+        Product product = Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitType.Mass, 45.6, 4);
 
         Assert.IsNotNull(product);
         Assert.IsInstanceOfType(product, typeof(Product));
@@ -44,22 +44,22 @@ public class ProductTest
     }
 
     [TestMethod]
-    [DataRow(-1)]
-    [DataRow(0)]
-    [ExpectedException(typeof(InvalidArgumentValueException),
-        "Invalid argument value 'MinAmountPerDay': The minimum balance must be a positive number")]
-    public void IncorrectProductMinAmountPerDayTest(int minAmountPerDay)
-    {
-        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitTypeE.Mass, minAmountPerDay, 45.6);
-    }
-
-    [TestMethod]
     [DataRow(-1.3)]
     [DataRow(0)]
     [ExpectedException(typeof(InvalidArgumentValueException),
-        "Invalid argument value 'BestBeforeDate': Expiration date must be a positive number")]
-    public void IncorrectProductBestBeforeDateTest(double bestBeforeDate)
+        "Invalid argument value 'MinAmountPerDay': The minimum balance must be a positive number")]
+    public void IncorrectProductMinAmountPerDayTest(double minAmountPerDay)
     {
-        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitTypeE.Mass, 4, bestBeforeDate);
+        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitType.Mass, minAmountPerDay, 4);
+    }
+
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [ExpectedException(typeof(InvalidArgumentValueException),
+        "Invalid argument value 'BestBeforeDate': Expiration date must be a positive number")]
+    public void IncorrectProductBestBeforeDateTest(int bestBeforeDate)
+    {
+        Product.CreateNew(ProductId.CreateNew(), ProductName.FromString("SomeName"), UnitType.Mass, 4, bestBeforeDate);
     }
 }

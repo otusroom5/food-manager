@@ -23,10 +23,10 @@ public sealed record ProductViewModel
     /// <summary>
     /// Минимальный остаток на день
     /// </summary>
-    public int MinAmountPerDay { get; set; }
+    public double MinAmountPerDay { get; set; }
 
     /// <summary>
     /// Срок годности в днях
     /// </summary>
-    public double BestBeforeDate { get; set; }
+    public int BestBeforeDate { get; set; }
 }

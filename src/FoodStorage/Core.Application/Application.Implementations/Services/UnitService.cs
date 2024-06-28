@@ -78,9 +78,9 @@ public class UnitService : IUnitService
 
     public async Task<List<UnitViewModel>> GetByTypeAsync(string unitType)
     {
-        if (!Enum.TryParse<UnitTypeE>(unitType, true, out var unitTypeValue))
+        if (!Enum.TryParse<UnitType>(unitType, true, out var unitTypeValue))
         {
-            throw new InvalidEnumValueException(nameof(unitType), unitType, nameof(UnitTypeE));
+            throw new InvalidEnumValueException(nameof(unitType), unitType, nameof(UnitType));
         }
 
         var result = await _unitRepository.GetByTypeAsync(unitTypeValue);
@@ -108,7 +108,7 @@ public class UnitService : IUnitService
     {
         List<string> result = new();
 
-        foreach (var value in Enum.GetValues(typeof(UnitTypeE)))
+        foreach (var value in Enum.GetValues(typeof(UnitType)))
         {
             result.Add(value.ToString());
         }
@@ -118,9 +118,9 @@ public class UnitService : IUnitService
 
     public async Task<UnitViewModel> GetMainByTypeAsync(string unitType)
     {
-        if (!Enum.TryParse<UnitTypeE>(unitType, true, out var unitTypeValue))
+        if (!Enum.TryParse<UnitType>(unitType, true, out var unitTypeValue))
         {
-            throw new InvalidEnumValueException(nameof(unitType), unitType, nameof(UnitTypeE));
+            throw new InvalidEnumValueException(nameof(unitType), unitType, nameof(UnitType));
         }
 
         var units = await _unitRepository.GetByTypeAsync(unitTypeValue);

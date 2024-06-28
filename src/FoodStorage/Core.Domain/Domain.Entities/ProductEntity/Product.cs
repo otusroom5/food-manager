@@ -21,21 +21,21 @@ public record Product
     /// <summary>
     /// Тип единиц изменерения
     /// </summary>
-    public UnitTypeE UnitType { get; init; }
+    public UnitType UnitType { get; init; }
 
     /// <summary>
     /// Минимальный остаток на день
     /// </summary>
-    public int MinAmountPerDay { get; init; }
+    public double MinAmountPerDay { get; init; }
 
     /// <summary>
     /// Срок годности в днях
     /// </summary>
-    public double BestBeforeDate { get; init; }
+    public int BestBeforeDate { get; init; }
 
     private Product() { }
 
-    public static Product CreateNew(ProductId id, ProductName name, UnitTypeE unitType, int minAmountPerDay, double bestBeforeDate)
+    public static Product CreateNew(ProductId id, ProductName name, UnitType unitType, double minAmountPerDay, int bestBeforeDate)
     {
         if (minAmountPerDay <= 0)
         {

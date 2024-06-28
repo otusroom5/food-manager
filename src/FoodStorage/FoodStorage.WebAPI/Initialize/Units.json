@@ -1,0 +1,32 @@
+[
+	{
+		"id": "kg",
+		"name": "kilogram",
+		"unitType": "Mass",
+		"coefficient": 1
+	},
+	{
+		"id": "g",
+		"name": "gram",
+		"unitType": "Mass",
+		"coefficient": 1000
+	},
+	{
+		"id": "l",
+		"name": "liter",
+		"unitType": "Volume",
+		"coefficient": 1
+	},
+	{
+		"id": "ml",
+		"name": "milliliter",
+		"unitType": "Volume",
+		"coefficient": 1000
+	},
+	{
+		"id": "pc",
+		"name": "piece",
+		"unitType": "Piece",
+		"coefficient": 1
+	}
+]

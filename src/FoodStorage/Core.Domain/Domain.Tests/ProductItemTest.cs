@@ -1,4 +1,5 @@
-﻿using FoodStorage.Domain.Entities.Common.Exceptions;
+﻿using FoodStorage.Domain.Entities;
+using FoodStorage.Domain.Entities.Common.Exceptions;
 using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -62,7 +63,7 @@ public class PoductItemTest
 
         var productItem = ProductItem.CreateNew(ProductItemId.CreateNew(), ProductId.CreateNew(), amountInItem, DateTime.UtcNow, DateTime.UtcNow.AddDays(3));
 
-        productItem.ReduceAmount(amountToReduce, null);
+        productItem.ReduceAmount(amountToReduce, UserId.FromGuid(Guid.NewGuid()));
 
         Assert.AreEqual(amountInItem - amountToReduce, productItem.Amount);
     }

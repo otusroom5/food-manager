@@ -18,9 +18,9 @@ public static class UnitModelExtension
 
     public static Unit ToEntity(this UnitCreateRequestModel unitModel)
     {
-        if (!Enum.TryParse<UnitTypeE>(unitModel.UnitType, true, out var unitType))
+        if (!Enum.TryParse<UnitType>(unitModel.UnitType, true, out var unitType))
         {
-            throw new InvalidEnumValueException(nameof(unitModel.UnitType), unitModel.UnitType, nameof(UnitTypeE));
+            throw new InvalidEnumValueException(nameof(unitModel.UnitType), unitModel.UnitType, nameof(UnitType));
         }
 
         return Unit.CreateNew(UnitId.FromString(unitModel.Id), UnitName.FromString(unitModel.Name), unitType, unitModel.Coefficient);
