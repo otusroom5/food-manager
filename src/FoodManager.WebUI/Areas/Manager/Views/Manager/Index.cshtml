@@ -4,3 +4,18 @@
 }
 
 <p>Manager area</p>
+
+@using (Html.BeginForm(actionName: "Generate", controllerName: "Manager", FormMethod.Post))
+{
+    <div>
+        <center>
+            <p> Отчеты </p>
+        </center>
+        <div>
+            <div>
+                Отчет: товары с закончившимся сроком использования.
+            </div>
+            <button class="btn btn-primary" type="submit">Сформировать</button>
+        </div>
+    </div>
+}
