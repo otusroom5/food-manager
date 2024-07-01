@@ -4,10 +4,10 @@ namespace FoodSupplier.DataAccess.Abstractions;
 
 public interface IShopsRepository
 {
-    Guid Create(ShopEntity shopEntity);
-    ShopEntity Get(Guid shopId);
-    IEnumerable<ShopEntity> GetAll(bool onlyActive = false);
+    Task<Guid> CreateAsync(ShopEntity shopEntity);
+    Task<ShopEntity> GetAsync(Guid shopId);
+    Task<IEnumerable<ShopEntity>> GetAllAsync(bool onlyActive = false);
     void Update(ShopEntity shopEntity);
-    void Delete(Guid shopId);
-    void Save();
+    Task DeleteAsync(Guid shopId);
+    Task SaveAsync();
 }

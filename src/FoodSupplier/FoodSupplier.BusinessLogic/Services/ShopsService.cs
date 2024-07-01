@@ -18,26 +18,26 @@ public class ShopsService : IShopsService
         _mapper = mapper;
     }
 
-    public Guid Create(Shop shop)
+    public async Task<Guid> CreateAsync(Shop shop)
     {
         var shopEntity = _mapper.Map<ShopEntity>(shop);
-        var result = _repository.Create(shopEntity);
-        _repository.Save();
+        var result = await _repository.CreateAsync(shopEntity);
+        await _repository.SaveAsync();
 
         return result;
     }
 
-    public Shop Get(Guid shopId)
+    public async Task<Shop> GetAsync(Guid shopId)
     {
-        var shopEntity = _repository.Get(shopId);
+        var shopEntity = await _repository.GetAsync(shopId);
         var result = _mapper.Map<Shop>(shopEntity);
 
         return result;
     }
 
-    public IEnumerable<Shop> GetAll(bool onlyActive = false)
+    public async Task<IEnumerable<Shop>> GetAllAsync(bool onlyActive = false)
     {
-        var entities = _repository.GetAll(onlyActive);
+        var entities = await _repository.GetAllAsync(onlyActive);
         var result = _mapper.Map<IEnumerable<ShopEntity>, IEnumerable<Shop>>(entities);
 
         return result;
@@ -47,12 +47,12 @@ public class ShopsService : IShopsService
     {
         var shopEntity = _mapper.Map<ShopEntity>(shop);
         _repository.Update(shopEntity);
-        _repository.Save();
+        _repository.SaveAsync();
     }
 
     public void Delete(Guid shopId)
     {
-        _repository.Delete(shopId);
-        _repository.Save();
+        _repository.DeleteAsync(shopId);
+        _repository.SaveAsync();
     }
 }

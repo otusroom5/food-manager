@@ -13,33 +13,33 @@ public class PricesRepository : IPricesRepository
         _context = context;
     }
 
-    public Guid Create(PriceEntryEntity priceEntryEntity)
+    public async Task<Guid> CreateAsync(PriceEntryEntity priceEntryEntity)
     {
-        var result = _context.PriceEntries.Add(priceEntryEntity);
+        var result = await _context.PriceEntries.AddAsync(priceEntryEntity);
 
         return result.Entity.Id;
     }
 
-    public PriceEntryEntity Get(Guid priceEntryId)
+    public async Task<PriceEntryEntity> GetAsync(Guid priceEntryId)
     {
-        var candidate = _context.PriceEntries.Find(priceEntryId);
+        var candidate = await _context.PriceEntries.FindAsync(priceEntryId);
 
         return candidate;
     }
 
-    public PriceEntryEntity GetLast(Guid productId)
+    public async Task<PriceEntryEntity> GetLastAsync(Guid productId)
     {
-        var candidate = _context.PriceEntries
+        var candidate = await _context.PriceEntries
             .Where(p => p.ProductId == productId)
             .OrderByDescending(p => p.Date)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         return candidate;
     }
 
-    public IEnumerable<PriceEntryEntity> GetAll(Guid productId)
+    public async Task<IEnumerable<PriceEntryEntity>> GetAllAsync(Guid productId)
     {
-        return _context.PriceEntries.Where(x => x.ProductId == productId).ToList();
+        return await _context.PriceEntries.Where(x => x.ProductId == productId).ToListAsync();
     }
 
     public void Update(PriceEntryEntity priceEntryEntity)
@@ -47,9 +47,9 @@ public class PricesRepository : IPricesRepository
         _context.Entry(priceEntryEntity).State = EntityState.Modified;
     }
 
-    public void Delete(Guid priceEntryId)
+    public async Task DeleteAsync(Guid priceEntryId)
     {
-        var candidate = _context.PriceEntries.Find(priceEntryId);
+        var candidate = await _context.PriceEntries.FindAsync(priceEntryId);
 
         if (candidate is not null)
         {
@@ -57,8 +57,8 @@ public class PricesRepository : IPricesRepository
         }
     }
 
-    public void Save()
+    public async Task SaveAsync()
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

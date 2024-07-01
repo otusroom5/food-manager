@@ -4,9 +4,9 @@ namespace FoodSupplier.BusinessLogic.Abstractions;
 
 public interface IShopsService
 {
-    Guid Create(Shop shop);
-    Shop Get(Guid shopId);
-    IEnumerable<Shop> GetAll(bool onlyActive = false);
+    Task<Guid> CreateAsync(Shop shop);
+    Task<Shop> GetAsync(Guid shopId);
+    Task<IEnumerable<Shop>> GetAllAsync(bool onlyActive = false);
     void Update(Shop shop);
     void Delete(Guid shopId);
 }

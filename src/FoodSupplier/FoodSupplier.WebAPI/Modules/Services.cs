@@ -1,7 +1,5 @@
 ﻿using FoodSupplier.BusinessLogic.Abstractions;
 using FoodSupplier.BusinessLogic.Services;
-using FoodSupplier.DataAccess.Abstractions;
-using FoodSupplier.DataAccess.Repositories;
 
 namespace FoodSupplier.WebAPI.Modules;
 

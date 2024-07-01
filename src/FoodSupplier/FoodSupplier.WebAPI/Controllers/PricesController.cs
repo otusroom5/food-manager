@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FoodManager.Shared.Types;
 using FoodSupplier.BusinessLogic.Abstractions;
 using FoodSupplier.BusinessLogic.Models;
 using FoodSupplier.WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodSupplier.WebAPI.Controllers;
@@ -20,11 +22,12 @@ public class PricesController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<PriceModel> Get([FromQuery] PriceEntryGetModel model)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult<PriceModel>> Get([FromQuery] PriceEntryGetModel model)
     {
         try
         {
-            var candidate = _pricesService.Get(model.Id);
+            var candidate = await _pricesService.GetAsync(model.Id);
             var result = _mapper.Map<PriceModel>(candidate);
 
             return Ok(result);
@@ -36,11 +39,12 @@ public class PricesController : ControllerBase
     }
 
     [HttpGet("GetLastByProduct")]
-    public ActionResult<PriceModel> GetLastByProduct([FromQuery] ProductGetModel model)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult<PriceModel>> GetLastByProduct([FromQuery] ProductGetModel model)
     {
         try
         {
-            var candidate = _pricesService.GetLast(model.Id);
+            var candidate = await _pricesService.GetLastAsync(model.Id);
             var result = _mapper.Map<PriceModel>(candidate);
 
             return Ok(result);
@@ -52,11 +56,12 @@ public class PricesController : ControllerBase
     }
 
     [HttpGet("GetAllByProduct")]
-    public ActionResult<IEnumerable<PriceModel>> GetAllByProduct([FromQuery] ProductGetModel model)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult<IEnumerable<PriceModel>>> GetAllByProduct([FromQuery] ProductGetModel model)
     {
         try
         {
-            var candidate = _pricesService.GetAll(model.Id);
+            var candidate = await _pricesService.GetAllAsync(model.Id);
             var result = _mapper.Map<IEnumerable<PriceEntry>, IEnumerable<PriceModel>>(candidate);
 
             return Ok(result);
