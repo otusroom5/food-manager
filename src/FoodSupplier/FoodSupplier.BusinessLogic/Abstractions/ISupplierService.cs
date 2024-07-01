@@ -2,6 +2,6 @@
 
 public interface ISupplierService
 {
-    void Produce();
-    void Produce(Guid shopId, Guid productId);
+    Task ProduceAsync();
+    Task ProduceAsync(Guid shopId, Guid productId);
 }
