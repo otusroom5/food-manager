@@ -1,6 +1,76 @@
-﻿@{
-    Layout = "_Layout";
-    ViewData["Title"] = "Cooker";
+﻿@using FoodManager.WebUI.Areas.Cooker.Models
+@using FoodManager.WebUI.Extensions
+@using Microsoft.AspNetCore.Html
+@model ProductIndexModel
+
+@{
+    Layout = "_CookerLayout";
+    ViewData["Title"] = "Products";
+    var isUpdateMode = Model.Product != null;
 }
 
-<p>Cooker area</p>
+@(Html.TableFor<ProductModel>(@Model.Products, key =>
+{
+    var builder = new HtmlContentBuilder();
+    builder.AppendHtml(Html.ActionLink("edit", "UpdateProduct", "Cooker", new { Id = key }));
+    builder.AppendHtml("&nbsp");
+    builder.AppendHtml(Html.ActionLink("delete", "DeleteProduct", "Cooker", new { Id = key }));
+    return builder;
+}))
+
+
+@using (Html.BeginForm(actionName: (isUpdateMode ? "UpdateProduct" : "CreateProduct"), controllerName: "Cooker", FormMethod.Post))
+{
+    <input type="hidden" name="Id" value="@Model.Product?.Id">
+    <div class="row">
+        <div class="col">
+            Product:
+        </div>
+        <div class="col">
+            @if (isUpdateMode)
+            {
+                <input name="Name" type="text" class="form-control" value="@Model.Product?.Name" disabled>
+            }
+            else
+            {
+                <input name="Name" type="text" class="form-control" value="@Model.Product?.Name">
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Unit Type:</div>
+        <div class="col">
+            <select class="form-select" value="" name="UnitType">
+                @foreach (string optionName in new[] { "Килограмм", "Грамм" })
+                {
+                    <option>
+                        @optionName
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Min Amount Per Day:</div>
+        <div class="col">
+            <input name="UnitType" type="text" class="form-control" value="@Model.Product?.MinAmountPerDay">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Before Date:</div>
+        <div class="col">
+            <input name="BestBeforeDate" type="text" class="form-control" value="@Model.Product?.BestBeforeDate">
+        </div>
+    </div>
+    <div>
+        @if (isUpdateMode)
+        {
+            <button class="btn btn-primary" type="submit">Update</button>
+            <button class="btn btn-secondary" type="button" onclick="location.href='@Url.ActionLink("Index","Cooker")'">Cancel</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" type="submit">Create</button>
+        }
+    </div>
+}
