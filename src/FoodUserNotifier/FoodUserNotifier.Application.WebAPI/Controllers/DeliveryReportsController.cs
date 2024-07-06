@@ -21,8 +21,8 @@ public class DeliveryReportsController : ControllerBase
         _deliveryReportsRepository = deliveryReportsRepository;
     }
 
-    [HttpGet("GetByNotificationId")]
-    public async Task<IActionResult> GetByNotificationId(Guid notificationId)
+    [HttpGet("{notificationId}")]
+    public async Task<IActionResult> GetByNotificationId([FromRoute] Guid notificationId)
     {
         DeliveryReport report = await _deliveryReportsRepository.FindByNotificationIdAsync(notificationId);
         
