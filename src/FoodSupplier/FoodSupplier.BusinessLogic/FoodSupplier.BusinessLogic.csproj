@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\FoodStorage\Core.Application\Abstractions\Application.Services\FoodStorage.Application.Services.csproj" />
     <ProjectReference Include="..\FoodSupplier.DataAccess\FoodSupplier.DataAccess.csproj" />
   </ItemGroup>
 
@@ -15,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

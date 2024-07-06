@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FoodManager.Shared.Types;
 using FoodSupplier.BusinessLogic.Abstractions;
 using FoodSupplier.BusinessLogic.Models;
 using FoodSupplier.WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodSupplier.WebAPI.Controllers;
@@ -21,11 +23,12 @@ public class ShopsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ShopModel> Get([FromQuery] ShopGetModel model)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult<ShopModel>> Get([FromQuery] ShopGetModel model)
     {
         try
         {
-            var candidate = _shopsService.Get(model.Id);
+            var candidate = await _shopsService.GetAsync(model.Id);
             var result = _mapper.Map<ShopModel>(candidate);
 
             if (result is null)
@@ -42,11 +45,12 @@ public class ShopsController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public ActionResult<IEnumerable<ShopModel>> GetAll([FromQuery] bool onlyActive)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult<IEnumerable<ShopModel>>> GetAll([FromQuery] bool onlyActive)
     {
         try
         {
-            var candidates = _shopsService.GetAll(onlyActive);
+            var candidates = await _shopsService.GetAllAsync(onlyActive);
             var result = _mapper.Map<IEnumerable<Shop>, IEnumerable<ShopModel>>(candidates);
 
             if (result is null)
@@ -63,12 +67,13 @@ public class ShopsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Guid> Create([FromQuery] ShopCreateModel model)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult<Guid>> Create([FromQuery] ShopCreateModel model)
     {
         try
         {
             var shopDto = _mapper.Map<Shop>(model);
-            var result = _shopsService.Create(shopDto);
+            var result = await _shopsService.CreateAsync(shopDto);
 
             return Ok(result);
         }
@@ -79,6 +84,7 @@ public class ShopsController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
     public ActionResult Update([FromQuery] ShopModel model)
     {
         try
@@ -95,6 +101,7 @@ public class ShopsController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
     public ActionResult Delete([FromQuery] ShopDeleteModel model)
     {
         try

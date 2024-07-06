@@ -17,34 +17,34 @@ public class PricesService : IPricesService
         _mapper = mapper;
     }
 
-    public Guid Create(PriceEntry priceEntry)
+    public async Task<Guid> CreateAsync(PriceEntry priceEntry)
     {
         var priceEntity = _mapper.Map<PriceEntryEntity>(priceEntry);
-        var result = _repository.Create(priceEntity);
-        _repository.Save();
+        var result = await _repository.CreateAsync(priceEntity);
+        await _repository.SaveAsync();
 
         return result;
     }
 
-    public PriceEntry Get(Guid priceEntryId)
+    public async Task<PriceEntry> GetAsync(Guid priceEntryId)
     {
-        var priceEntity = _repository.Get(priceEntryId);
+        var priceEntity = await _repository.GetAsync(priceEntryId);
         var result = _mapper.Map<PriceEntry>(priceEntity);
 
         return result;
     }
 
-    public PriceEntry GetLast(Guid productId)
+    public async Task<PriceEntry> GetLastAsync(Guid productId)
     {
-        var priceEntity = _repository.GetLast(productId);
+        var priceEntity = await _repository.GetLastAsync(productId);
         var result = _mapper.Map<PriceEntry>(priceEntity);
 
         return result;
     }
 
-    public IEnumerable<PriceEntry> GetAll(Guid productId)
+    public async Task<IEnumerable<PriceEntry>> GetAllAsync(Guid productId)
     {
-        var priceEntities = _repository.GetAll(productId);
+        var priceEntities = await _repository.GetAllAsync(productId);
         var result = _mapper.Map<IEnumerable<PriceEntryEntity>, IEnumerable<PriceEntry>>(priceEntities);
 
         return result;

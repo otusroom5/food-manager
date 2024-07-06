@@ -13,25 +13,25 @@ public class ShopsRepository : IShopsRepository
         _context = context;
     }
 
-    public Guid Create(ShopEntity shopEntity)
+    public async Task<Guid> CreateAsync(ShopEntity shopEntity)
     {
-        var result = _context.Shops.Add(shopEntity);
+        var result = await _context.Shops.AddAsync(shopEntity);
 
         return result.Entity.Id;
     }
 
-    public ShopEntity Get(Guid shopId)
+    public async Task<ShopEntity> GetAsync(Guid shopId)
     {
-        var candidate = _context.Shops.Find(shopId);
+        var candidate = await _context.Shops.FindAsync(shopId);
 
         return candidate;
     }
 
-    public IEnumerable<ShopEntity> GetAll(bool onlyActive = false)
+    public async Task<IEnumerable<ShopEntity>> GetAllAsync(bool onlyActive = false)
     {
-        var entities = _context.Shops
+        var entities = await _context.Shops
             .Where(x => !onlyActive || x.IsActive == true)
-            .ToList();
+            .ToListAsync();
 
         return entities;
     }
@@ -41,9 +41,9 @@ public class ShopsRepository : IShopsRepository
         _context.Entry(shopEntity).State = EntityState.Modified;
     }
 
-    public void Delete(Guid shopId)
+    public async Task DeleteAsync(Guid shopId)
     {
-        var candidate = _context.Shops.Find(shopId);
+        var candidate = await _context.Shops.FindAsync(shopId);
 
         if (candidate is not null)
         {
@@ -51,8 +51,8 @@ public class ShopsRepository : IShopsRepository
         }
     }
 
-    public void Save()
+    public async Task SaveAsync()
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

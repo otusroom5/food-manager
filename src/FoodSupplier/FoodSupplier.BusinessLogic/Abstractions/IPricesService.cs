@@ -4,8 +4,8 @@ namespace FoodSupplier.BusinessLogic.Abstractions;
 
 public interface IPricesService
 {
-    Guid Create(PriceEntry priceEntry);
-    PriceEntry Get(Guid priceEntryId);
-    PriceEntry GetLast(Guid productId);
-    IEnumerable<PriceEntry> GetAll(Guid productId);
+    Task<Guid> CreateAsync(PriceEntry priceEntry);
+    Task<PriceEntry> GetAsync(Guid priceEntryId);
+    Task<PriceEntry> GetLastAsync(Guid productId);
+    Task<IEnumerable<PriceEntry>> GetAllAsync(Guid productId);
 }

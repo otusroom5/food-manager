@@ -1,5 +1,7 @@
-﻿using FoodSupplier.BusinessLogic.Abstractions;
+﻿using FoodManager.Shared.Types;
+using FoodSupplier.BusinessLogic.Abstractions;
 using FoodSupplier.WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodSupplier.WebAPI.Controllers;
@@ -16,11 +18,12 @@ public class SupplierController : ControllerBase
     }
 
     [HttpGet("Produce")]
-    public ActionResult Produce()
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult> Produce()
     {
         try
         {
-            _supplierService.Produce();
+            await _supplierService.ProduceAsync();
 
             return Ok();
         }
@@ -31,11 +34,12 @@ public class SupplierController : ControllerBase
     }
 
     [HttpGet("ProduceSingle")]
-    public ActionResult ProduceSingle([FromQuery] SingleProduceModel model)
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
+    public async Task<ActionResult> ProduceSingle([FromQuery] SingleProduceModel model)
     {
         try
         {
-            _supplierService.Produce(model.ShopId, model.ProductId);
+            await _supplierService.ProduceAsync(model.ShopId, model.ProductId);
 
             return Ok();
         }

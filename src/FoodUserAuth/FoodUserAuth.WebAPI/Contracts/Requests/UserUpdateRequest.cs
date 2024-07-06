@@ -12,8 +12,6 @@ public class UserUpdateRequest
     public string LastName { get; set; }
     [Required]
     public string Role { get; set; }
-    [Required]
     public string Email { get; set; }
-    [Required]
     public string Telegram { get; set; }
 }

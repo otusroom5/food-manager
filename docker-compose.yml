@@ -105,7 +105,9 @@ services:
       dockerfile: src/FoodSupplier/FoodSupplier.WebAPI/Dockerfile  
     environment:
       - ASPNETCORE_ENVIRONMENT=development
-      - FoodSupplier_ConnectionStrings__Default=Host=postgres;Port=5432;Database=foodsupplierdb;Username=room5;Password=room5Password
+      - FoodSupplier_ConnectionStrings__UserAuthApi=Host=foodauth;Port=80;Schema=http 
+      - FoodSupplier_ConnectionStrings__DbConnection=Host=postgres;Port=5432;Database=foodsupplierdb;Username=room5;Password=room5Password
+      - FoodSupplier_ConnectionStrings__FoodStorageApi=Host=foodstorage;Port=80;Schema=http
     ports:
         - 8083:80
     restart: unless-stopped
