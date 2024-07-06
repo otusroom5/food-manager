@@ -2,23 +2,23 @@
 
 namespace FoodPlanner.DataAccess.Implementations;
 
-public class UnitOfWork: IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
     private readonly InMemoryDbContext _databaseContext;
-    private readonly HttpClient _httpClient;
-    private IStorageRepository _storageRepository;    
-    private IReportRepository _reportRepository;    
+    private readonly IHttpClientFactory _httpClientFactory;
+    private IStorageRepository _storageRepository;
+    private IReportRepository _reportRepository;
 
-    public UnitOfWork(HttpClient httpClient,
+    public UnitOfWork(IHttpClientFactory httpClientFactory,
         InMemoryDbContext databaseContext)
     {
-        _httpClient = httpClient;
+        _httpClientFactory = httpClientFactory;
         _databaseContext = databaseContext;
     }
 
     public IStorageRepository GetStorageRepository()
     {
-        _storageRepository ??= new StorageRepository(_httpClient);
+        _storageRepository ??= new StorageRepository(_httpClientFactory);
 
         return _storageRepository;
     }

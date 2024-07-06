@@ -4,20 +4,22 @@ using System.Text.Json;
 
 namespace FoodPlanner.DataAccess.Implementations;
 
-public class StorageRepository: IStorageRepository
+public class StorageRepository : IStorageRepository
 {
+    private static readonly string ExpiredProductsApiUrl = "api/ProductItem/GetExpiredProductItems";
+
     private readonly HttpClient _httpClient;
 
-    public StorageRepository(HttpClient httpClient)
+    public StorageRepository(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient("FoodStorageApi");
     }
 
     public async Task<List<ProductEntity>> GetExpiredProductsAsync()
     {
         var products = new List<ProductEntity>();
 
-        var productsJson = await _httpClient.GetStringAsync("api/ProductItem/GetExpiredProductItems");
+        var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl);
         var productsDeserialized = JsonSerializer.Deserialize<List<ProductEntity>>(productsJson);
 
         if (productsDeserialized != null)
@@ -26,5 +28,5 @@ public class StorageRepository: IStorageRepository
         }
 
         return products;
-    }   
+    }
 }

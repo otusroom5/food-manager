@@ -11,35 +11,35 @@ namespace FoodPlanner.WebApi.Controllers
     [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    public class ReportController : ControllerBase
-    {
+    public class ReportController : Abstractions.ControllerBase
+    {       
         private readonly IReportService _reportService;
         private readonly IReportStorageSerivce _reportStorageSerivce;
         private readonly IRabbitMqProducer _rabbitMqProducer;
         private readonly ILogger<ReportController> _logger;
 
-        public ReportController(IReportService reportService,
+        public ReportController(IHttpClientFactory httpClientFactory,          
+            IReportService reportService,
             IReportStorageSerivce reportStorageSerivce,
             IRabbitMqProducer rabbitMqProducer,
-            ILogger<ReportController> logger)
-        {
+            ILogger<ReportController> logger) : base(httpClientFactory)
+        {                     
             _reportService = reportService;
             _reportStorageSerivce = reportStorageSerivce;
-            _rabbitMqProducer = rabbitMqProducer;
+            _rabbitMqProducer = rabbitMqProducer;   
             _logger = logger;
         }
-              
-        [HttpGet("GenerateExpiredProductsReport")]
-        public ActionResult<Guid> GenerateExpiredProductsReport()
-        {
-            var report = _reportService.Create(ReportType.ExpiredProducts,
-                "ExpiredProducts",
+
+        [HttpGet("GenerateExpireProductsReport")]
+        public ActionResult<Guid> GenerateExpireProductsReport()
+        {    
+            var report = _reportService.Create("ExpiredProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
-                    Guid.NewGuid()
-                );
+                Guid.NewGuid()
+            );
             _logger.LogInformation("Report created: {ReportGuid}", report.Id);
 
-            report.Content = _reportService.Generate(report.Type);
+            report.Content = _reportService.Generate();
             report.State = ReportState.Generated;
 
             var attachment = new ReportEntity()
@@ -58,7 +58,7 @@ namespace FoodPlanner.WebApi.Controllers
             messageDto.AttachmentIds.Add(attachment.AttachmentId);
 
             _rabbitMqProducer.SendReportMessage(messageDto);
-
+             report.State = ReportState.Sent;
             _logger.LogInformation("Report {ReportGuid} published to gueue successfully", report.Id);
 
             return Ok(report.Id);
@@ -76,6 +76,7 @@ namespace FoodPlanner.WebApi.Controllers
             var attachment = _reportStorageSerivce.GetFromMemory(attachmentId);
             if (attachment != null)
             {
+                var test = Convert.ToBase64String(attachment);
                 Stream stream = new MemoryStream(attachment);
 
                 return File(stream,
@@ -85,7 +86,7 @@ namespace FoodPlanner.WebApi.Controllers
             else
             {
                 throw new Exception($"Can not find report attachment: {attachmentId}");
-            }            
-        }
+            }
+        }    
     }
 }

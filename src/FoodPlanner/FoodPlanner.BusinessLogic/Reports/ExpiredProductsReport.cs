@@ -4,11 +4,11 @@ using System.Text;
 
 namespace FoodPlanner.BusinessLogic.Reports;
 
-public class ExpiredProductsReport: IReport
+public class ExpiredProductsReport : IReport
 {
     private readonly IPdfService _pdfService;
     private readonly IStorageRepository _storageRepository;
-    public ExpiredProductsReport(IPdfService pdfService, IStorageRepository storageRepository) 
+    public ExpiredProductsReport(IPdfService pdfService, IStorageRepository storageRepository)
     {
         _pdfService = pdfService;
         _storageRepository = storageRepository;
@@ -18,7 +18,7 @@ public class ExpiredProductsReport: IReport
     {
         var htmlContent = await GetHtmlAsync();
         return await _pdfService.CreatePDFAsync(htmlContent);
-    }   
+    }
 
     private Task<string> GetHtmlAsync()
     {

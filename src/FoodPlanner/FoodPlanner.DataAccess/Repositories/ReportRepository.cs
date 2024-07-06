@@ -1,11 +1,10 @@
 ﻿using FoodPlanner.DataAccess.Entities;
 using FoodPlanner.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace FoodPlanner.DataAccess.Implementations;
 
-public class ReportRepository: IReportRepository
+public class ReportRepository : IReportRepository
 {
     private readonly DbContext _context;
     private readonly DbSet<ReportEntity> _dbSet;
@@ -34,6 +33,6 @@ public class ReportRepository: IReportRepository
 
     public byte[]? GetAttachmentById(Guid id)
     {
-        return _dbSet.Find(id)?.ReportContent;        
-    }   
+        return _dbSet.Find(id)?.ReportContent;
+    }
 }

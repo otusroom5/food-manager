@@ -2,11 +2,10 @@
 using DinkToPdf.Contracts;
 using FoodPlanner.BusinessLogic.Interfaces;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
-public class PdfService: IPdfService
+public class PdfService : IPdfService
 {
     private readonly ILogger<PdfService> _logger;
     private readonly IConverter _converter;

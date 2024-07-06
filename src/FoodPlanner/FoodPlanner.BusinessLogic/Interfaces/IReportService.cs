@@ -5,6 +5,6 @@ namespace FoodPlanner.BusinessLogic.Interfaces;
 
 public interface IReportService
 {
-    public Report Create(ReportType reportType, string reportName, string reportDescription, Guid userId);
-    public byte[] Generate(ReportType reportType);    
+    public Report Create(string reportName, string reportDescription, Guid userId);
+    public byte[] Generate();    
 }
