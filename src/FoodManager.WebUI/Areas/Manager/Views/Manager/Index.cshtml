@@ -3,19 +3,15 @@
     ViewData["Title"] = "Manager";
 }
 
-<p>Manager area</p>
+<p><b>Manager area</b></p>
 
 @using (Html.BeginForm(actionName: "GenerateReport", controllerName: "Manager", FormMethod.Post))
 {
-    <div>
-        <center>
-            <p> Отчеты </p>
-        </center>
+    <div>   
         <div>
-            <div>
-                Отчет: товары с закончившимся сроком использования.
-            </div>
-            <button class="btn btn-primary" type="submit">Сформировать</button>
+            Отчет: Товары с закончившимся сроком использования.
         </div>
+        <br />
+        <button class="btn btn-primary" type="submit">Сформировать</button>
     </div>
 }
