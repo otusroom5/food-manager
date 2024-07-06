@@ -10,7 +10,7 @@ namespace FoodManager.WebUI.Areas.Manager.Controllers;
 
 public sealed class ManagerController : Abstractions.ControllerBase
 {
-    private static readonly string ExpiredProductsReportApiUrl = "/api/GenerateExpiredProductsReport";
+    private static readonly string ExpireProductsReportUrl = "/api/Report/GenerateExpireProductsReport";
     public ManagerController(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {
     }
@@ -32,7 +32,7 @@ public sealed class ManagerController : Abstractions.ControllerBase
         UserCreatedResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpiredProductsReportApiUrl);
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpireProductsReportUrl);
 
             response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
             responseMessage.EnsureSuccessStatusCode();
