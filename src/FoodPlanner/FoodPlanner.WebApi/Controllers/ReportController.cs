@@ -65,7 +65,7 @@ namespace FoodPlanner.WebApi.Controllers
         }
 
         [HttpGet("GetReportAttachment")]
-        public ActionResult<FileResult> GetReportAttachment(Guid attachmentId)
+        public FileResult GetReportAttachment(Guid attachmentId)
         {
             if (!ModelState.IsValid)
             {
@@ -76,8 +76,8 @@ namespace FoodPlanner.WebApi.Controllers
             var attachment = _reportStorageSerivce.GetFromMemory(attachmentId);
             if (attachment != null)
             {
-                var test = Convert.ToBase64String(attachment);
                 Stream stream = new MemoryStream(attachment);
+                stream.Position = 0;
 
                 return File(stream,
                             "application/pdf",

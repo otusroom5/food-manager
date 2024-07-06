@@ -19,16 +19,6 @@ using FoodUserNotifier.BusinessLogic.Services;
 using FoodUserNotifier.Infrastructure.Telegram.Services.Implementations;
 using FoodUserNotifier.Core.Interfaces.Repositories;
 using FoodUserNotifier.Infrastructure.Repositories.Repositories;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Builder;
-using FoodUserNotifier.Application.WebAPI.Controllers;
-using System.Net.WebSockets;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -55,41 +45,38 @@ try
     
     builder.Services.AddHttpMessageHandlers();
 
-
-    builder.Services.AddHttpClient();
-    
-
-   builder.Services.AddHttpServiceClient(options =>
-  {
-      options.ServiceName = "UserAuthApi";
-      options.ConnectionString = builder.Configuration.GetConnectionString("UserAuthApi");
-      options.AuthenticationType = AuthenticationType.ApiKey;
-      options.AuthServiceName = "UserAuthApi";
-      options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
-  });
+    builder.Services.AddHttpServiceClient(options =>
+    {
+        options.ServiceName = "FoodPlannerApi";
+        options.ConnectionString = builder.Configuration.GetConnectionString("FoodPlannerApi");
+        options.AuthenticationType = AuthenticationType.ApiKey;
+        options.AuthServiceName = "UserAuthApi";
+        options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
+    });
+    builder.Services.AddHttpServiceClient(options =>
+    {
+        options.ServiceName = "UserAuthApi";
+        options.ConnectionString = builder.Configuration.GetConnectionString("UserAuthApi");
+        options.AuthenticationType = AuthenticationType.ApiKey;
+        options.AuthServiceName = "UserAuthApi";
+        options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
+    });
 
     builder.Services.AddHostedService<TelegramBackgroundService>();
     builder.Services.AddHostedService<NotificationBackgroundService>();
     builder.Services.AddScoped<IMessageDispatcher, MessageDispatcher>();
     builder.Services.AddTransient<INotificationConverter, JsonNotificationConverter>();
-    builder.Services.AddControllersWithViews();
 
     builder.Services.AddTransient<IDeliveryReportsRepository, DeliveryReportsRepository>();
     builder.Services.AddTransient<ITelegramSessionsRepository, TelegramSessionsRepository>();
-    builder.Services.AddSingleton<IGmailMessage, GmailMessage>();
 
     builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
     builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
     builder.Services.AddScoped<IMessageSenderCollection, MessageSenderCollection>();
     builder.Services.AddSingleton<IDomainLogger, DomainLogger>();
-    builder.Services.AddControllers();
-    builder.Services.AddSingleton<IMailController, MailController>();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-
     builder.Services.AddRecepientsSource("UserAuthApi");
+    builder.Services.AddReportsSource("FoodPlannerApi");
     builder.Services.AddSwaggerGenWithBarerAuth();
-    builder.Services.AddSwaggerGen();
 
     builder.ConfigureAuthentication();
 
@@ -104,26 +91,13 @@ try
             options.RoutePrefix = string.Empty;
         });
     }
-
     app.UseAuthorization();
-    app.UseHttpsRedirection();
-    app.UseAuthorization();
-    app.MapControllers();
-    app.UseHttpsRedirection();
-    app.UseHsts();
-    app.UseStaticFiles();
-    app.UseRouting();
 
     app.UseLogMediator();
 
-    app.MapControllerRoute(name: "default", pattern: "{controller= DeliveryReportsController}/{action=GetByNotificationId}/{notificationId}");
-    app.MapControllerRoute(name: "default", pattern: "{controller= MailController}/{action=SendMessage}/{FromEmail}/{ToEmail}/{subject}/{content}");
-
-
-
-
-
-
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action}/{id?}");
 
     app.UseEfMigration();
 
