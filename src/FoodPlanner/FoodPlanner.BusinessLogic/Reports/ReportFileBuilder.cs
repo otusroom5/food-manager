@@ -4,29 +4,24 @@ using System.Text;
 
 namespace FoodPlanner.BusinessLogic.Reports;
 
-public class ExpiredProductsReport : IReport
+public class ReportFileBuilder : IReportFileBuilder
 {
-    private readonly IPdfService _pdfService;
+    private readonly ReportFile _reportFile;
     private readonly IStorageRepository _storageRepository;
-    public ExpiredProductsReport(IPdfService pdfService, IStorageRepository storageRepository)
+
+    public ReportFileBuilder(IUnitOfWork unitOfWork)
     {
-        _pdfService = pdfService;
-        _storageRepository = storageRepository;
+        _storageRepository = unitOfWork.GetStorageRepository();
+        _reportFile = new ReportFile();
     }
 
-    public async Task<byte[]> PrepareAsync()
-    {
-        var htmlContent = await GetHtmlAsync();
-        return await _pdfService.CreatePDFAsync(htmlContent);
-    }
-
-    private Task<string> GetHtmlAsync()
+    public IReportFileBuilder BuildHeader()
     {
         var htmlContent = new StringBuilder();
         htmlContent.AppendLine("<head><meta charset=utf-8></head>");
         htmlContent.AppendLine("<body>");
         htmlContent.AppendLine("<div style = 'border: 1px solid #ccc; background-color: #FFFFFF; font-family: Arial, sans-serif;' >");
-        htmlContent.AppendLine("<h1> Товары с закончившимся сроком использования </h1>");
+        htmlContent.AppendLine("<h1> Товары с заканчивающимся сроком использования </h1>");
         htmlContent.AppendLine("<table style = 'width: 100%; border-collapse: collapse;'>");
         htmlContent.AppendLine("<thead>");
         htmlContent.AppendLine("<tr>");
@@ -36,6 +31,13 @@ public class ExpiredProductsReport : IReport
         htmlContent.AppendLine("</thead>");
         htmlContent.AppendLine("<tbody>");
 
+        _reportFile.Header = htmlContent.ToString();
+        return this;
+    }
+
+    public IReportFileBuilder BuildBody()
+    {
+        var htmlContent = new StringBuilder();
         foreach (var item in _storageRepository.GetExpiredProductsAsync().Result)
         {
             htmlContent.AppendLine("<tr>");
@@ -48,6 +50,24 @@ public class ExpiredProductsReport : IReport
         htmlContent.AppendLine("</div>");
         htmlContent.AppendLine("</body>");
 
-        return Task.FromResult(htmlContent.ToString());
+        _reportFile.Body = htmlContent.ToString();
+        return this;
+    }
+
+    public IReportFileBuilder AddActualFoodPrices()
+    {
+       
+        return this;
+    }
+
+    public IReportFileBuilder BuildFooter()
+    {
+        _reportFile.Footer += $"&copy; {DateTime.Now.Date.Year} - FoodManager";
+        return this;
+    }
+
+    public string Build()
+    {
+        return _reportFile.ToString();
     }
 }

@@ -8,6 +8,7 @@ using FoodPlanner.MessageBroker;
 using FoodPlanner.DataAccess;
 using FoodPlanner.BusinessLogic.Services;
 using Microsoft.EntityFrameworkCore;
+using FoodPlanner.BusinessLogic.Reports;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
@@ -46,6 +47,7 @@ builder.Services.AddDbContext<InMemoryDbContext>(options =>
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IReportFileBuilder, ReportFileBuilder>();
 builder.Services.AddScoped<IReportStorageSerivce, ReportStorageSerivce>();
 builder.Services.AddScoped<IRabbitMqProducer, RabbitMqProduce>();
 

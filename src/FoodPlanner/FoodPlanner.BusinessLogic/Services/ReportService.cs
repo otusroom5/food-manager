@@ -1,23 +1,21 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Models;
-using FoodPlanner.BusinessLogic.Reports;
-using FoodPlanner.DataAccess.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
 public class ReportService : IReportService
 {
-    private readonly IStorageRepository _storageRepository;
+    private readonly IReportFileBuilder _reportFileBuilder;
     private readonly IPdfService _pdfService;
     private readonly ILogger<ReportService> _logger;
 
-    public ReportService(IUnitOfWork unitOfWork,
+    public ReportService(IReportFileBuilder reportFileBuilder,
          IPdfService pdfService,
          ILogger<ReportService> logger)
     {
-        _pdfService = pdfService;
-        _storageRepository = unitOfWork.GetStorageRepository();
+        _reportFileBuilder = reportFileBuilder;
+        _pdfService = pdfService;       
         _logger = logger;
 
         _logger.LogInformation("'{0}' handling.", GetType().Name);
@@ -36,21 +34,29 @@ public class ReportService : IReportService
         }
     }
 
-    public byte[] Generate()
+    public async Task<byte[]> PreparePdfAsync(string html)
+    {
+        return await _pdfService.CreatePDFAsync(html);
+    }
+
+    public byte[] GenerateReportFile()
     {
         try
         {
-            // Implement fluent builder and add DI
-            var result = new ExpiredProductsReport(_pdfService, _storageRepository).PrepareAsync().Result;
+            string htmlContent = _reportFileBuilder
+                 .BuildHeader()
+                 .BuildBody()
+                 .BuildFooter()
+                 .Build();                 
 
-            return result;
+            return PreparePdfAsync(htmlContent).Result;
         }
         catch (Exception exception)
         {
             LogError("Generate", exception);
             throw;
         }
-    }
+    }   
 
     private void LogError(string methodName, Exception exception)
     {

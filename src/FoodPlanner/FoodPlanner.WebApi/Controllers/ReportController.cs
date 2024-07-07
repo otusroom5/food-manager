@@ -32,14 +32,15 @@ namespace FoodPlanner.WebApi.Controllers
 
         [HttpGet("GenerateExpireProductsReport")]
         public ActionResult<Guid> GenerateExpireProductsReport()
-        {    
+        {          
             var report = _reportService.Create("ExpiredProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
                 Guid.NewGuid()
-            );
-            _logger.LogInformation("Report created: {ReportGuid}", report.Id);
+            ); 
+            var reportId = report.Id.ToGuid();
+            _logger.LogInformation("Report created: {ReportGuid}", reportId);
 
-            report.Content = _reportService.Generate();
+            report.Content = _reportService.GenerateReportFile();
             report.State = ReportState.Generated;
 
             var attachment = new ReportEntity()
@@ -53,15 +54,15 @@ namespace FoodPlanner.WebApi.Controllers
             {
                 Id = report.Id.ToGuid(),
                 Group = "Manager",
-                Message = "Report with expired products"
+                Message = "Report with expire products"
             };
             messageDto.AttachmentIds.Add(attachment.AttachmentId);
 
             _rabbitMqProducer.SendReportMessage(messageDto);
              report.State = ReportState.Sent;
-            _logger.LogInformation("Report {ReportGuid} published to gueue successfully", report.Id);
+            _logger.LogInformation("Report {ReportGuid} published to gueue successfully", reportId);
 
-            return Ok(report.Id);
+            return Ok(reportId);
         }
 
         [HttpGet("GetReportAttachment")]
@@ -76,9 +77,8 @@ namespace FoodPlanner.WebApi.Controllers
             var attachment = _reportStorageSerivce.GetFromMemory(attachmentId);
             if (attachment != null)
             {
-                Stream stream = new MemoryStream(attachment);
-                stream.Position = 0;
-
+                Stream stream = new MemoryStream(attachment) { Position = 0 };
+        
                 return File(stream,
                             "application/pdf",
                             $"report_{DateTime.Now}.pdf");
