@@ -39,7 +39,7 @@ public class ReportService : IReportService
         return await _pdfService.CreatePDFAsync(html);
     }
 
-    public byte[] GenerateReportFile()
+    public async Task<byte[]> GenerateReportFileAsync()
     {
         try
         {
@@ -49,7 +49,7 @@ public class ReportService : IReportService
                  .BuildFooter()
                  .Build();                 
 
-            return PreparePdfAsync(htmlContent).Result;
+            return await PreparePdfAsync(htmlContent);
         }
         catch (Exception exception)
         {

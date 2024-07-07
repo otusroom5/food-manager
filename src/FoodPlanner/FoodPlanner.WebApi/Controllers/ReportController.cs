@@ -40,7 +40,7 @@ namespace FoodPlanner.WebApi.Controllers
             var reportId = report.Id.ToGuid();
             _logger.LogInformation("Report created: {ReportGuid}", reportId);
 
-            report.Content = _reportService.GenerateReportFile();
+            report.Content = _reportService.GenerateReportFileAsync().Result;
             report.State = ReportState.Generated;
 
             var attachment = new ReportEntity()
