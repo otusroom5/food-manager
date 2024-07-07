@@ -35,10 +35,10 @@ public class ReportFileBuilder : IReportFileBuilder
         return this;
     }
 
-    public IReportFileBuilder BuildBody()
+    public IReportFileBuilder BuildBody(int daysBeforeExpired)
     {
         var htmlContent = new StringBuilder();
-        foreach (var item in _storageRepository.GetExpiredProductsAsync().Result)
+        foreach (var item in _storageRepository.GetExpiredProductsAsync(daysBeforeExpired).Result)
         {
             htmlContent.AppendLine("<tr>");
             htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + item.ProductId + " </td>");

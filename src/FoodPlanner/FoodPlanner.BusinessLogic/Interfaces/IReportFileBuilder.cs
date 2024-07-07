@@ -3,7 +3,7 @@
 public interface IReportFileBuilder
 {
     IReportFileBuilder BuildHeader();
-    IReportFileBuilder BuildBody();
+    IReportFileBuilder BuildBody(int daysBeforeExpired);
     IReportFileBuilder AddActualFoodPrices();
     IReportFileBuilder BuildFooter();
     string Build();

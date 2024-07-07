@@ -6,7 +6,7 @@ namespace FoodPlanner.DataAccess.Implementations;
 
 public class StorageRepository : IStorageRepository
 {
-    private static readonly string ExpiredProductsApiUrl = "api/ProductItem/GetExpiredProductItems";
+    private static readonly string ExpiredProductsApiUrl = "api/ProductItem/GetExpiredProductItems/";
 
     private readonly HttpClient _httpClient;
 
@@ -15,11 +15,11 @@ public class StorageRepository : IStorageRepository
         _httpClient = httpClientFactory.CreateClient("FoodStorageApi");
     }
 
-    public async Task<List<ProductEntity>> GetExpiredProductsAsync()
+    public async Task<List<ProductEntity>> GetExpiredProductsAsync(int daysBeforeExpired)
     {
         var products = new List<ProductEntity>();
 
-        var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl);
+        var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl+ $"?daysBeforeExpired={daysBeforeExpired}");
         var productsDeserialized = JsonSerializer.Deserialize<List<ProductEntity>>(productsJson);
 
         if (productsDeserialized != null)

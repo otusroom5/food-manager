@@ -39,13 +39,13 @@ public class ReportService : IReportService
         return await _pdfService.CreatePDFAsync(html);
     }
 
-    public async Task<byte[]> GenerateReportFileAsync()
+    public async Task<byte[]> GenerateReportFileAsync(int daysBeforeExpired)
     {
         try
         {
             string htmlContent = _reportFileBuilder
                  .BuildHeader()
-                 .BuildBody()
+                 .BuildBody(daysBeforeExpired)
                  .BuildFooter()
                  .Build();                 
 

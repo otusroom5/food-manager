@@ -31,16 +31,22 @@ namespace FoodPlanner.WebApi.Controllers
         }
 
         [HttpGet("GenerateExpireProductsReport")]
-        public ActionResult<Guid> GenerateExpireProductsReport()
-        {          
-            var report = _reportService.Create("ExpiredProducts",
+        public ActionResult<Guid> GenerateExpireProductsReport(int daysBeforeExpired = 0)
+        {           
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("GenerateExpireProductsReport is not valid");
+                BadRequest();
+            }
+
+            var report = _reportService.Create("ExpiryProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
                 Guid.NewGuid()
             ); 
             var reportId = report.Id.ToGuid();
             _logger.LogInformation("Report created: {ReportGuid}", reportId);
 
-            report.Content = _reportService.GenerateReportFileAsync().Result;
+            report.Content = _reportService.GenerateReportFileAsync(daysBeforeExpired).Result;
             report.State = ReportState.Generated;
 
             var attachment = new ReportEntity()
@@ -85,7 +91,7 @@ namespace FoodPlanner.WebApi.Controllers
             }
             else
             {
-                throw new Exception($"Can not find report attachment: {attachmentId}");
+                throw new ArgumentNullException($"Can not find report attachment: {attachmentId}");
             }
         }    
     }

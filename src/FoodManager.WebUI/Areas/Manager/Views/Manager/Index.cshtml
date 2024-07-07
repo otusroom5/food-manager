@@ -5,12 +5,29 @@
 
 <p><b>Manager area</b></p>
 
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
+{
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+    {
+        <div id="alert-message" class="alert alert-success" role="alert">@TempData["Message"]</div>
+    }
+}
+
 @using (Html.BeginForm(actionName: "GenerateReport", controllerName: "Manager", FormMethod.Post))
 {
-    <div>   
-        <div>
-            Отчет: Товары с закончившимся сроком использования.
-        </div>
+    <div>
+        <div class="row">
+            <div class="col">
+               Отчет: продукты у которых закончится срок годности через 
+            </div>
+            <div class="col">
+                <input name="DaysBeforeExpired" type="number" min="0" placeholder="дней">
+            </div>           
+        </div>      
         <br />
         <button class="btn btn-primary" type="submit">Сформировать</button>
     </div>
