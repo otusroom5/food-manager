@@ -13,17 +13,14 @@ public class RabbitMqConsumer: BackgroundService
 {
     private const string QueueName = "storage";
 
-    private readonly ILogger<RabbitMqConsumer> _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<RabbitMqConsumer> _logger;  
     private readonly IConnection _connection;
     private IModel _channel;
 
-    public RabbitMqConsumer(IServiceProvider serviceProvider, 
-                            ILogger<RabbitMqConsumer> logger,
+    public RabbitMqConsumer(ILogger<RabbitMqConsumer> logger,
                             IConfiguration configuration)
     {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
+        _logger = logger;       
 
         IAmqpConnection rabbitConnection = AmqpConnectionStringBuilder.Parse(configuration.GetConnectionString("RabbitMq"));
         var factory = new ConnectionFactory
@@ -55,7 +52,7 @@ public class RabbitMqConsumer: BackgroundService
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
 
-            _logger.LogInformation($"Received {message}");
+            _logger.LogInformation("Received {Message}", message);
         };        
       
         _channel.BasicConsume(queue: QueueName,
@@ -65,6 +62,8 @@ public class RabbitMqConsumer: BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        stoppingToken.ThrowIfCancellationRequested();
+
         StartListen();
 
         return Task.CompletedTask;

@@ -50,6 +50,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportFileBuilder, ReportFileBuilder>();
 builder.Services.AddScoped<IReportStorageSerivce, ReportStorageSerivce>();
 builder.Services.AddScoped<IRabbitMqProducer, RabbitMqProduce>();
+//builder.Services.AddHostedService<RabbitMqConsumer>();
 
 builder.ConfigureAuthentication();
 
