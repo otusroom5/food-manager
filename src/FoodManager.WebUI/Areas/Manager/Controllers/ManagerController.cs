@@ -1,6 +1,7 @@
 ﻿using FoodManager.WebUI.Areas.Administrator.Contracts.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FoodManager.WebUI.Areas.Manager.Controllers;
 
@@ -24,7 +25,7 @@ public sealed class ManagerController : Abstractions.ControllerBase
 
     [HttpPost]
     [Route("{area}/{controller}/{action}")]
-    public async Task<IActionResult> GenerateReport(int daysBeforeExpired)
+    public async Task<IActionResult> GenerateReport(int daysBeforeExpired, string isConsumePriceFromSupplier)
     {
         if (!ModelState.IsValid)
         {        
@@ -33,10 +34,19 @@ public sealed class ManagerController : Abstractions.ControllerBase
 
         var httpClient = CreatePlannerServiceClient();
 
+        
         UserCreatedResponse response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpireProductsReportUrl + $"?daysBeforeExpired={daysBeforeExpired}");
+            bool includeActualPrices = false;
+            if (!string.IsNullOrEmpty(isConsumePriceFromSupplier) &&
+                isConsumePriceFromSupplier == "on")
+            {
+                includeActualPrices = true;
+            }
+
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpireProductsReportUrl + 
+                $"?daysBeforeExpired={daysBeforeExpired}&includeActualPrices={includeActualPrices}");
 
             response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
             responseMessage.EnsureSuccessStatusCode();

@@ -22,12 +22,18 @@ else
     <div>
         <div class="row">
             <div class="col">
-               Отчет: продукты у которых закончится срок годности через 
+                <b>Отчет:</b> продукты у которых закончится срок годности через
             </div>
             <div class="col">
                 <input name="DaysBeforeExpired" type="number" min="1" placeholder="дней">
-            </div>           
-        </div>      
+            </div>
+		</div>
+        <div class="col">
+            <i>
+                <input type="checkbox" name="IsConsumePriceFromSupplier"  />
+                <label for="IsConsumePriceFromSupplier">Добавить в отчет актуальные цены</label>
+            </i>
+        </div>    
         <br />
         <button class="btn btn-primary" type="submit">Сформировать</button>
     </div>

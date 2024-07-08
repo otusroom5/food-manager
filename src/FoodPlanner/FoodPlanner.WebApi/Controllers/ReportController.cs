@@ -31,7 +31,7 @@ namespace FoodPlanner.WebApi.Controllers
         }
 
         [HttpGet("GenerateExpireProductsReport")]
-        public ActionResult<Guid> GenerateExpireProductsReport(int daysBeforeExpired = 0)
+        public ActionResult<Guid> GenerateExpireProductsReport(int daysBeforeExpired = 0, bool includeActualPrices = false)
         {           
             if (!ModelState.IsValid)
             {
