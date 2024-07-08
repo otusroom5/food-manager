@@ -1,7 +1,6 @@
 ﻿using FoodManager.WebUI.Areas.Administrator.Contracts.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FoodManager.WebUI.Areas.Manager.Controllers;
 
