@@ -1,5 +1,6 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Models;
+using FoodPlanner.DataAccess.Models;
 using Microsoft.Extensions.Logging;
 
 namespace FoodPlanner.BusinessLogic.Services;
@@ -56,7 +57,26 @@ public class ReportService : IReportService
             LogError("Generate", exception);
             throw;
         }
-    }   
+    }
+
+    public async Task<byte[]> GenerateReportFileDistributionAsync(ExpireProduct products)
+    {
+        try
+        {
+            string htmlContent = _reportFileBuilder
+                 .BuildHeader()
+                 .BuildBodyDistrubution(products)
+                 .BuildFooter()
+                 .Build();
+
+            return await PreparePdfAsync(htmlContent);
+        }
+        catch (Exception exception)
+        {
+            LogError("Generate", exception);
+            throw;
+        }
+    }
 
     private void LogError(string methodName, Exception exception)
     {

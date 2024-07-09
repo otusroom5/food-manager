@@ -1,5 +1,7 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.Models;
 using FoodPlanner.DataAccess.Interfaces;
+using FoodPlanner.DataAccess.Models;
 using System.Text;
 
 namespace FoodPlanner.BusinessLogic.Reports;
@@ -42,6 +44,25 @@ public class ReportFileBuilder : IReportFileBuilder
         {
             htmlContent.AppendLine("<tr>");
             htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + item.Product.Name + " </td>");
+            htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + item.ExpiryDate + " </td>");
+            htmlContent.AppendLine("</tr>");
+        }
+        htmlContent.AppendLine("</tbody>");
+        htmlContent.AppendLine("</table>");
+        htmlContent.AppendLine("</div>");
+        htmlContent.AppendLine("</body>");
+
+        _reportFile.Body = htmlContent.ToString();
+        return this;
+    }
+
+    public IReportFileBuilder BuildBodyDistrubution(ExpireProduct products)
+    {
+        var htmlContent = new StringBuilder();
+        foreach (var item in products.ProductItems)
+        {
+            htmlContent.AppendLine("<tr>");
+            htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + item.ProductName + " </td>");
             htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + item.ExpiryDate + " </td>");
             htmlContent.AppendLine("</tr>");
         }
