@@ -1,6 +1,8 @@
 ﻿using FoodPlanner.DataAccess.Interfaces;
 using FoodPlanner.DataAccess.Models;
+using FoodPlanner.DataAccess.Utils;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FoodPlanner.DataAccess.Implementations;
 
@@ -20,10 +22,7 @@ public class StorageRepository : IStorageRepository
         var products = new List<ProductEntity>();
 
         var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl+ $"?daysBeforeExpired={daysBeforeExpired}");
-        var productsDeserialized = JsonSerializer.Deserialize<List<ProductEntity>>(productsJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true             
-        });
+        var productsDeserialized = JsonProductConverter.Convert(productsJson);
 
         if (productsDeserialized != null)
         {
