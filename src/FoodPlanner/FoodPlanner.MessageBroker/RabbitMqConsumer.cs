@@ -6,6 +6,8 @@ using RabbitMQ.Client;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using FoodPlanner.BusinessLogic.Interfaces;
 
 namespace FoodPlanner.MessageBroker;
 
@@ -13,14 +15,17 @@ public class RabbitMqConsumer: BackgroundService
 {
     private const string QueueName = "storage";
 
-    private readonly ILogger<RabbitMqConsumer> _logger;  
+    private readonly ILogger<RabbitMqConsumer> _logger;
+    private readonly IServiceProvider _serviceProvider;
     private readonly IConnection _connection;
     private IModel _channel;
 
     public RabbitMqConsumer(ILogger<RabbitMqConsumer> logger,
-                            IConfiguration configuration)
+        IServiceProvider serviceProvider,
+        IConfiguration configuration)
     {
-        _logger = logger;       
+        _logger = logger;
+        _serviceProvider = serviceProvider;
 
         IAmqpConnection rabbitConnection = AmqpConnectionStringBuilder.Parse(configuration.GetConnectionString("RabbitMq"));
         var factory = new ConnectionFactory
@@ -47,12 +52,17 @@ public class RabbitMqConsumer: BackgroundService
         _logger.LogInformation("Waiting for messages.");      
 
         var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += (model, ea) =>
+        consumer.Received += async (model, ea) =>
         {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
+            using (var serviceScope = _serviceProvider.CreateScope())
+            {
+                var reportDistributionService = serviceScope.ServiceProvider.GetRequiredService<IReportDistributionService>();
+                var body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
 
-            _logger.LogInformation("Received {Message}", message);
+                _logger.LogDebug("Received {Message}", message);
+                await reportDistributionService.DistributeAsync(message);            
+            }
         };        
       
         _channel.BasicConsume(queue: QueueName,
