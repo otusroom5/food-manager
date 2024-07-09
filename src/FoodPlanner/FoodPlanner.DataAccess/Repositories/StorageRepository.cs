@@ -20,7 +20,10 @@ public class StorageRepository : IStorageRepository
         var products = new List<ProductEntity>();
 
         var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl+ $"?daysBeforeExpired={daysBeforeExpired}");
-        var productsDeserialized = JsonSerializer.Deserialize<List<ProductEntity>>(productsJson);
+        var productsDeserialized = JsonSerializer.Deserialize<List<ProductEntity>>(productsJson, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true             
+        });
 
         if (productsDeserialized != null)
         {

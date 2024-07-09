@@ -1,14 +1,16 @@
-﻿using System.ComponentModel;
-
-namespace FoodPlanner.DataAccess.Models;
+﻿namespace FoodPlanner.DataAccess.Models;
 
 public sealed class ProductEntity
 {
-    public Guid Id { get; set; }  
-    public Guid ProductId { get; set; }   
-    public int Amount { get; set; }    
-    public DateTime CreatingDate { get; set; }
+    public Guid Id { get; set; }
+    public ProductDetailsEntity Product { get; set; } = new ProductDetailsEntity();
+}
 
-    [DefaultValue(null)]    
+public sealed class ProductDetailsEntity
+{    
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Amount { get; set; }
+    public DateTime СreatingDate { get; set; }    
     public DateTime? ExpiryDate { get; set; }
 }
