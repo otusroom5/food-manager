@@ -1,8 +1,6 @@
 ﻿using FoodPlanner.DataAccess.Interfaces;
 using FoodPlanner.DataAccess.Models;
 using FoodPlanner.DataAccess.Utils;
-using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FoodPlanner.DataAccess.Implementations;
 
