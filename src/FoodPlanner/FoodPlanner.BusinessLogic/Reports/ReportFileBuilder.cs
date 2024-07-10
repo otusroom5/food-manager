@@ -134,7 +134,7 @@ public class ReportFileBuilder : IReportFileBuilder
             if (priceEntity != null)
             {
                 htmlContent.AppendLine("<tr>");
-                htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + priceEntity.ShopId + " </td>");
+                htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + _supplierRepository.GetShopDetailsAsync(priceEntity.ShopId).Result.Name + " </td>");
                 htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + productItem.Name + " </td>");
                 htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + decimal.Round(priceEntity.Price, 2, MidpointRounding.AwayFromZero) + " </td>");
                 htmlContent.AppendLine("</tr>");

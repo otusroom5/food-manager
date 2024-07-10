@@ -5,4 +5,5 @@ namespace FoodPlanner.DataAccess.Interfaces;
 public interface ISupplierRepository
 {    
     Task<PriceEntity> GetActualProductPriceAsync(Guid productId);
+    Task<ShopEntity> GetShopDetailsAsync(Guid shopId);
 }

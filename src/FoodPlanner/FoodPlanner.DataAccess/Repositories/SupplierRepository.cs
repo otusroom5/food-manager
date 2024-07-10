@@ -7,6 +7,7 @@ namespace FoodPlanner.DataAccess.Repositories;
 public class SupplierRepository : ISupplierRepository
 {
     private static readonly string ProductActualPriceApiUrl = "api/Prices/GetLastByProduct/";
+    private static readonly string ShopsApiUrl = "api/Shops/";
 
     private readonly HttpClient _httpClient;
 
@@ -29,5 +30,21 @@ public class SupplierRepository : ISupplierRepository
         }
 
         return priceEntity;
+    }
+
+    public async Task<ShopEntity> GetShopDetailsAsync(Guid shopId)
+    {
+        var shopEntity = new ShopEntity();
+
+        var shopJson = await _httpClient.GetStringAsync(ShopsApiUrl + $"?Id={shopId}");
+        if (!string.IsNullOrEmpty(shopJson))
+        {
+            var shopDeserialized = JsonShopConverter.Convert(shopJson);
+
+            if (shopDeserialized != null)
+                shopEntity = shopDeserialized;
+        }
+
+        return shopEntity;
     }
 }

@@ -4,9 +4,9 @@ using FoodPlanner.DataAccess.Entities;
 
 namespace FoodPlanner.DataAccess.Utils;
 
-public static class JsonPriceConverter
+public static class JsonShopConverter
 {
-    public static PriceEntity Convert(string priceJson)
+    public static ShopEntity Convert(string shopJson)
     {
         try
         {        
@@ -15,7 +15,7 @@ public static class JsonPriceConverter
                 PropertyNameCaseInsensitive = true             
             };  
 
-            return JsonSerializer.Deserialize<PriceEntity>(priceJson, options: jsonOptions);
+            return JsonSerializer.Deserialize<ShopEntity>(shopJson, options: jsonOptions);
         }
         catch (JsonException ex)
         {
