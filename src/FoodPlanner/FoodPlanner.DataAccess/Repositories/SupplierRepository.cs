@@ -20,10 +20,13 @@ public class SupplierRepository : ISupplierRepository
         var priceEntity = new PriceEntity();
 
         var priceJson = await _httpClient.GetStringAsync(ProductActualPriceApiUrl + $"?Id={productId}");
-        var priceDeserialized = JsonPriceConverter.Convert(priceJson);
+        if (!string.IsNullOrEmpty(priceJson))
+        {
+            var priceDeserialized = JsonPriceConverter.Convert(priceJson);
 
-        if (priceDeserialized != null)
-            priceEntity = priceDeserialized;        
+            if (priceDeserialized != null)
+                priceEntity = priceDeserialized;
+        }
 
         return priceEntity;
     }
