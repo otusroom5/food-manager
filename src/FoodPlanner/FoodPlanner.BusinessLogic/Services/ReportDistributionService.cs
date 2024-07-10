@@ -4,7 +4,6 @@ using FoodPlanner.BusinessLogic.Models;
 using FoodPlanner.BusinessLogic.Types;
 using FoodPlanner.DataAccess.Entities;
 using FoodPlanner.MessageBroker;
-using System.Net.Mail;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
@@ -46,6 +45,25 @@ public class ReportDistributionService: IReportDistributionService
             
             report.State = ReportState.Sent;
         }     
+        else
+        {
+            if (messageJson.TryParseJson(out ProductAlmostOver productAlmostOver))
+            {
+                var reportProductAlmostOver = CreateReport("ProductAlmostOver",
+                 "Отчет о продуктах которые скоро закончатся");
+
+                reportProductAlmostOver.Content = _reportService.GenerateReportFileDistributionAsync(productAlmostOver).Result;
+                reportProductAlmostOver.State = ReportState.Generated;
+
+                var attachmentId = SaveAttachments(reportProductAlmostOver.Content);
+
+                SendToMessageBroker(reportProductAlmostOver.Id.ToGuid(),
+                    attachmentId,
+                    "Report with product about to over from scheduler");
+
+                reportProductAlmostOver.State = ReportState.Sent;
+            }
+        }        
     }
 
     private Report CreateReport(string reportName, string reportDescription)

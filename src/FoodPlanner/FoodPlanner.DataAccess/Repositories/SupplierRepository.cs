@@ -17,14 +17,14 @@ public class SupplierRepository : ISupplierRepository
 
     public async Task<PriceEntity> GetActualProductPriceAsync(Guid productId)
     {
-        var price = new PriceEntity();
+        var priceEntity = new PriceEntity();
 
         var priceJson = await _httpClient.GetStringAsync(ProductActualPriceApiUrl + $"?Id={productId}");
         var priceDeserialized = JsonPriceConverter.Convert(priceJson);
 
         if (priceDeserialized != null)
-            price = priceDeserialized;        
+            priceEntity = priceDeserialized;        
 
-        return price;
+        return priceEntity;
     }
 }

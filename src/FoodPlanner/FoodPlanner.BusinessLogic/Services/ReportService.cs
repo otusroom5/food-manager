@@ -90,6 +90,24 @@ public class ReportService : IReportService
         }
     }
 
+    public async Task<byte[]> GenerateReportFileDistributionAsync(ProductAlmostOver product)
+    {
+        try
+        {
+            string htmlContent = _reportFileBuilder                 
+                 .BuildBodyDistrubution(product)
+                 .BuildFooter()
+                 .Build();
+
+            return await PreparePdfAsync(htmlContent);
+        }
+        catch (Exception exception)
+        {
+            LogError("Generate", exception);
+            throw;
+        }
+    }
+
     private void LogError(string methodName, Exception exception)
     {
         _logger.LogCritical("'{0}' method '{1}' exception. \n{2}.", GetType().Name, methodName, exception);
