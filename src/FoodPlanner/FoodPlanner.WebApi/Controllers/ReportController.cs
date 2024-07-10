@@ -31,14 +31,14 @@ namespace FoodPlanner.WebApi.Controllers
         }
 
         [HttpGet("GenerateExpireProductsReport")]
-        public ActionResult<Guid> GenerateExpireProductsReport(int daysBeforeExpired = 0, bool includeActualPrices = false)
+        public ActionResult GenerateExpireProductsReport(int daysBeforeExpired = 0, bool includeActualPrices = false)
         {           
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("GenerateExpireProductsReport is not valid");
                 BadRequest();
             }
-
+            
             var report = _reportService.Create("ExpiryProducts",
                 "Отчет о товарах с заканчивающимся сроком использования",
                 Guid.NewGuid()
@@ -68,7 +68,7 @@ namespace FoodPlanner.WebApi.Controllers
              report.State = ReportState.Sent;
             _logger.LogInformation("Report {ReportGuid} published to gueue successfully", reportId);
 
-            return Ok(reportId);
+            return Ok(report.Id);
         }
 
         [HttpGet("GetReportAttachment")]

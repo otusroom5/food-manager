@@ -1,4 +1,4 @@
-﻿using FoodManager.WebUI.Areas.Administrator.Contracts.Responses;
+﻿using FoodManager.WebUI.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,8 +33,7 @@ public sealed class ManagerController : Abstractions.ControllerBase
 
         var httpClient = CreatePlannerServiceClient();
 
-        
-        UserCreatedResponse response = null;
+        ResponseBase response = null;
         try
         {
             bool includeActualPrices = false;
@@ -47,7 +46,7 @@ public sealed class ManagerController : Abstractions.ControllerBase
             HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpireProductsReportUrl + 
                 $"?daysBeforeExpired={daysBeforeExpired}&includeActualPrices={includeActualPrices}");
 
-            response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
+            response = await responseMessage.Content.ReadFromJsonAsync<ResponseBase>();
             responseMessage.EnsureSuccessStatusCode();
 
             TempData["Message"] = $"Report is created. Will notify by telegram.";
