@@ -46,7 +46,7 @@ namespace FoodPlanner.WebApi.Controllers
             var reportId = report.Id.ToGuid();
             _logger.LogInformation("Report created: {ReportGuid}", reportId);
 
-            report.Content = _reportService.GenerateReportFileAsync(daysBeforeExpired).Result;
+            report.Content = _reportService.GenerateReportFileAsync(daysBeforeExpired, includeActualPrices).Result;
             report.State = ReportState.Generated;
 
             var attachment = new ReportEntity()
@@ -67,6 +67,8 @@ namespace FoodPlanner.WebApi.Controllers
             _rabbitMqProducer.SendReportMessage(messageDto);
              report.State = ReportState.Sent;
             _logger.LogInformation("Report {ReportGuid} published to gueue successfully", reportId);
+
+            var test = Convert.ToBase64String(report.Content);
 
             return Ok(reportId);
         }

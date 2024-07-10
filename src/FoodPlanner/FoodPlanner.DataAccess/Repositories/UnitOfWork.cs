@@ -1,12 +1,13 @@
 ﻿using FoodPlanner.DataAccess.Interfaces;
 
-namespace FoodPlanner.DataAccess.Implementations;
+namespace FoodPlanner.DataAccess.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly InMemoryDbContext _databaseContext;
     private readonly IHttpClientFactory _httpClientFactory;
     private IStorageRepository _storageRepository;
+    private ISupplierRepository _supplierRepository;
     private IReportRepository _reportRepository;
 
     public UnitOfWork(IHttpClientFactory httpClientFactory,
@@ -21,6 +22,13 @@ public class UnitOfWork : IUnitOfWork
         _storageRepository ??= new StorageRepository(_httpClientFactory);
 
         return _storageRepository;
+    }
+
+    public ISupplierRepository GetSupplierRepository()
+    {
+        _supplierRepository ??= new SupplierRepository(_httpClientFactory);
+
+        return _supplierRepository;
     }
 
     public IReportRepository GetReportRepository()

@@ -2,7 +2,7 @@
 using FoodPlanner.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodPlanner.DataAccess.Implementations;
+namespace FoodPlanner.DataAccess.Repositories;
 
 public class ReportRepository : IReportRepository
 {

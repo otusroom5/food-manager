@@ -1,6 +1,5 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Models;
-using FoodPlanner.DataAccess.Models;
 using Microsoft.Extensions.Logging;
 
 namespace FoodPlanner.BusinessLogic.Services;
@@ -40,15 +39,28 @@ public class ReportService : IReportService
         return await _pdfService.CreatePDFAsync(html);
     }
 
-    public async Task<byte[]> GenerateReportFileAsync(int daysBeforeExpired)
+    public async Task<byte[]> GenerateReportFileAsync(int daysBeforeExpired, bool includeActualPrices)
     {
         try
         {
-            string htmlContent = _reportFileBuilder
-                 .BuildHeader()
-                 .BuildBody(daysBeforeExpired)
-                 .BuildFooter()
-                 .Build();                 
+            var htmlContent = string.Empty;
+            if (includeActualPrices)
+            {
+                htmlContent = _reportFileBuilder
+                    .BuildHeader()
+                    .BuildBody(daysBeforeExpired)
+                    .AddActualFoodPrices(daysBeforeExpired)
+                    .BuildFooter()
+                    .Build();
+            }
+            else
+            {
+                htmlContent = _reportFileBuilder
+                  .BuildHeader()
+                  .BuildBody(daysBeforeExpired)
+                  .BuildFooter()
+                  .Build();
+            }                       
 
             return await PreparePdfAsync(htmlContent);
         }

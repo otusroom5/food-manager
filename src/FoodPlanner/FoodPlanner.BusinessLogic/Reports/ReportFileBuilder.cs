@@ -1,7 +1,6 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Models;
 using FoodPlanner.DataAccess.Interfaces;
-using FoodPlanner.DataAccess.Models;
 using System.Text;
 
 namespace FoodPlanner.BusinessLogic.Reports;
@@ -10,10 +9,13 @@ public class ReportFileBuilder : IReportFileBuilder
 {
     private readonly ReportFile _reportFile;
     private readonly IStorageRepository _storageRepository;
+    private readonly ISupplierRepository _supplierRepository;
 
     public ReportFileBuilder(IUnitOfWork unitOfWork)
     {
         _storageRepository = unitOfWork.GetStorageRepository();
+        _supplierRepository = unitOfWork.GetSupplierRepository();
+
         _reportFile = new ReportFile();
     }
 
@@ -75,9 +77,37 @@ public class ReportFileBuilder : IReportFileBuilder
         return this;
     }
 
-    public IReportFileBuilder AddActualFoodPrices()
+    public IReportFileBuilder AddActualFoodPrices(int daysBeforeExpired)
     {
-       
+        var htmlContent = new StringBuilder();
+
+        htmlContent.AppendLine("</br>");
+        htmlContent.AppendLine("<table style = 'width: 100%; border-collapse: collapse;'>");
+        htmlContent.AppendLine("<thead>");
+        htmlContent.AppendLine("<tr>");
+        htmlContent.AppendLine("<th style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color:LightGreen' > Наименование товара </th>");
+        htmlContent.AppendLine("<th style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color:LightGreen' > Актуальная цена </th>");
+        htmlContent.AppendLine("</tr><hr/>");
+        htmlContent.AppendLine("</thead>");
+        htmlContent.AppendLine("<tbody>");
+
+        foreach (var productItem in _storageRepository.GetExpiredProductsAsync(daysBeforeExpired).Result)
+        {
+            var priceEntity = _supplierRepository.GetActualProductPriceAsync(productItem.Id).Result;
+            if (priceEntity != null)
+            {
+                htmlContent.AppendLine("<tr>");
+                htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + productItem.Product.Name + " </td>");
+                htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + priceEntity.Price + " </td>");
+                htmlContent.AppendLine("</tr>");
+            }
+        }
+        htmlContent.AppendLine("</tbody>");
+        htmlContent.AppendLine("</table>");
+        htmlContent.AppendLine("</div>");
+        htmlContent.AppendLine("</body>");
+
+        _reportFile.Body += htmlContent.ToString();
         return this;
     }
 

@@ -7,7 +7,7 @@ public interface IReportFileBuilder
     IReportFileBuilder BuildHeader();
     IReportFileBuilder BuildBody(int daysBeforeExpired);
     IReportFileBuilder BuildBodyDistrubution(ExpireProduct products);
-    IReportFileBuilder AddActualFoodPrices();
+    IReportFileBuilder AddActualFoodPrices(int daysBeforeExpired);
     IReportFileBuilder BuildFooter();
     string Build();
 }

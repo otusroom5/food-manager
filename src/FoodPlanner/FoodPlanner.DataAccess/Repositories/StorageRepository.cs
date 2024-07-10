@@ -2,7 +2,7 @@
 using FoodPlanner.DataAccess.Models;
 using FoodPlanner.DataAccess.Utils;
 
-namespace FoodPlanner.DataAccess.Implementations;
+namespace FoodPlanner.DataAccess.Repositories;
 
 public class StorageRepository : IStorageRepository
 {
@@ -22,10 +22,8 @@ public class StorageRepository : IStorageRepository
         var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl+ $"?daysBeforeExpired={daysBeforeExpired}");
         var productsDeserialized = JsonProductConverter.Convert(productsJson);
 
-        if (productsDeserialized != null)
-        {
-            products.AddRange(productsDeserialized);
-        }
+        if (productsDeserialized != null)        
+            products.AddRange(productsDeserialized);        
 
         return products;
     }

@@ -2,7 +2,7 @@ using DinkToPdf.Contracts;
 using DinkToPdf;
 using FoodManager.Shared.Extensions;
 using FoodPlanner.BusinessLogic.Interfaces;
-using FoodPlanner.DataAccess.Implementations;
+using FoodPlanner.DataAccess.Repositories;
 using FoodPlanner.DataAccess.Interfaces;
 using FoodPlanner.MessageBroker;
 using FoodPlanner.DataAccess;
@@ -38,6 +38,7 @@ builder.Services.AddHttpServiceClient(options =>
 });
 
 builder.Services.AddScoped<IStorageRepository, StorageRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddDbContext<InMemoryDbContext>(options =>
