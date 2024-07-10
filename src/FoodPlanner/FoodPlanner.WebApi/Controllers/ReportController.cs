@@ -68,6 +68,8 @@ namespace FoodPlanner.WebApi.Controllers
              report.State = ReportState.Sent;
             _logger.LogInformation("Report {ReportGuid} published to gueue successfully", reportId);
 
+            var test = Convert.ToBase64String(report.Content);
+
             return Ok(report.Id);
         }
 

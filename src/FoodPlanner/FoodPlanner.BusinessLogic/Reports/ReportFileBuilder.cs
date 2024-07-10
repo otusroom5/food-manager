@@ -127,13 +127,13 @@ public class ReportFileBuilder : IReportFileBuilder
         htmlContent.AppendLine("</thead>");
         htmlContent.AppendLine("<tbody>");
 
-        foreach (var productItem in _storageRepository.GetExpiredProductsAsync(daysBeforeExpired).Result)
+        foreach (var productItem in _storageRepository.GetExpiredProductsAsync(daysBeforeExpired).Result.Select(productItem => productItem.Product))
         {
             var priceEntity = _supplierRepository.GetActualProductPriceAsync(productItem.Id).Result;
             if (priceEntity != null)
             {
                 htmlContent.AppendLine("<tr>");
-                htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + productItem.Product.Name + " </td>");
+                htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + productItem.Name + " </td>");
                 htmlContent.AppendLine("<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >" + priceEntity.Price + " </td>");
                 htmlContent.AppendLine("</tr>");
             }
