@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using FoodManager.WebUI.Areas.Cooker.Models
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,8 +25,11 @@
                     <button class="btn btn-light" aria-label="Mute" type="button" onclick="location.href='@Url.ActionLink("Index", "Cooker")'">
                         Products
                     </button>
-                    <button class="btn btn-light" aria-label="Mute" type="button" onclick="location.href='@Url.ActionLink("Recepts", "Cooker")'">
-                        Recepts
+                    <button class="btn btn-light" aria-label="Mute" type="button" onclick="location.href='@Url.ActionLink("ProductItem", "Cooker")'">
+                        Refrigerator
+                    </button>
+                    <button class="btn btn-light" aria-label="Mute" type="button" onclick="location.href='@Url.ActionLink("ProductHistory", "Cooker")'">
+                        History
                     </button>
                 </div>
                 <div>

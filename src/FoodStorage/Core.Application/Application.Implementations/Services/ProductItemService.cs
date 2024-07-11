@@ -9,7 +9,6 @@ using FoodStorage.Domain.Entities.ProductEntity;
 using FoodStorage.Domain.Entities.ProductItemEntity;
 using FoodStorage.Domain.Entities.UnitEntity;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace FoodStorage.Application.Implementations.Services;
 
@@ -47,7 +46,7 @@ public class ProductItemService : IProductItemService
             {
                 throw new EntityNotFoundException(nameof(Product), productId.ToString());
             }
-            
+
             // Получение единицы измерения
             var unit = await GetUnit(product.UnitType, productItem.UnitId);
             // Конвертация количества продукта в главный тип
@@ -119,7 +118,7 @@ public class ProductItemService : IProductItemService
         }
     }
 
-    public async Task<List<ProductItemViewModel>> GetAllAsync() 
+    public async Task<List<ProductItemViewModel>> GetAllAsync()
     {
         try
         {

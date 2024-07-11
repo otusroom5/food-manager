@@ -7,6 +7,8 @@ public class ProductIndexModel
     public ProductModel[] Products { get; set; }
 
     public ProductModel Product { get; set; }
+
+    public string[] UnitTypes { get; set; }
 }
 
 public class ProductModel
@@ -17,7 +19,7 @@ public class ProductModel
     [HttpTableColumn("Product")]
     public string Name { get; set; }
 
-    [HttpTableColumn("Unit")]
+    [HttpTableColumn("UnitType")]
     public string UnitType { get; set; }
 
     [HttpTableColumn("Min Amount Per Day")]

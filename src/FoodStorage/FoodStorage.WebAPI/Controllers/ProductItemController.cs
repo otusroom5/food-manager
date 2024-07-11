@@ -28,9 +28,15 @@ public class ProductItemController : BaseController
     [HttpPost("Create")]
     public async Task<ActionResult<Guid>> CreateAsync(ProductItemCreateRequestModel productItem)
     {
-        Guid id = await _productItemService.CreateAsync(productItem, UserId.ToGuid());
-
-        return Ok(id);
+        try
+        {
+            Guid id = await _productItemService.CreateAsync(productItem, UserId.ToGuid());
+            return Ok(id);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -43,9 +49,15 @@ public class ProductItemController : BaseController
     [HttpGet("GetById/{productItemId}/{unit}")]
     public async Task<ActionResult<ProductItemViewModel>> GetByIdAsync(Guid productItemId, string unit)
     {
-        ProductItemViewModel result = await _productItemService.GetByIdAsync(productItemId, unit);
-
-        return Ok(result);
+        try
+        {
+            ProductItemViewModel result = await _productItemService.GetByIdAsync(productItemId, unit);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -58,9 +70,15 @@ public class ProductItemController : BaseController
     [HttpGet("GetByProductId/{productId}/{unit}")]
     public async Task<ActionResult<List<ProductItemViewModel>>> GetByProductIdAsync(Guid productId, string unit)
     {
-        List<ProductItemViewModel> result = await _productItemService.GetByProductIdAsync(productId, unit);
-
-        return Ok(result);
+        try
+        {
+            List<ProductItemViewModel> result = await _productItemService.GetByProductIdAsync(productId, unit);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -71,9 +89,15 @@ public class ProductItemController : BaseController
     [HttpGet("GetAll")]
     public async Task<ActionResult<List<ProductItemViewModel>>> GetAllAsync()
     {
-        List<ProductItemViewModel> result = await _productItemService.GetAllAsync();
-
-        return Ok(result);
+        try
+        {
+            List<ProductItemViewModel> result = await _productItemService.GetAllAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -84,9 +108,15 @@ public class ProductItemController : BaseController
     [HttpGet("GetExpiredProductItems")]
     public async Task<ActionResult<List<ProductItemViewModel>>> GetExpireProductItemsAsync(int daysBeforeExpired = 0)
     {
-        List<ProductItemViewModel> result = await _productItemService.GetExpireProductItemsAsync(daysBeforeExpired);
-
-        return Ok(result);
+        try
+        {
+            List<ProductItemViewModel> result = await _productItemService.GetExpireProductItemsAsync(daysBeforeExpired);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -97,9 +127,15 @@ public class ProductItemController : BaseController
     [HttpGet("GetEndingProductItems")]
     public async Task<ActionResult<List<ProductItemViewModel>>> GetEndingProductItemsAsync()
     {
-        List<ProductItemViewModel> result = await _productItemService.GetEndingProductItemsAsync();
-
-        return Ok(result);
+        try
+        {
+            List<ProductItemViewModel> result = await _productItemService.GetEndingProductItemsAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -112,9 +148,15 @@ public class ProductItemController : BaseController
     [HttpPost("TakePartOf")]
     public async Task<ActionResult> TakePartOfAsync(ProductItemTakePartOfRequestModel request)
     {
-        await _productItemService.TakePartOfAsync(request, UserId.ToGuid());
-
-        return Ok();
+        try
+        {
+            await _productItemService.TakePartOfAsync(request, UserId.ToGuid());
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -126,9 +168,15 @@ public class ProductItemController : BaseController
     [HttpPost("WriteOff")]
     public async Task<ActionResult> WriteOffAsync(List<Guid> productItemIds)
     {
-        await _productItemService.WriteOffAsync(productItemIds, UserId.ToGuid());
-
-        return Ok();
+        try
+        {
+            await _productItemService.WriteOffAsync(productItemIds, UserId.ToGuid());
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -140,8 +188,14 @@ public class ProductItemController : BaseController
     [HttpDelete("Delete/{productItemId}")]
     public async Task<ActionResult> DeleteAsync(Guid productItemId)
     {
-        await _productItemService.DeleteAsync(productItemId);
-
-        return Ok();
+        try
+        {
+            await _productItemService.DeleteAsync(productItemId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

@@ -18,7 +18,7 @@ public sealed record RecipePositionDto
 
     [Column("product_count")]
     [Required]
-    public int ProductCount { get; set; }
+    public double ProductCount { get; set; }
 
     [Column("unit_id")]
     [Required]

@@ -28,9 +28,15 @@ public class ProductController : BaseController
     [HttpPost("Create")]
     public async Task<ActionResult<Guid>> CreateAsync(ProductCreateRequestModel product)
     {
-        Guid id = await _productService.CreateAsync(product);
-
-        return Ok(id);
+        try
+        {
+            Guid id = await _productService.CreateAsync(product);
+            return Ok(id);
+        }
+        catch (Exception ex) 
+        { 
+            return BadRequest(ex.Message); 
+        }
     }
 
     /// <summary>
@@ -42,9 +48,16 @@ public class ProductController : BaseController
     [HttpGet("GetById/{productId}")]
     public async Task<ActionResult<ProductViewModel>> GetByIdAsync(Guid productId)
     {
-        ProductViewModel result = await _productService.GetByIdAsync(productId);
+        try
+        {
+            ProductViewModel result = await _productService.GetByIdAsync(productId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
-        return Ok(result);
     }
 
     /// <summary>
@@ -56,9 +69,15 @@ public class ProductController : BaseController
     [HttpGet("GetByName/{productName}")]
     public async Task<ActionResult<ProductViewModel>> GetByNameAsync(string productName)
     {
-        ProductViewModel result = await _productService.GetByNameAsync(productName);
-
-        return Ok(result);
+        try
+        {
+            ProductViewModel result = await _productService.GetByNameAsync(productName);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -69,9 +88,15 @@ public class ProductController : BaseController
     [HttpGet("GetAll")]
     public async Task<ActionResult<List<ProductViewModel>>> GetAllAsync()
     {
-        List<ProductViewModel> result = await _productService.GetAllAsync();
-
-        return Ok(result);
+        try
+        {
+            List<ProductViewModel> result = await _productService.GetAllAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -83,8 +108,14 @@ public class ProductController : BaseController
     [HttpDelete("Delete/{productId}")]
     public async Task<ActionResult> DeleteAsync(Guid productId)
     {
-        await _productService.DeleteAsync(productId);
-
-        return Ok();
+        try
+        {
+            await _productService.DeleteAsync(productId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

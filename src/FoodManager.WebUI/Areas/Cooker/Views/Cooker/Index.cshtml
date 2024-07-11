@@ -6,20 +6,35 @@
 @{
     Layout = "_CookerLayout";
     ViewData["Title"] = "Products";
-    var isUpdateMode = Model.Product != null;
+}
+
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
+{
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+    {
+        <div id="alert-message" class="alert alert-success" role="alert">@TempData["Message"]</div>
+    }
 }
 
 @(Html.TableFor<ProductModel>(@Model.Products, key =>
 {
     var builder = new HtmlContentBuilder();
-    builder.AppendHtml(Html.ActionLink("edit", "UpdateProduct", "Cooker", new { Id = key }));
-    builder.AppendHtml("&nbsp");
-    builder.AppendHtml(Html.ActionLink("delete", "DeleteProduct", "Cooker", new { Id = key }));
+    builder.AppendHtml(Html.ActionLink("view in refrigerator", "ViewInRefrigerator", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
+    builder.AppendHtml("<React.Fragment><br/><React.Fragment>");
+    builder.AppendHtml(Html.ActionLink("history", "ViewProductHistory", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
+    builder.AppendHtml("<React.Fragment><br/><React.Fragment>");
+    builder.AppendHtml(Html.ActionLink("delete", "DeleteProduct", "Cooker", new { productId = key }));
+
     return builder;
-}))
+})
+)
 
 
-@using (Html.BeginForm(actionName: (isUpdateMode ? "UpdateProduct" : "CreateProduct"), controllerName: "Cooker", FormMethod.Post))
+@using (Html.BeginForm(actionName: "CreateProduct", controllerName: "Cooker", FormMethod.Post))
 {
     <input type="hidden" name="Id" value="@Model.Product?.Id">
     <div class="row">
@@ -27,21 +42,14 @@
             Product:
         </div>
         <div class="col">
-            @if (isUpdateMode)
-            {
-                <input name="Name" type="text" class="form-control" value="@Model.Product?.Name" disabled>
-            }
-            else
-            {
-                <input name="Name" type="text" class="form-control" value="@Model.Product?.Name">
-            }
+            <input name="Name" type="text" class="form-control" value="@Model.Product?.Name">
         </div>
     </div>
     <div class="row">
         <div class="col">Unit Type:</div>
         <div class="col">
             <select class="form-select" value="" name="UnitType">
-                @foreach (string optionName in new[] { "Килограмм", "Грамм" })
+                @foreach (string optionName in @Model.UnitTypes)
                 {
                     <option>
                         @optionName
@@ -53,7 +61,7 @@
     <div class="row">
         <div class="col">Min Amount Per Day:</div>
         <div class="col">
-            <input name="UnitType" type="text" class="form-control" value="@Model.Product?.MinAmountPerDay">
+            <input name="MinAmountPerDay" type="text" class="form-control" value="@Model.Product?.MinAmountPerDay">
         </div>
     </div>
     <div class="row">
@@ -63,14 +71,6 @@
         </div>
     </div>
     <div>
-        @if (isUpdateMode)
-        {
-            <button class="btn btn-primary" type="submit">Update</button>
-            <button class="btn btn-secondary" type="button" onclick="location.href='@Url.ActionLink("Index","Cooker")'">Cancel</button>
-        }
-        else
-        {
-            <button class="btn btn-primary" type="submit">Create</button>
-        }
+        <button class="btn btn-primary" type="submit">Create</button>
     </div>
 }

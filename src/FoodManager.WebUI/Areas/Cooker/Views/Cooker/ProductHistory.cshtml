@@ -1,0 +1,28 @@
+﻿@using FoodManager.WebUI.Areas.Cooker.Models
+@using FoodManager.WebUI.Extensions
+@using Microsoft.AspNetCore.Html
+@model ProductHistoryIndexModel
+
+@{
+    Layout = "_CookerLayout";
+    ViewData["Title"] = "History";
+}
+
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
+{
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+    {
+        <div id="alert-message" class="alert alert-success" role="alert">@TempData["Message"]</div>
+    }
+}
+
+
+@(Html.TableFor<ProductHistoryModel>(@Model.ProductHistoryItems, key =>
+{
+    var builder = new HtmlContentBuilder();
+    return builder;
+}))

@@ -28,9 +28,15 @@ public class RecipeController : BaseController
     [HttpPost("Create")]
     public async Task<ActionResult<Guid>> CreateAsync(RecipeCreateRequestModel recipe)
     {
-        Guid id = await _recipeService.CreateAsync(recipe);
-
-        return Ok(id);
+        try
+        {
+            Guid id = await _recipeService.CreateAsync(recipe);
+            return Ok(id);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -42,9 +48,15 @@ public class RecipeController : BaseController
     [HttpGet("GetById/{recipeId}")]
     public async Task<ActionResult<RecipeViewModel>> GetByIdAsync(Guid recipeId)
     {
-        RecipeViewModel result = await _recipeService.GetByIdAsync(recipeId);
-
-        return Ok(result);
+        try
+        {
+            RecipeViewModel result = await _recipeService.GetByIdAsync(recipeId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -56,9 +68,15 @@ public class RecipeController : BaseController
     [HttpGet("GetByName/{recipeName}")]
     public async Task<ActionResult<RecipeViewModel>> GetByNameAsync(string recipeName)
     {
-        RecipeViewModel result = await _recipeService.GetByNameAsync(recipeName);
-
-        return Ok(result);
+        try
+        {
+            RecipeViewModel result = await _recipeService.GetByNameAsync(recipeName);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -69,9 +87,15 @@ public class RecipeController : BaseController
     [HttpGet("GetAll")]
     public async Task<ActionResult<List<RecipeViewModel>>> GetAllAsync()
     {
-        List<RecipeViewModel> result = await _recipeService.GetAllAsync();
-
-        return Ok(result);
+        try
+        {
+            List<RecipeViewModel> result = await _recipeService.GetAllAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -83,9 +107,15 @@ public class RecipeController : BaseController
     [HttpGet("GetByProductId/{productId}")]
     public async Task<ActionResult<List<RecipeViewModel>>> GetByProductIdAsync(Guid productId)
     {
-        List<RecipeViewModel> result = await _recipeService.GetByProductIdAsync(productId);
-
-        return Ok(result);
+        try
+        {
+            List<RecipeViewModel> result = await _recipeService.GetByProductIdAsync(productId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -97,9 +127,15 @@ public class RecipeController : BaseController
     [HttpPut("Update")]
     public async Task<ActionResult> UpdateAsync(RecipeUpdateRequestModel recipe)
     {
-        await _recipeService.UpdateAsync(recipe);
-
-        return Ok();
+        try
+        {
+            await _recipeService.UpdateAsync(recipe);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -111,8 +147,14 @@ public class RecipeController : BaseController
     [HttpDelete("Delete/{recipeId}")]
     public async Task<ActionResult> DeleteAsync(Guid recipeId)
     {
-        await _recipeService.DeleteAsync(recipeId);
-
-        return Ok();
+        try
+        {
+            await _recipeService.DeleteAsync(recipeId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

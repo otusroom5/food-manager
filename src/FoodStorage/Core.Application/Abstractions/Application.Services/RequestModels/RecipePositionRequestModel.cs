@@ -13,7 +13,7 @@ public sealed record RecipePositionRequestModel
     /// <summary>
     /// Количество продукта
     /// </summary>
-    public int ProductCount { get; set; }
+    public double ProductCount { get; set; }
 
     /// <summary>
     /// Идентификатор единицы измерения
