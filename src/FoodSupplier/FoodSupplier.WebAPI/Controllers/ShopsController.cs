@@ -30,12 +30,7 @@ public class ShopsController : ControllerBase
         {
             var candidate = await _shopsService.GetAsync(model.Id);
             var result = _mapper.Map<ShopModel>(candidate);
-
-            if (result is null)
-            {
-                return NotFound();
-            }
-
+                       
             return Ok(result);
         }
         catch (Exception e)
