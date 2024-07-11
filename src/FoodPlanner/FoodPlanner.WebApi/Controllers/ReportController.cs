@@ -1,8 +1,8 @@
 ﻿using FoodManager.Shared.Types;
 using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.MessageBroker;
 using FoodPlanner.BusinessLogic.Types;
 using FoodPlanner.DataAccess.Entities;
-using FoodPlanner.MessageBroker;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

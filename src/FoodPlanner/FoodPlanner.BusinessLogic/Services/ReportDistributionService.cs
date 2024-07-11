@@ -1,9 +1,9 @@
 ﻿using FoodPlanner.BusinessLogic.Converters;
 using FoodPlanner.BusinessLogic.Interfaces;
+using FoodPlanner.BusinessLogic.MessageBroker;
 using FoodPlanner.BusinessLogic.Models;
 using FoodPlanner.BusinessLogic.Types;
 using FoodPlanner.DataAccess.Entities;
-using FoodPlanner.MessageBroker;
 
 namespace FoodPlanner.BusinessLogic.Services;
 

@@ -1,4 +1,4 @@
-﻿namespace FoodPlanner.MessageBroker;
+﻿namespace FoodPlanner.BusinessLogic.MessageBroker;
 
 public interface IRabbitMqProducer
 {

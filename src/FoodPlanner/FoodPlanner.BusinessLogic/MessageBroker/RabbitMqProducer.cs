@@ -6,7 +6,7 @@ using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace FoodPlanner.MessageBroker;
+namespace FoodPlanner.BusinessLogic.MessageBroker;
 
 public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
 {
@@ -14,7 +14,7 @@ public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
     private readonly IConnection _connection;
     private readonly string _queueName;
 
-    public RabbitMqProduce(ILogger<RabbitMqProduce> logger, 
+    public RabbitMqProduce(ILogger<RabbitMqProduce> logger,
         IConfiguration configuration)
     {
         _logger = logger;
@@ -31,9 +31,9 @@ public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
         _queueName = rabbitConnection.GetQueueName();
         _connection = factory.CreateConnection();
     }
-                
+
     public void SendReportMessage<T>(T message)
-    {   
+    {
         using var channel = _connection.CreateModel();
 
         channel.QueueDeclare(queue: _queueName,
@@ -49,13 +49,13 @@ public sealed class RabbitMqProduce : IRabbitMqProducer, IDisposable
         channel.BasicPublish(exchange: "",
                              routingKey: "notification",
                              basicProperties: properties,
-                             body: body);         
+                             body: body);
 
         _logger.LogInformation(" Report sent to quue 'notification'");
     }
 
     public void Dispose()
     {
-        _connection.Dispose();    
-    }   
+        _connection.Dispose();
+    }
 }

@@ -9,9 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using FoodPlanner.BusinessLogic.Interfaces;
 
-namespace FoodPlanner.MessageBroker;
 
-public class RabbitMqConsumer: BackgroundService
+namespace FoodPlanner.BusinessLogic.MessageBroker;
+
+public class RabbitMqConsumer : BackgroundService
 {
     private const string QueueName = "storage";
 
@@ -35,12 +36,12 @@ public class RabbitMqConsumer: BackgroundService
             UserName = rabbitConnection.GetUserName(),
             Password = rabbitConnection.GetUserPassword()
         };
-      
+
         _connection = factory.CreateConnection();
     }
 
     public void StartListen()
-    { 
+    {
         _channel = _connection.CreateModel();
 
         _channel.QueueDeclare(queue: QueueName,
@@ -49,7 +50,7 @@ public class RabbitMqConsumer: BackgroundService
                              autoDelete: false,
                              arguments: null);
 
-        _logger.LogInformation("Waiting for messages.");      
+        _logger.LogInformation("Waiting for messages.");
 
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += async (model, ea) =>
@@ -61,10 +62,10 @@ public class RabbitMqConsumer: BackgroundService
                 var message = Encoding.UTF8.GetString(body);
 
                 _logger.LogDebug("Received {Message}", message);
-                await reportDistributionService.DistributeAsync(message);            
+                await reportDistributionService.DistributeAsync(message);
             }
-        };        
-      
+        };
+
         _channel.BasicConsume(queue: QueueName,
                      autoAck: true,
                      consumer: consumer);
@@ -78,7 +79,7 @@ public class RabbitMqConsumer: BackgroundService
 
         return Task.CompletedTask;
     }
-    
+
     public override void Dispose()
     {
         _channel?.Dispose();

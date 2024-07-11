@@ -11,9 +11,11 @@
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\FoodManager.Shared\FoodManager.Shared.csproj" />
     <ProjectReference Include="..\FoodPlanner.DataAccess\FoodPlanner.DataAccess.csproj" />
   </ItemGroup>
 

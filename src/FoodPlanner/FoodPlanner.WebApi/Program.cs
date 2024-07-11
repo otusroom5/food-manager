@@ -4,11 +4,11 @@ using FoodManager.Shared.Extensions;
 using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.DataAccess.Repositories;
 using FoodPlanner.DataAccess.Interfaces;
-using FoodPlanner.MessageBroker;
 using FoodPlanner.DataAccess;
 using FoodPlanner.BusinessLogic.Services;
 using Microsoft.EntityFrameworkCore;
 using FoodPlanner.BusinessLogic.Reports;
+using FoodPlanner.BusinessLogic.MessageBroker;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("FoodPlanner_");
