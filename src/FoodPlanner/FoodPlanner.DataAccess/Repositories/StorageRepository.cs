@@ -1,30 +1,30 @@
 ﻿using FoodPlanner.DataAccess.Interfaces;
 using FoodPlanner.DataAccess.Models;
-using System.Text.Json;
+using FoodPlanner.DataAccess.Utils;
 
-namespace FoodPlanner.DataAccess.Implementations;
+namespace FoodPlanner.DataAccess.Repositories;
 
-public class StorageRepository: IStorageRepository
+public class StorageRepository : IStorageRepository
 {
+    private static readonly string ExpiredProductsApiUrl = "api/ProductItem/GetExpiredProductItems/";
+
     private readonly HttpClient _httpClient;
 
-    public StorageRepository(HttpClient httpClient)
+    public StorageRepository(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient("FoodStorageApi");
     }
 
-    public async Task<List<ProductEntity>> GetExpiredProductsAsync()
+    public async Task<List<ProductEntity>> GetExpiredProductsAsync(int daysBeforeExpired)
     {
         var products = new List<ProductEntity>();
 
-        var productsJson = await _httpClient.GetStringAsync("api/ProductItem/GetExpiredProductItems");
-        var productsDeserialized = JsonSerializer.Deserialize<List<ProductEntity>>(productsJson);
+        var productsJson = await _httpClient.GetStringAsync(ExpiredProductsApiUrl+ $"?daysBeforeExpired={daysBeforeExpired}");
+        var productsDeserialized = JsonProductConverter.Convert(productsJson);
 
-        if (productsDeserialized != null)
-        {
-            products.AddRange(productsDeserialized);
-        }
+        if (productsDeserialized != null)        
+            products.AddRange(productsDeserialized);        
 
         return products;
-    }   
+    }
 }

@@ -1,7 +1,6 @@
-﻿using FoodManager.WebUI.Areas.Administrator.Contracts.Responses;
+﻿using FoodManager.WebUI.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 
 namespace FoodManager.WebUI.Areas.Manager.Controllers;
 
@@ -10,7 +9,7 @@ namespace FoodManager.WebUI.Areas.Manager.Controllers;
 
 public sealed class ManagerController : Abstractions.ControllerBase
 {
-    private static readonly string ExpiredProductsReportApiUrl = "/api/GenerateExpiredProductsReport";
+    private static readonly string ExpireProductsReportUrl = "/api/Report/GenerateExpireProductsReport/";
     public ManagerController(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {
     }
@@ -25,16 +24,29 @@ public sealed class ManagerController : Abstractions.ControllerBase
 
     [HttpPost]
     [Route("{area}/{controller}/{action}")]
-    public async Task<IActionResult> GenerateReport()
+    public async Task<IActionResult> GenerateReport(int daysBeforeExpired, string isConsumePriceFromSupplier)
     {
+        if (!ModelState.IsValid)
+        {        
+            BadRequest();
+        }
+
         var httpClient = CreatePlannerServiceClient();
 
-        UserCreatedResponse response = null;
+        ResponseBase response = null;
         try
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpiredProductsReportApiUrl);
+            bool includeActualPrices = false;
+            if (!string.IsNullOrEmpty(isConsumePriceFromSupplier) &&
+                isConsumePriceFromSupplier == "on")
+            {
+                includeActualPrices = true;
+            }
 
-            response = await responseMessage.Content.ReadFromJsonAsync<UserCreatedResponse>();
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(ExpireProductsReportUrl + 
+                $"?daysBeforeExpired={daysBeforeExpired}&includeActualPrices={includeActualPrices}");
+
+            response = await responseMessage.Content.ReadFromJsonAsync<ResponseBase>();
             responseMessage.EnsureSuccessStatusCode();
 
             TempData["Message"] = $"Report is created. Will notify by telegram.";

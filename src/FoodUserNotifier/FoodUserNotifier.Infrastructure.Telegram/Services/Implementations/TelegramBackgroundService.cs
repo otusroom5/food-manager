@@ -5,12 +5,14 @@ using FoodUserNotifier.Core.Interfaces;
 using FoodUserNotifier.Core.Interfaces.Repositories;
 using FoodUserNotifier.Core.Interfaces.Sources;
 using FoodUserNotifier.Infrastructure.Sender.Telegram.Options;
+using FoodUserNotifier.Infrastructure.Sources.Interfaces;
 using FoodUserNotifier.Infrastructure.Telegram.Exceptions;
 using FoodUserNotifier.Infrastructure.Telegram.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.IO;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -45,11 +47,21 @@ public sealed class TelegramBackgroundService : BackgroundService, IUpdateHandle
         _botClient = new TelegramBotClient(options.Value.AccessToken);
     }
 
-    public async Task SendMessageAsync(Recepient recepient, Core.Entities.Message message, TelegramSession session, CancellationToken cancellationToken)
+    public async Task SendMessageAsync(Recepient recepient, string messageText, TelegramSession session, CancellationToken cancellationToken)
     {
         await _botClient.SendTextMessageAsync(
                 chatId: session.ChatId,
-                text: message.MessageText,
+                text: messageText,
+                cancellationToken: cancellationToken);
+    }
+
+    public async Task SendMessageAsync(Recepient recepient, string messageText, TelegramSession session, 
+        Stream attachmentStream, CancellationToken cancellationToken)
+    {
+        await _botClient.SendDocumentAsync(
+                chatId: session.ChatId,
+                document: InputFile.FromStream(attachmentStream, "report.pdf"),
+                caption: "Report",
                 cancellationToken: cancellationToken);
     }
 

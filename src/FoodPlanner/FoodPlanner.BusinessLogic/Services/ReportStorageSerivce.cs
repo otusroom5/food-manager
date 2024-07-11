@@ -5,14 +5,14 @@ using Microsoft.Extensions.Logging;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
-public class ReportStorageSerivce: IReportStorageSerivce
+public class ReportStorageSerivce : IReportStorageSerivce
 {
     private readonly IReportRepository _reportRepository;
     private readonly ILogger<ReportStorageSerivce> _logger;
 
-    public ReportStorageSerivce(IUnitOfWork unitOfWork,     
+    public ReportStorageSerivce(IUnitOfWork unitOfWork,
          ILogger<ReportStorageSerivce> logger)
-    {       
+    {
         _reportRepository = unitOfWork.GetReportRepository();
         _logger = logger;
 
@@ -32,7 +32,7 @@ public class ReportStorageSerivce: IReportStorageSerivce
         }
     }
 
-    public byte[]? GetFromMemory(Guid id) 
+    public byte[]? GetFromMemory(Guid id)
     {
         try
         {

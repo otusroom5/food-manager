@@ -3,19 +3,38 @@
     ViewData["Title"] = "Manager";
 }
 
-<p>Manager area</p>
+<p><b>Manager area</b></p>
 
-@using (Html.BeginForm(actionName: "Generate", controllerName: "Manager", FormMethod.Post))
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
+{
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+    {
+        <div id="alert-message" class="alert alert-success" role="alert">@TempData["Message"]</div>
+    }
+}
+
+@using (Html.BeginForm(actionName: "GenerateReport", controllerName: "Manager", FormMethod.Post))
 {
     <div>
-        <center>
-            <p> Отчеты </p>
-        </center>
-        <div>
-            <div>
-                Отчет: товары с закончившимся сроком использования.
+        <div class="row">
+            <div class="col">
+                <b>Отчет:</b> продукты у которых закончится срок годности через
             </div>
-            <button class="btn btn-primary" type="submit">Сформировать</button>
-        </div>
+            <div class="col">
+                <input name="DaysBeforeExpired" type="number" min="1" placeholder="дней">
+            </div>
+		</div>
+        <div class="col">
+            <i>
+                <input type="checkbox" name="IsConsumePriceFromSupplier"  />
+                <label for="IsConsumePriceFromSupplier">Добавить в отчет актуальные цены</label>
+            </i>
+        </div>    
+        <br />
+        <button class="btn btn-primary" type="submit">Сформировать</button>
     </div>
 }

@@ -104,7 +104,7 @@ public class ProductItemController : BaseController
     /// Получить список единиц продуктов с истекающим сроком годности, если 0 - то с истекшим
     /// </summary>
     /// <returns>Список единиц продукта</returns>
-    [Authorize(AuthenticationSchemes = "Bearer, ApiKey")] // Need to check how config to work with Roles together
+    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Manager)]
     [HttpGet("GetExpiredProductItems")]
     public async Task<ActionResult<List<ProductItemViewModel>>> GetExpireProductItemsAsync(int daysBeforeExpired = 0)
     {

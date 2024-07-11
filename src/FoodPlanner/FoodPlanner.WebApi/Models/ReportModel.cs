@@ -6,7 +6,6 @@ public class ReportModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public ReportType Type { get; set; }
     public ReportState State { get; set; }
     public MemoryStream Content { get; set; }
     public string Description { get; set; }

@@ -2,6 +2,7 @@
 
 public interface IUnitOfWork
 {
-    public IStorageRepository GetStorageRepository();        
+    public IStorageRepository GetStorageRepository();
+    public ISupplierRepository GetSupplierRepository();
     public IReportRepository GetReportRepository();        
 }

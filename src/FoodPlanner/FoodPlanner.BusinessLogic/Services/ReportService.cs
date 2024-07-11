@@ -1,34 +1,31 @@
 ﻿using FoodPlanner.BusinessLogic.Interfaces;
 using FoodPlanner.BusinessLogic.Models;
-using FoodPlanner.BusinessLogic.Reports;
-using FoodPlanner.BusinessLogic.Types;
-using FoodPlanner.DataAccess.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
 public class ReportService : IReportService
 {
-    private readonly IStorageRepository _storageRepository;   
+    private readonly IReportFileBuilder _reportFileBuilder;
     private readonly IPdfService _pdfService;
     private readonly ILogger<ReportService> _logger;
 
-    public ReportService(IUnitOfWork unitOfWork,
+    public ReportService(IReportFileBuilder reportFileBuilder,
          IPdfService pdfService,
          ILogger<ReportService> logger)
     {
-        _pdfService = pdfService;   
-        _storageRepository = unitOfWork.GetStorageRepository();
+        _reportFileBuilder = reportFileBuilder;
+        _pdfService = pdfService;       
         _logger = logger;
 
         _logger.LogInformation("'{0}' handling.", GetType().Name);
     }
 
-    public Report Create(ReportType reportType, string reportName, string reportDescription, Guid userId)
+    public Report Create(string reportName, string reportDescription, Guid userId)
     {
         try
         {
-            return Report.CreateNew(ReportId.CreateNew(), ReportName.FromString(reportName), reportType, reportDescription, UserId.FromGuid(userId));
+            return Report.CreateNew(ReportId.CreateNew(), ReportName.FromString(reportName), reportDescription, UserId.FromGuid(userId));
         }
         catch (Exception exception)
         {
@@ -37,25 +34,79 @@ public class ReportService : IReportService
         }
     }
 
-    public byte[] Generate(ReportType reportType)
+    public async Task<byte[]> PreparePdfAsync(string html)
+    {
+        return await _pdfService.CreatePDFAsync(html);
+    }
+
+    public async Task<byte[]> GenerateReportFileAsync(int daysBeforeExpired, bool includeActualPrices)
     {
         try
         {
-            byte[] reportContent = reportType switch
+            var htmlContent = string.Empty;
+            if (includeActualPrices)
             {
-                ReportType.ExpiredProducts => new ExpiredProductsReport(_pdfService, _storageRepository).PrepareAsync().Result,
-                ReportType.ConsumptionProducts => throw new NotImplementedException(),
-                ReportType.PurchasingProducts => throw new NotImplementedException(),
-                _ => throw new NotImplementedException(),
-            };
-            return reportContent;
+                htmlContent = _reportFileBuilder
+                    .BuildHeader()
+                    .BuildBody(daysBeforeExpired)
+                    .AddActualFoodPrices(daysBeforeExpired)
+                    .BuildFooter()
+                    .Build();
+            }
+            else
+            {
+                htmlContent = _reportFileBuilder
+                  .BuildHeader()
+                  .BuildBody(daysBeforeExpired)
+                  .BuildFooter()
+                  .Build();
+            }                       
+
+            return await PreparePdfAsync(htmlContent);
         }
         catch (Exception exception)
         {
             LogError("Generate", exception);
             throw;
         }
-    }    
+    }
+
+    public async Task<byte[]> GenerateReportFileDistributionAsync(ExpireProduct products)
+    {
+        try
+        {
+            string htmlContent = _reportFileBuilder
+                 .BuildHeader()
+                 .BuildBodyDistrubution(products)
+                 .BuildFooter()
+                 .Build();
+
+            return await PreparePdfAsync(htmlContent);
+        }
+        catch (Exception exception)
+        {
+            LogError("Generate", exception);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> GenerateReportFileDistributionAsync(ProductAlmostOver product)
+    {
+        try
+        {
+            string htmlContent = _reportFileBuilder                 
+                 .BuildBodyDistrubution(product)
+                 .BuildFooter()
+                 .Build();
+
+            return await PreparePdfAsync(htmlContent);
+        }
+        catch (Exception exception)
+        {
+            LogError("Generate", exception);
+            throw;
+        }
+    }
 
     private void LogError(string methodName, Exception exception)
     {

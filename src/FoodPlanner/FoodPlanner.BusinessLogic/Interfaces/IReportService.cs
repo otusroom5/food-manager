@@ -1,10 +1,12 @@
 ﻿using FoodPlanner.BusinessLogic.Models;
-using FoodPlanner.BusinessLogic.Types;
 
 namespace FoodPlanner.BusinessLogic.Interfaces;
 
 public interface IReportService
 {
-    public Report Create(ReportType reportType, string reportName, string reportDescription, Guid userId);
-    public byte[] Generate(ReportType reportType);    
+    public Report Create(string reportName, string reportDescription, Guid userId);
+    Task<byte[]> GenerateReportFileAsync(int daysBeforeExpired, bool includeActualPrices);
+    Task<byte[]> GenerateReportFileDistributionAsync(ExpireProduct products);
+    Task<byte[]> GenerateReportFileDistributionAsync(ProductAlmostOver product);
+    Task<byte[]> PreparePdfAsync(string html);
 }

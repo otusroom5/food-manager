@@ -10,10 +10,17 @@
   <ItemGroup>
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FoodPlanner.DataAccess\FoodPlanner.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FoodPlanner.MessageBroker">
+      <HintPath>..\FoodPlanner.MessageBroker\bin\Debug\net7.0\FoodPlanner.MessageBroker.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

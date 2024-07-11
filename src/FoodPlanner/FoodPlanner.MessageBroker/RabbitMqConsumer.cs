@@ -6,6 +6,8 @@ using RabbitMQ.Client;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using FoodPlanner.BusinessLogic.Interfaces;
 
 namespace FoodPlanner.MessageBroker;
 
@@ -18,9 +20,9 @@ public class RabbitMqConsumer: BackgroundService
     private readonly IConnection _connection;
     private IModel _channel;
 
-    public RabbitMqConsumer(IServiceProvider serviceProvider, 
-                            ILogger<RabbitMqConsumer> logger,
-                            IConfiguration configuration)
+    public RabbitMqConsumer(ILogger<RabbitMqConsumer> logger,
+        IServiceProvider serviceProvider,
+        IConfiguration configuration)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
@@ -50,12 +52,17 @@ public class RabbitMqConsumer: BackgroundService
         _logger.LogInformation("Waiting for messages.");      
 
         var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += (model, ea) =>
+        consumer.Received += async (model, ea) =>
         {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
+            using (var serviceScope = _serviceProvider.CreateScope())
+            {
+                var reportDistributionService = serviceScope.ServiceProvider.GetRequiredService<IReportDistributionService>();
+                var body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
 
-            _logger.LogInformation($"Received {message}");
+                _logger.LogDebug("Received {Message}", message);
+                await reportDistributionService.DistributeAsync(message);            
+            }
         };        
       
         _channel.BasicConsume(queue: QueueName,
@@ -65,6 +72,8 @@ public class RabbitMqConsumer: BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        stoppingToken.ThrowIfCancellationRequested();
+
         StartListen();
 
         return Task.CompletedTask;

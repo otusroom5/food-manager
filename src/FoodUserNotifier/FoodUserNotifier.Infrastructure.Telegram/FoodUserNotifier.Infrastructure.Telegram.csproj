@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FoodUserNotifier.Core.Interfaces\FoodUserNotifier.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\FoodUserNotifier.Infrastructure.Sources\FoodUserNotifier.Infrastructure.Sources.csproj" />
   </ItemGroup>
 
   <ItemGroup>
