@@ -17,7 +17,7 @@ public record RecipePosition
     /// <summary>
     /// Количество продукта
     /// </summary>
-    public int ProductCount { get; init; }
+    public double ProductCount { get; init; }
 
     /// <summary>
     /// Единица измерения
@@ -26,7 +26,7 @@ public record RecipePosition
 
     private RecipePosition() { }
 
-    public static RecipePosition CreateNew(ProductId productId, int productCount, UnitId unitId)
+    public static RecipePosition CreateNew(ProductId productId, double productCount, UnitId unitId)
     {
         if (productCount <= 0)
         {

@@ -9,10 +9,11 @@ public static class ProductItemDtoExtension
     {
         var productItemId = ProductItemId.FromGuid(productItemDto.Id);
         var productId = ProductId.FromGuid(productItemDto.ProductId);
+        var amount = Math.Round(productItemDto.Amount, 2);
         // Дата окончания срока годности = Дата изготовления + Срок годности в днях
         DateTime expiryDate = productItemDto.CreatingDate.AddDays(productItemDto.Product.BestBeforeDate);
 
-        return ProductItem.CreateNew(productItemId, productId, productItemDto.Amount, productItemDto.CreatingDate, expiryDate);
+        return ProductItem.CreateNew(productItemId, productId, amount, productItemDto.CreatingDate, expiryDate);
     }
 
     public static ProductItemDto ToDto(this ProductItem productItem) =>
@@ -20,7 +21,7 @@ public static class ProductItemDtoExtension
         {
             Id = productItem.Id.ToGuid(),
             ProductId = productItem.ProductId.ToGuid(),
-            Amount = productItem.Amount,
+            Amount = Math.Round(productItem.Amount, 2),
             CreatingDate = productItem.CreatingDate.Date
         };
 }

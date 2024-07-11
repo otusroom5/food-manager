@@ -3,6 +3,7 @@ using System;
 using FoodStorage.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodStorage.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240711103117_DeleteCascade")]
+    partial class DeleteCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,8 +199,8 @@ namespace FoodStorage.Infrastructure.EntityFramework.Migrations
                                 .HasColumnType("uuid")
                                 .HasColumnName("product_id");
 
-                            b1.Property<double>("ProductCount")
-                                .HasColumnType("double precision")
+                            b1.Property<int>("ProductCount")
+                                .HasColumnType("integer")
                                 .HasColumnName("product_count");
 
                             b1.Property<string>("UnitId")

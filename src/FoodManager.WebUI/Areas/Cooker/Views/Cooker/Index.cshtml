@@ -1,6 +1,76 @@
-﻿@{
-    Layout = "_Layout";
-    ViewData["Title"] = "Cooker";
+﻿@using FoodManager.WebUI.Areas.Cooker.Models
+@using FoodManager.WebUI.Extensions
+@using Microsoft.AspNetCore.Html
+@model ProductIndexModel
+
+@{
+    Layout = "_CookerLayout";
+    ViewData["Title"] = "Products";
 }
 
-<p>Cooker area</p>
+@if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
+{
+    <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(@TempData["Message"]?.ToString()))
+    {
+        <div id="alert-message" class="alert alert-success" role="alert">@TempData["Message"]</div>
+    }
+}
+
+@(Html.TableFor<ProductModel>(@Model.Products, key =>
+{
+    var builder = new HtmlContentBuilder();
+    builder.AppendHtml(Html.ActionLink("view in refrigerator", "ViewInRefrigerator", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
+    builder.AppendHtml("<React.Fragment><br/><React.Fragment>");
+    builder.AppendHtml(Html.ActionLink("history", "ViewProductHistory", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
+    builder.AppendHtml("<React.Fragment><br/><React.Fragment>");
+    builder.AppendHtml(Html.ActionLink("delete", "DeleteProduct", "Cooker", new { productId = key }));
+
+    return builder;
+})
+)
+
+
+@using (Html.BeginForm(actionName: "CreateProduct", controllerName: "Cooker", FormMethod.Post))
+{
+    <input type="hidden" name="Id" value="@Model.Product?.Id">
+    <div class="row">
+        <div class="col">
+            Product:
+        </div>
+        <div class="col">
+            <input name="Name" type="text" class="form-control" value="@Model.Product?.Name">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Unit Type:</div>
+        <div class="col">
+            <select class="form-select" value="" name="UnitType">
+                @foreach (string optionName in @Model.UnitTypes)
+                {
+                    <option>
+                        @optionName
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Min Amount Per Day:</div>
+        <div class="col">
+            <input name="MinAmountPerDay" type="text" class="form-control" value="@Model.Product?.MinAmountPerDay">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Before Date:</div>
+        <div class="col">
+            <input name="BestBeforeDate" type="text" class="form-control" value="@Model.Product?.BestBeforeDate">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" type="submit">Create</button>
+    </div>
+}

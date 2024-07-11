@@ -19,7 +19,7 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<ProductItemDto>()
             .HasOne(p => p.Product)
             .WithMany(p => p.ProductItems)
-            .OnDelete(DeleteBehavior.Restrict)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasForeignKey(pi => pi.ProductId)
             .HasConstraintName("fk_productitem_productid")
             .IsRequired();
@@ -27,7 +27,7 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<ProductHistoryDto>()
             .HasOne<ProductDto>()
             .WithMany()
-            .OnDelete(DeleteBehavior.Restrict)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasForeignKey(ph => ph.ProductId)
             .HasConstraintName("fk_producthistory_productid")
             .IsRequired();
@@ -39,14 +39,14 @@ public class DatabaseContext : DbContext
 
                 navBuilder.HasOne<ProductDto>()
                    .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict)
+                   .OnDelete(DeleteBehavior.Cascade)
                    .HasForeignKey(p => p.ProductId)
                    .HasConstraintName("fk_recipeposition_productid")
                    .IsRequired();
 
                 navBuilder.HasOne<UnitDto>()
                    .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict)
+                   .OnDelete(DeleteBehavior.Cascade)
                    .HasForeignKey(u => u.UnitId)
                    .HasConstraintName("fk_recipeposition_unitid")
                    .IsRequired();

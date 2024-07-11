@@ -28,9 +28,15 @@ public class UnitController : BaseController
     [HttpPost("Create")]
     public async Task<ActionResult<string>> CreateAsync(UnitCreateRequestModel unit)
     {
-        string id = await _unitService.CreateAsync(unit);
-
-        return Ok(id);
+        try
+        {
+            string id = await _unitService.CreateAsync(unit);
+            return Ok(id);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -42,9 +48,15 @@ public class UnitController : BaseController
     [HttpGet("GetById/{unitId}")]
     public async Task<ActionResult<UnitViewModel>> GetByIdAsync(string unitId)
     {
-        UnitViewModel result = await _unitService.GetByIdAsync(unitId);
-
-        return Ok(result);
+        try
+        {
+            UnitViewModel result = await _unitService.GetByIdAsync(unitId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -56,9 +68,15 @@ public class UnitController : BaseController
     [HttpGet("GetByUnitType/{unitType}")]
     public async Task<ActionResult<List<UnitViewModel>>> GetByUnitTypeAsync(string unitType)
     {
-        List<UnitViewModel> result = await _unitService.GetByTypeAsync(unitType);
-
-        return Ok(result);
+        try
+        {
+            List<UnitViewModel> result = await _unitService.GetByTypeAsync(unitType);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -69,9 +87,15 @@ public class UnitController : BaseController
     [HttpGet("GetAll")]
     public async Task<ActionResult<List<ProductViewModel>>> GetAllAsync()
     {
-        List<UnitViewModel> result = await _unitService.GetAllAsync();
-
-        return Ok(result);
+        try
+        {
+            List<UnitViewModel> result = await _unitService.GetAllAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -82,9 +106,15 @@ public class UnitController : BaseController
     [HttpGet("GetAllUnitTypes")]
     public async Task<ActionResult<List<string>>> GetAllUnitTypesAsync()
     {
-        List<string> result = await _unitService.GetAllTypesAsync();
-
-        return Ok(result);
+        try
+        {
+            List<string> result = await _unitService.GetAllTypesAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -96,8 +126,14 @@ public class UnitController : BaseController
     [HttpDelete("Delete/{unitId}")]
     public async Task<ActionResult> DeleteAsync(string unitId)
     {
-        await _unitService.DeleteAsync(unitId);
-
-        return Ok();
+        try
+        {
+            await _unitService.DeleteAsync(unitId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

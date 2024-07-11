@@ -27,9 +27,15 @@ public class ProductHistoryController : BaseController
     [HttpGet("GetActionTypesList")]
     public async Task<ActionResult<List<string>>> GetActionTypesListAsync()
     {
-        List<string> result = await _productHistoryService.GetActionTypesListAsync();
-
-        return Ok(result);
+        try
+        {
+            List<string> result = await _productHistoryService.GetActionTypesListAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     /// <summary>
     /// Вывести все продукты с определенным действием в интервале дат
@@ -42,9 +48,16 @@ public class ProductHistoryController : BaseController
     public async Task<ActionResult<List<ProductHistoryViewModel>>> GetProductsByActionTypeInDateIntervalAsync(
         string actionType, DateTime dateStart, DateTime dateEnd)
     {
-        List<ProductHistoryViewModel> result = await _productHistoryService.GetProductsByActionTypeInDateIntervalAsync(actionType, dateStart, dateEnd);
+        try
+        {
 
-        return Ok(result);
+            List<ProductHistoryViewModel> result = await _productHistoryService.GetProductsByActionTypeInDateIntervalAsync(actionType, dateStart, dateEnd);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -56,9 +69,15 @@ public class ProductHistoryController : BaseController
     [HttpGet("GetActionsWithProductByDate")]
     public async Task<ActionResult<List<ProductHistoryViewModel>>> GetActionsWithProductByDateAsync(Guid productId, DateTime date)
     {
-        List<ProductHistoryViewModel> result = await _productHistoryService.GetActionsWithProductByDateAsync(productId, date);
-
-        return Ok(result);
+        try
+        {
+            List<ProductHistoryViewModel> result = await _productHistoryService.GetActionsWithProductByDateAsync(productId, date);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -70,8 +89,15 @@ public class ProductHistoryController : BaseController
     [HttpGet("GetActionsWithProductByUserInDate")]
     public async Task<ActionResult<List<ProductHistoryViewModel>>> GetActionsWithProductByUserInDateAsync(Guid userId, DateTime date)
     {
-        List<ProductHistoryViewModel> result = await _productHistoryService.GetActionsWithProductByUserInDateAsync(userId, date);
+        try
+        {
+            List<ProductHistoryViewModel> result = await _productHistoryService.GetActionsWithProductByUserInDateAsync(userId, date);
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

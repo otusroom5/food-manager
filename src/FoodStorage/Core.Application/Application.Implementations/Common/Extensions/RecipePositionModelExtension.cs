@@ -12,12 +12,12 @@ public static class RecipePositionModelExtension
         new()
         {
             Product = product.ToShortViewModel(),
-            ProductCount = recipePosition.ProductCount,
+            ProductCount = Math.Round(recipePosition.ProductCount, 2),
             Unit = recipePosition.UnitId.ToString()
         };
 
     public static RecipePosition ToEntity(this RecipePositionRequestModel recipePositionModel) =>
-        RecipePosition.CreateNew(ProductId.FromGuid(recipePositionModel.ProductId), 
-                                 recipePositionModel.ProductCount,
+        RecipePosition.CreateNew(ProductId.FromGuid(recipePositionModel.ProductId),
+                                 Math.Round(recipePositionModel.ProductCount, 2),
                                  UnitId.FromString(recipePositionModel.UnitId));
 }
