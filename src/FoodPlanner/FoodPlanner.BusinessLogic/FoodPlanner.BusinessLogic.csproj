@@ -19,10 +19,4 @@
     <ProjectReference Include="..\FoodPlanner.DataAccess\FoodPlanner.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="FoodPlanner.MessageBroker">
-      <HintPath>..\FoodPlanner.MessageBroker\bin\Debug\net7.0\FoodPlanner.MessageBroker.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
