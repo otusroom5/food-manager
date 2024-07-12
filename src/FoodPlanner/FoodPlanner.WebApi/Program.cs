@@ -49,7 +49,7 @@ builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new 
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportFileBuilder, ReportFileBuilder>();
-builder.Services.AddScoped<IReportStorageSerivce, ReportStorageSerivce>();
+builder.Services.AddScoped<IReportStorageSerivce, ReportAttachmentSerivce>();
 builder.Services.AddScoped<IRabbitMqProducer, RabbitMqProduce>();
 builder.Services.AddHostedService<RabbitMqConsumer>();
 builder.Services.AddScoped<IReportDistributionService, ReportDistributionService>();

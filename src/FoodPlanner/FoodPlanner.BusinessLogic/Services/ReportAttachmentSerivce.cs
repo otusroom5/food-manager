@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace FoodPlanner.BusinessLogic.Services;
 
-public class ReportStorageSerivce : IReportStorageSerivce
+public class ReportAttachmentSerivce : IReportStorageSerivce
 {
     private readonly IReportRepository _reportRepository;
-    private readonly ILogger<ReportStorageSerivce> _logger;
+    private readonly ILogger<ReportAttachmentSerivce> _logger;
 
-    public ReportStorageSerivce(IUnitOfWork unitOfWork,
-         ILogger<ReportStorageSerivce> logger)
+    public ReportAttachmentSerivce(IUnitOfWork unitOfWork,
+         ILogger<ReportAttachmentSerivce> logger)
     {
         _reportRepository = unitOfWork.GetReportRepository();
         _logger = logger;
