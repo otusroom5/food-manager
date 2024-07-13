@@ -34,11 +34,6 @@ public class ReportService : IReportService
         }
     }
 
-    public async Task<byte[]> PreparePdfAsync(string html)
-    {
-        return await _pdfService.CreatePDFAsync(html);
-    }
-
     public async Task<byte[]> GenerateReportFileAsync(int daysBeforeExpired, bool includeActualPrices)
     {
         try
@@ -62,7 +57,7 @@ public class ReportService : IReportService
                   .Build();
             }                       
 
-            return await PreparePdfAsync(htmlContent);
+            return await _pdfService.CreatePDFAsync(htmlContent);
         }
         catch (Exception exception)
         {
@@ -81,7 +76,7 @@ public class ReportService : IReportService
                  .BuildFooter()
                  .Build();
 
-            return await PreparePdfAsync(htmlContent);
+            return await _pdfService.CreatePDFAsync(htmlContent);
         }
         catch (Exception exception)
         {
@@ -99,7 +94,7 @@ public class ReportService : IReportService
                  .BuildFooter()
                  .Build();
 
-            return await PreparePdfAsync(htmlContent);
+            return await _pdfService.CreatePDFAsync(htmlContent);
         }
         catch (Exception exception)
         {

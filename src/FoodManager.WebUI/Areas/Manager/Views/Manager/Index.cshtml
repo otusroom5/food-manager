@@ -3,8 +3,6 @@
     ViewData["Title"] = "Manager";
 }
 
-<p><b>Manager area</b></p>
-
 @if (!string.IsNullOrEmpty(@TempData["ErrorMessage"]?.ToString()))
 {
     <div id="alert-message" class="alert alert-danger" role="alert">@TempData["ErrorMessage"]</div>
