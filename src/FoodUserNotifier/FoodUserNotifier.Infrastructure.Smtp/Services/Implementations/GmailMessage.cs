@@ -1,5 +1,4 @@
-﻿using FoodUserNotifier.Infrastructure.Services.Interfaces;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using System.Net.Mail;
 using Google.Apis.Gmail.v1;
@@ -8,12 +7,10 @@ using System.Text;
 using MimeKit;
 using Google.Apis.Requests;
 using static System.Environment;
-using System.Runtime;
-using System.Reflection;
 
-namespace FoodUserNotifier.Infrastructure.Services.Implementations
+namespace FoodUserNotifier.Infrastructure.Smtp.Services.Implementations
 {
-    public class GmailMessage: IGmailMessage
+    internal class GmailMessage
     {
         public GmailMessage() { }
 
@@ -39,11 +36,7 @@ namespace FoodUserNotifier.Infrastructure.Services.Implementations
 
             string currentDirectory = Directory.GetParent(Environment.CurrentDirectory)?.FullName;
             string path1 = Directory.GetParent(currentDirectory)?.FullName;
-            //string path2 = Directory.GetParent(path1)?.FullName + @"\client_secrets.json";
-
-            string path2 = @"C:\Users\Nikolay\Desktop\5\food-manager\src\FoodUserNotifier\FoodUserNotifier.Infrastructure.Services\client_secrets.json";
-
-            
+            string path2 = Directory.GetParent(path1)?.FullName + @"\client_secrets.json";
 
             UserCredential credential;
             using (var stream = new FileStream(@path2, FileMode.Open, FileAccess.Read))
@@ -68,8 +61,6 @@ namespace FoodUserNotifier.Infrastructure.Services.Implementations
 
 
         }
-
-
 
     }
 }

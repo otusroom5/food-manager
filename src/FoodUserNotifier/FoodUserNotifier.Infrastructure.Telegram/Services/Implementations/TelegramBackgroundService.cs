@@ -59,7 +59,7 @@ public sealed class TelegramBackgroundService : BackgroundService, IUpdateHandle
         Stream attachmentStream, CancellationToken cancellationToken)
     {
         await _botClient.SendDocumentAsync(
-                chatId: session.ChatId,
+                chatId: session.ChatId, 
                 document: InputFile.FromStream(attachmentStream, "report.pdf"),
                 caption: "Report",
                 cancellationToken: cancellationToken);

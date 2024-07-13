@@ -31,7 +31,7 @@ try
 
     builder.Services.AddSerilog();
 
-    builder.Services.Configure<SmptClientOptions>(builder.Configuration.GetSection(SmptClientOptions.SmptClient));
+    builder.Services.Configure<GmailClientOptions>(builder.Configuration.GetSection(GmailClientOptions.GmaiClient));
     builder.Services.Configure<TelegramClientOptions>(builder.Configuration.GetSection(TelegramClientOptions.TelegramClient));
 
     builder.Services.AddDbContext<DatabaseContext>(options =>
@@ -62,17 +62,19 @@ try
         options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
     });
 
-    builder.Services.AddHostedService<TelegramBackgroundService>();
-    builder.Services.AddHostedService<NotificationBackgroundService>();
-    builder.Services.AddScoped<IMessageDispatcher, MessageDispatcher>();
-    builder.Services.AddTransient<INotificationConverter, JsonNotificationConverter>();
+    builder.Services.AddSingleton<IGmailMessage, GmailMessage>();
 
-    builder.Services.AddTransient<IDeliveryReportsRepository, DeliveryReportsRepository>();
-    builder.Services.AddTransient<ITelegramSessionsRepository, TelegramSessionsRepository>();
+   // builder.Services.AddHostedService<TelegramBackgroundService>();
+   // builder.Services.AddHostedService<NotificationBackgroundService>();
+   // builder.Services.AddScoped<IMessageDispatcher, MessageDispatcher>();
+   // builder.Services.AddTransient<INotificationConverter, JsonNotificationConverter>();
 
-    builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
-    builder.Services.AddTransient<IMessageSender, SmtpMessageSender>();
-    builder.Services.AddScoped<IMessageSenderCollection, MessageSenderCollection>();
+  //  builder.Services.AddTransient<IDeliveryReportsRepository, DeliveryReportsRepository>();
+   // builder.Services.AddTransient<ITelegramSessionsRepository, TelegramSessionsRepository>();
+
+  //  builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();
+  //  builder.Services.AddTransient<IMessageSender, GmailMessageSender>();
+  //  builder.Services.AddScoped<IMessageSenderCollection, MessageSenderCollection>();
     builder.Services.AddSingleton<IDomainLogger, DomainLogger>();
     builder.Services.AddRecepientsSource("UserAuthApi");
     builder.Services.AddReportsSource("FoodPlannerApi");
