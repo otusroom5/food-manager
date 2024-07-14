@@ -21,24 +21,38 @@ public sealed partial class CookerController : Abstractions.ControllerBase
         HttpResponseMessage responseMessage;
         try
         {
-            // Получаем типы действий с продуктом
-            responseMessage = await _httpClient.GetAsync(GetActionTypesListApiUrl);
-
-            string[] actionsResponse = await responseMessage.Content.ReadFromJsonAsync<string[]>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-            if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                TempData["ErrorMessage"] = await responseMessage.Content.ReadAsStringAsync();
-            }
-
-            viewModel.Actions = actionsResponse;
-            string request;
-
             if (productId is null)
             {
-                // Получаем историю для конкретного продукта
-                request = string.Join("/", GetProductsByActionTypeInDateIntervalApiUrl, productAction, dateFrom, dateTo);
-                responseMessage = await _httpClient.GetAsync(request);
+                // Получаем типы действий с продуктом
+                responseMessage = await _httpClient.GetAsync(GetActionTypesListApiUrl);
+
+                string[] actionsResponse = await responseMessage.Content.ReadFromJsonAsync<string[]>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+                if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    TempData["ErrorMessage"] = await responseMessage.Content.ReadAsStringAsync();
+                }
+
+                viewModel.Actions = actionsResponse;
+
+                // Получаем историю для всех продуктов
+                dateFrom = dateFrom ?? DateTime.MinValue;
+                dateTo = dateTo ?? DateTime.Now;
+
+                var query = new List<KeyValuePair<string, string>>() 
+                            { 
+                                new ("actionType", productAction),
+                                new ("dateStart", dateFrom.ToString()),
+                                new ("dateEnd", dateTo.ToString())
+                            };
+
+                Uri requestUri = new UriBuilder(_httpClient.BaseAddress)
+                {
+                    Path = GetProductsByActionTypeInDateIntervalApiUrl,
+                    Query = QueryString.Create(query).Value
+                }.Uri;
+
+                responseMessage = await _httpClient.GetAsync(requestUri);
 
                 List<ProductHistory> productResponse = await responseMessage.Content.ReadFromJsonAsync<List<ProductHistory>>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
@@ -47,13 +61,29 @@ public sealed partial class CookerController : Abstractions.ControllerBase
                     TempData["ErrorMessage"] = await responseMessage.Content.ReadAsStringAsync();
                 }
 
-                viewModel.ProductHistoryItems = productResponse?.Select(f => f.ToModel()).ToArray();
+                viewModel.ProductHistoryItems = productResponse?.Select(f => f.ToModel()).OrderByDescending(p => p.CreatedAt).ToArray();
             }
             else
             {
-                // Получаем историю для всех продуктов
-                request = string.Join("/", GetActionsWithProductByDateApiUrl, productId, dateFrom);
-                responseMessage = await _httpClient.GetAsync(request);
+                ProductModel product = new() { Id = productId, Name = productName };
+                viewModel.Product = product;
+
+                // Получаем историю для конкретного продукта
+                var query = dateFrom is null 
+                    ? new List<KeyValuePair<string, string>>() { new("productId", productId) } 
+                    : new List<KeyValuePair<string, string>>()
+                        {
+                            new ("productId", productId),
+                            new ("date", dateFrom.ToString())
+                        };
+
+                Uri requestUri = new UriBuilder(_httpClient.BaseAddress)
+                {
+                    Path = GetActionsWithProductByDateApiUrl,
+                    Query = QueryString.Create(query).Value
+                }.Uri;
+
+                responseMessage = await _httpClient.GetAsync(requestUri);
 
                 List<ProductHistory> productResponse = await responseMessage.Content.ReadFromJsonAsync<List<ProductHistory>>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 

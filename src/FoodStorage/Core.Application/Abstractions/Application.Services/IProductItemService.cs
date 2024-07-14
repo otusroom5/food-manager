@@ -14,4 +14,6 @@ public interface IProductItemService
     public Task TakePartOfAsync(ProductItemTakePartOfRequestModel request, Guid userId);
     public Task WriteOffAsync(IEnumerable<Guid> productItemIds, Guid userId);
     public Task DeleteAsync(Guid productItemId);
+    public Task TechPutProductItemsAsync();
+    public Task TechDeleteAllProductItemsAsync();
 }
