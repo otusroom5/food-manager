@@ -198,4 +198,41 @@ public class ProductItemController : BaseController
             return BadRequest(ex.Message);
         }
     }
+
+
+    /// <summary>
+    /// Тех метод для занесения единиц продукта в холодильник
+    /// </summary>
+    /// <returns>ок</returns>
+    [HttpPost("TechPutProductItems")]
+    public async Task<ActionResult> TechPutProductItemsAsync()
+    {
+        try
+        {
+            await _productItemService.TechPutProductItemsAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Тех метод для удаления записей всех
+    /// </summary>
+    /// <returns>ок</returns>
+    [HttpDelete("TechDeleteProductItemsAsync")]
+    public async Task<ActionResult> TechDeleteProductItemsAsync()
+    {
+        try
+        {
+            await _productItemService.TechPutProductItemsAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

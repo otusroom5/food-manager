@@ -49,12 +49,22 @@ public class ProductHistoryService : IProductHistoryService
         {
             List<ProductHistoryViewModel> result = new();
 
-            if (!Enum.TryParse<ProductActionType>(actionType, true, out var productState))
+            IEnumerable<ProductHistory> productHistories;
+
+            if (string.IsNullOrWhiteSpace(actionType))
             {
-                throw new InvalidEnumValueException(nameof(actionType), actionType, nameof(ProductActionType));
+                productHistories = await _productHistoryRepository.GetAllAsync();
+            }
+            else
+            {
+                if (!Enum.TryParse<ProductActionType>(actionType, out var productState))
+                {
+                    throw new InvalidEnumValueException(nameof(actionType), actionType, nameof(ProductActionType));
+                }
+
+                productHistories = await _productHistoryRepository.GetByStateAsync(productState);
             }
 
-            var productHistories = await _productHistoryRepository.GetByStateAsync(productState);
             productHistories = productHistories.Where(ph => ph.CreatedAt.Date >= dateStart && ph.CreatedAt.Date <= dateEnd);
 
             var products = await _productRepository.GetByIdsAsync(productHistories.Select(pi => pi.ProductId).Distinct());

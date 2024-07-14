@@ -25,7 +25,7 @@ else
     var builder = new HtmlContentBuilder();
     builder.AppendHtml(Html.ActionLink("view in refrigerator", "ViewInRefrigerator", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
     builder.AppendHtml("<React.Fragment><br/><React.Fragment>");
-    builder.AppendHtml(Html.ActionLink("history", "ViewProductHistory", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
+    builder.AppendHtml(Html.ActionLink("view history", "ViewProductHistory", "Cooker", @Model.Products.FirstOrDefault(p => p.Id == key.ToString())));
     builder.AppendHtml("<React.Fragment><br/><React.Fragment>");
     builder.AppendHtml(Html.ActionLink("delete", "DeleteProduct", "Cooker", new { productId = key }));
 

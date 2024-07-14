@@ -133,7 +133,7 @@ public sealed partial class CookerController : Abstractions.ControllerBase
     {
         return RedirectToAction("ProductHistory", new { productId = product.Id, productName = product.Name });
     }
-    
+
     [HttpGet]
     [Route("{area}/{controller}/{action}")]
     public IActionResult AddToRefrigerator(ProductModel product)
@@ -146,5 +146,19 @@ public sealed partial class CookerController : Abstractions.ControllerBase
     public IActionResult TakeFromRefrigerator(ProductModel product)
     {
         return RedirectToAction("ProductItem", new { productId = product.Id, productName = product.Name, unitType = product.UnitType, productAction = ProductAction.TakePartOf.ToString() });
+    }
+
+    [HttpPost]
+    [Route("{area}/{controller}/{action}")]
+    public IActionResult GetHistoryForAll(DateTime? startdate, DateTime? enddate, string action)
+    {
+        return RedirectToAction("ProductHistory", new { productAction = action, dateFrom = startdate, dateTo = enddate });
+    }
+
+    [HttpPost]
+    [Route("{area}/{controller}/{action}")]
+    public IActionResult GetHistoryForProduct(string productId, string productName, DateTime? date)
+    {
+        return RedirectToAction("ProductHistory", new { productId = productId, productName = productName, dateFrom = date });
     }
 }

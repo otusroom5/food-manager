@@ -317,6 +317,90 @@ public class ProductItemService : IProductItemService
         }
     }
 
+    #region Tech
+    public async Task TechPutProductItemsAsync()
+    {   
+        try
+        {
+            // получение всех продуктов
+            var products = await _productRepository.GetAllAsync();
+
+            // Получение единиц измерения
+            var units = await _unitRepository.GetAllAsync();
+
+            // Добавление продуктов в холодильник
+            foreach (var product in products)
+            {
+                string unit = units.FirstOrDefault(u => u.UnitType == product.UnitType && u.IsMain)?.Id.ToString();
+                await TechCreateProductItem(product, unit, 7);
+                await TechCreateProductItem(product, unit, 3);
+                await TechCreateProductItem(product, unit, 0);
+            }
+
+            // Взятие продуктов из холодильника
+            foreach (var product in products)
+            {
+                string unit = units.FirstOrDefault(u => u.UnitType == product.UnitType)?.Id.ToString();
+                await TechTakeProductItem(product, unit);
+            }
+        }
+        catch (Exception exception)
+        {
+            LogError("Create", exception);
+            throw;
+        }
+    }
+
+    public async Task TechDeleteAllProductItemsAsync()
+    {
+        var allProductItems = await _productItemRepository.GetAllAsync();
+        foreach (var item in allProductItems)
+        {
+            await DeleteAsync(item.Id.ToGuid());
+        }
+    }
+
+    private async Task TechCreateProductItem(Product product, string unit, int countDaysBeforeExpired)
+    {
+        Random random = new();
+
+        if (countDaysBeforeExpired - product.BestBeforeDate > 0) return;
+
+        ProductItemCreateRequestModel productItem = new()
+        {
+            ProductId = product.Id.ToGuid(),
+            Amount = random.Next(1, 200),
+            UnitId = unit,
+            CreatingDate = DateTime.Now.AddDays(countDaysBeforeExpired - product.BestBeforeDate)
+        };
+
+        // преобразование в бизнес-модель единицы продукта и сохранение в базу
+        ProductItem productItemEntity = productItem.ToEntity(UserId.FromGuid(Guid.NewGuid()));
+
+        await _productItemRepository.CreateAsync(productItemEntity);
+    }
+
+    private async Task TechTakeProductItem(Product product, string unit)
+    {
+        Random random = new();
+
+        // получаем все единицы продукта из холодильника, не просроченные
+        var productItems = await _productItemRepository.GetByProductIdAsync(product.Id);
+        productItems = productItems.Where(pi => pi.ExpiryDate.Date > DateTime.UtcNow.Date).ToList();
+        // общее кол-во продукта в холодильнике
+        double commonCount = productItems.Sum(pi => pi.Amount);
+
+        ProductItemTakePartOfRequestModel productItem = new()
+        {
+            ProductId = product.Id.ToGuid(),
+            Count = random.Next(0, ((int)commonCount)),
+            UnitId = unit
+        };
+
+        await TakePartOfAsync(productItem, Guid.NewGuid());
+    }
+    #endregion
+
     private async Task<Unit> GetUnit(UnitType unitType, string unit)
     {
         // проверка существования указанной единицы измерения в типе
