@@ -13,12 +13,14 @@ namespace FoodSupplier.WebAPI.Controllers;
 public class PricesController : ControllerBase
 {
     private readonly IPricesService _pricesService;
+    private readonly ISupplierService _supplierService;
     private readonly IMapper _mapper;
 
-    public PricesController(IPricesService pricesService, IMapper mapper)
+    public PricesController(IPricesService pricesService, IMapper mapper, ISupplierService supplierService)
     {
         _pricesService = pricesService;
         _mapper = mapper;
+        _supplierService = supplierService;
     }
 
     [HttpGet]
@@ -44,6 +46,7 @@ public class PricesController : ControllerBase
     {
         try
         {
+            await _supplierService.ProduceAsync();
             var candidate = await _pricesService.GetLastAsync(model.Id);
             var result = _mapper.Map<PriceModel>(candidate);
 

@@ -30,7 +30,7 @@ public class ShopsController : ControllerBase
         {
             var candidate = await _shopsService.GetAsync(model.Id);
             var result = _mapper.Map<ShopModel>(candidate);
-                       
+
             return Ok(result);
         }
         catch (Exception e)
