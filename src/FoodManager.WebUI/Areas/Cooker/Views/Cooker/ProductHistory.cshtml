@@ -20,6 +20,32 @@ else
     }
 }
 
+@if (@Model.Product?.Id is null)
+{
+    <form method="post" action="/Cooker/Cooker/GetHistoryForAll">
+        <input type="date" id="startdate" name="startdate" value="Temporal.Now.plainDateISO().toString()" />
+        <input type="date" id="enddate" name="enddate"value="Temporal.Now.plainDateISO().toString()" />
+        <select class="form-select" value="" name="action">
+            @foreach (string optionName in @Model.Actions)
+            {
+                <option>
+                    @optionName
+                </option>
+            }
+        </select>
+        <input type="submit" value="View" class="btn btn-primary" />
+    </form>
+}
+else
+{
+    <label>Product: @Model.Product.Name</label>
+    <form method="post" action="/Cooker/Cooker/GetHistoryForProduct">
+        <input type="date" id="date" name="date" value="Temporal.Now.plainDateISO().toString()" />
+        <input type="hidden" name="productId" value=@Model.Product.Id />
+        <input type="hidden" name="productName" value=@Model.Product.Name />
+        <input type="submit" value="View" class="btn btn-primary" />
+    </form>
+}
 
 @(Html.TableFor<ProductHistoryModel>(@Model.ProductHistoryItems, key =>
 {

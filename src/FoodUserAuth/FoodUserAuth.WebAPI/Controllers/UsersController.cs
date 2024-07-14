@@ -111,7 +111,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            var result = await _usersService.CreateUserAsync(request.ToDto());
+            var result = await _usersService.CreateAsync(request.ToDto());
 
             _logger.LogDebug("Create user ({Id}) was create", result.User.Id);
 
@@ -150,7 +150,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            await _usersService.UpdateUserAsync(request.ToDto());
+            await _usersService.UpdateAsync(request.ToDto());
 
             _logger.LogDebug("User was updated");
             return Ok(ResponseBase.CreateSuccess());
@@ -174,7 +174,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            await _usersService.DisableUserAsync(Guid.Parse(userId));
+            await _usersService.DisableAsync(Guid.Parse(userId));
 
             _logger.LogDebug("User ({Id}) was disabled", userId);
 
