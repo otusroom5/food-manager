@@ -49,7 +49,10 @@ try
     builder.Services.AddScoped<ITokenHandler, JwtTokenHandler>();
     builder.Services.AddScoped<IPasswordGenerator, DefaultPasswordGenerator>();
     builder.Services.AddScoped<IPasswordHasher, Sha256PasswordHasher>();
-    
+    builder.Services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
+    builder.Services.AddScoped<IUserPasswordChanger, UserPasswordChanger>();
+    builder.Services.AddScoped<IUserVerifier, UserVerifier>();
+
     builder.ConfigureAuthentication();
 
     var app = builder.Build();

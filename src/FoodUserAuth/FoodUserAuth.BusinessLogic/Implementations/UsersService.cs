@@ -17,101 +17,35 @@ public class UsersService : IUsersService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IPasswordGenerator _passwordGenerator;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<UsersService> _logger;
-
-    private readonly User _predefinedUser;
+    private readonly ICurrentUserAccessor _currentUserAccessor;
 
     public UsersService(IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
         IPasswordGenerator passwordGenerator,
-        IHttpContextAccessor httpContextAccessor,
+        ICurrentUserAccessor currentUserAccessor,
         ILogger<UsersService> logger
         )
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
-        _httpContextAccessor = httpContextAccessor;
         _passwordGenerator = passwordGenerator;
-        _predefinedUser = CreatePredefinedUser(unitOfWork.GetUsersRepository(), passwordHasher);
+        _currentUserAccessor = currentUserAccessor;
     }
 
-    private User CreatePredefinedUser(IUsersRepository usersRepository, IPasswordHasher passwordHasher)
+    public async Task<UserDto> FindByLoginNameAsync(string loginName)
     {
-        return new User()
-        {
-            Id = Guid.NewGuid(),
-            LoginName = "predefined",
-            Role = DataAccess.Types.UserRole.Administrator,
-            IsDisabled = usersRepository.GetAllAsync().Result.Any(),
-            Password = passwordHasher.ComputeHash("predefined")
-        };
-    }
-
-    /// <summary>
-    /// This method change user password
-    /// </summary>
-    public async Task ChangePasswordAsync(string oldPassword, string newPassword)
-    {
-        User currentUser = await GetCurrentUserAsync();
-
-        if (currentUser == null)
-        {
-            throw new UserNotFoundException();
-        }
-
-        await VerifyAndGetUserOrNullAsync(currentUser.LoginName, oldPassword);
-
-        currentUser.Password = _passwordHasher.ComputeHash(newPassword);
-
-        _unitOfWork.GetUsersRepository().Update(currentUser);
-
-        await _unitOfWork.SaveChangesAsync();
-    }
-
-    /// <summary>
-    /// This method verify user
-    /// </summary>
-    public async Task<UserDto> VerifyAndGetUserOrNullAsync(string loginName, string password)
-    {
-        User foundUser = await InternalFindUserByLoginNameAsync(loginName);
-
-        if (!_passwordHasher.VerifyHash(password, foundUser.Password))
-        {
-            return null;
-        }
-
-        return foundUser.ToDto();
-    }
-
-    private async Task<User> InternalFindUserByLoginNameAsync(string loginName)
-    {
-        User foundUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
-
-        if (foundUser == null)
-        {
-            if (!IsPredefinedLoginName(loginName))
-            {
-                throw new UserNotFoundException();
-            }
-
-            foundUser = _predefinedUser;
-        }
-
-        if (foundUser.IsDisabled)
-        {
-            throw new UserDisabledException();
-        }
-
-        return foundUser;
+        User user = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
+        
+        return user?.ToDto();
     }
 
 
     /// <summary>
     /// This method create user
     /// </summary>
-    public async Task<(UserDto User, string Password)> CreateUserAsync(UserDto user)
+    public async Task<(UserDto User, string Password)> CreateAsync(UserDto user)
     {
         if (user is null)
         {
@@ -162,17 +96,12 @@ public class UsersService : IUsersService
         return (result, newPassword);
     }
 
-    private bool IsPredefinedLoginName(string loginName)
-    {
-        return _predefinedUser?.LoginName.Equals(loginName, StringComparison.InvariantCultureIgnoreCase) ?? false;
-    }
-
     /// <summary>
     /// This method disable exist user
     /// </summary>
-    public async Task DisableUserAsync(Guid id)
+    public async Task DisableAsync(Guid id)
     {
-        User currentUser = await GetCurrentUserAsync();
+        User currentUser = await _currentUserAccessor.GetCurrentUserAsync();
 
         if (id.Equals(currentUser?.Id))
         {
@@ -198,7 +127,7 @@ public class UsersService : IUsersService
     /// <summary>
     /// This method update detaisl of user
     /// </summary>
-    public async Task UpdateUserAsync(UserDto user)
+    public async Task UpdateAsync(UserDto user)
     {
         if (user is null)
         {
@@ -239,8 +168,6 @@ public class UsersService : IUsersService
         }
     }
 
-
-
     private async Task<User> InternalGetAsync(Guid id)
     {
         User item = await _unitOfWork.GetUsersRepository().GetByIdAsync(id);
@@ -253,35 +180,9 @@ public class UsersService : IUsersService
         return item;
     }
 
-    private async Task<User> GetCurrentUserAsync()
-    {
-        Guid currentId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
-
-        if (currentId == Guid.Empty)
-        {
-            throw new InvalidUserIdException();
-        }
-
-        return await _unitOfWork.GetUsersRepository().GetByIdAsync(currentId);
-    }
-
     public async Task<UserDto> GetAsync(Guid id)
     {
         User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(id);
         return foundUser?.ToDto();
-    }
-
-    public async Task<string> ResetPasswordAsync(Guid userId)
-    {
-        User foundUser = await _unitOfWork.GetUsersRepository().GetByIdAsync(userId);
-
-        string newPassword = _passwordGenerator.GeneratePassword(foundUser.LoginName);
-        foundUser.Password = _passwordHasher.ComputeHash(newPassword);
-
-        _unitOfWork.GetUsersRepository().Update(foundUser);
-
-        await _unitOfWork.SaveChangesAsync();
-
-        return newPassword;
     }
 }

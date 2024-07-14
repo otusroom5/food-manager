@@ -26,7 +26,7 @@ internal class UserContactsRepository : IUserContactsRepository
         _dataContext.UserContacts.Remove(user);
     }
 
-    public async Task<UserContact> FindContact(UserContactType contactType, string contact, bool include)
+    public async Task<UserContact> Find(UserContactType contactType, string contact, bool include)
     {
         string contactText = contact.ToLower();
 
