@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FoodUserNotifier.Infrastructure.Services.Interfaces;
 using FoodUserNotifier.Infrastructure.Services.Implementations;
+using FoodUserNotifier.Infrastructure.Smtp.Services.Implementations;
+using FoodUserNotifier.Infrastructure.Smtp.Services.Interfaces;
 
 
 

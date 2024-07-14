@@ -19,6 +19,8 @@ using FoodUserNotifier.BusinessLogic.Services;
 using FoodUserNotifier.Infrastructure.Telegram.Services.Implementations;
 using FoodUserNotifier.Core.Interfaces.Repositories;
 using FoodUserNotifier.Infrastructure.Repositories.Repositories;
+using FoodUserNotifier.Infrastructure.Smtp.Services.Implementations;
+using FoodUserNotifier.Infrastructure.Smtp.Services.Interfaces;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -62,6 +64,7 @@ try
         options.ApiKey = builder.Configuration.GetValue<string>("ApiKey");
     });
 
+    //FoodUserNotifier.Infrastructure.Smtp.Services.Implementations
     builder.Services.AddSingleton<IGmailMessage, GmailMessage>();
 
    // builder.Services.AddHostedService<TelegramBackgroundService>();
@@ -69,7 +72,7 @@ try
    // builder.Services.AddScoped<IMessageDispatcher, MessageDispatcher>();
    // builder.Services.AddTransient<INotificationConverter, JsonNotificationConverter>();
 
-  //  builder.Services.AddTransient<IDeliveryReportsRepository, DeliveryReportsRepository>();
+   // builder.Services.AddTransient<IDeliveryReportsRepository, DeliveryReportsRepository>();
    // builder.Services.AddTransient<ITelegramSessionsRepository, TelegramSessionsRepository>();
 
   //  builder.Services.AddTransient<IMessageSender, TelegramMessageSender>();

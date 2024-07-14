@@ -7,10 +7,11 @@ using System.Text;
 using MimeKit;
 using Google.Apis.Requests;
 using static System.Environment;
+using FoodUserNotifier.Infrastructure.Smtp.Services.Interfaces;
 
 namespace FoodUserNotifier.Infrastructure.Smtp.Services.Implementations
 {
-    internal class GmailMessage
+    public class GmailMessage: IGmailMessage
     {
         public GmailMessage() { }
 
@@ -34,9 +35,9 @@ namespace FoodUserNotifier.Infrastructure.Smtp.Services.Implementations
             SpecialFolder specialFolder = new SpecialFolder("Google.Apis.Auth");
             string specialPatch = specialFolder.CreateFolder();
 
-            string currentDirectory = Directory.GetParent(Environment.CurrentDirectory)?.FullName;
-            string path1 = Directory.GetParent(currentDirectory)?.FullName;
-            string path2 = Directory.GetParent(path1)?.FullName + @"\client_secrets.json";
+            var baseDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
+            string path2 = Path.Combine(baseDirectoryPath, "client_secrets.json");
+
 
             UserCredential credential;
             using (var stream = new FileStream(@path2, FileMode.Open, FileAccess.Read))
