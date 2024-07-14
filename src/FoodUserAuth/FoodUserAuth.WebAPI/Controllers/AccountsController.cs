@@ -132,7 +132,7 @@ public class AccountsController : ControllerBase
 
         try
         {
-            User currentUser = await _currentUserAccessor.GetCurrentUserAsync();
+            UserDto currentUser = await _currentUserAccessor.GetCurrentUserAsync();
             await _userPasswordChanger.ChangeAsync(currentUser, request.OldPassword, request.Password);
             
             _logger.LogInformation("Password is changed");

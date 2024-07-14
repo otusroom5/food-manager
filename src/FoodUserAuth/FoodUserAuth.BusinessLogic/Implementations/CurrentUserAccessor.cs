@@ -4,6 +4,8 @@ using FoodUserAuth.DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using FoodUserAuth.BusinessLogic.Interfaces;
+using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.BusinessLogic.Extensions;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -19,7 +21,7 @@ public class CurrentUserAccessor : ICurrentUserAccessor
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<User> GetCurrentUserAsync()
+    public async Task<UserDto> GetCurrentUserAsync()
     {
         Guid currentId = Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? string.Empty);
 
@@ -28,6 +30,8 @@ public class CurrentUserAccessor : ICurrentUserAccessor
             throw new InvalidUserIdException();
         }
 
-        return await _unitOfWork.GetUsersRepository().GetByIdAsync(currentId);
+        User user = await _unitOfWork.GetUsersRepository().GetByIdAsync(currentId);
+
+        return user?.ToDto();
     }
 }

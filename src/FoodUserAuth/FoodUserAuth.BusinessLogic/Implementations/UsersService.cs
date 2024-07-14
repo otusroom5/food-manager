@@ -101,7 +101,7 @@ public class UsersService : IUsersService
     /// </summary>
     public async Task DisableAsync(Guid id)
     {
-        User currentUser = await _currentUserAccessor.GetCurrentUserAsync();
+        UserDto currentUser = await _currentUserAccessor.GetCurrentUserAsync();
 
         if (id.Equals(currentUser?.Id))
         {

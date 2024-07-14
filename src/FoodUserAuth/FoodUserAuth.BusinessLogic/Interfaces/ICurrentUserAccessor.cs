@@ -1,8 +1,9 @@
-﻿using FoodUserAuth.DataAccess.Entities;
+﻿using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.DataAccess.Entities;
 
 namespace FoodUserAuth.BusinessLogic.Interfaces;
 
 public interface ICurrentUserAccessor
 {
-    Task<User> GetCurrentUserAsync();
+    Task<UserDto> GetCurrentUserAsync();
 }

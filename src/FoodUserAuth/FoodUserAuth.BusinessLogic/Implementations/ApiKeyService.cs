@@ -1,5 +1,4 @@
-﻿using FoodManager.Shared.Utils.Interfaces;
-using FoodUserAuth.BusinessLogic.Dto;
+﻿using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.BusinessLogic.Extensions;
 using FoodUserAuth.BusinessLogic.Interfaces;
@@ -11,29 +10,31 @@ namespace FoodUserAuth.BusinessLogic.Implementations;
 
 public class ApiKeyService : IApiKeyService
 {
-    private readonly ITokenHandler _tokenGenerator;
+    private readonly ITokenHandler _tokenHandler;
     private readonly IApiKeyRepository _apiKeyRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ICurrentUserIdAccessor _currentUserIdAccessor;
+    private readonly ICurrentUserAccessor _currentUserAccessor;
 
     public ApiKeyService(IUnitOfWork unitOfWork, 
-        ITokenHandler tokenGenerator,
-        ICurrentUserIdAccessor currentUserIdAccessor)
+        ITokenHandler tokenHandler,
+        ICurrentUserAccessor currentUserAccessor)
     {
         _unitOfWork = unitOfWork;
         _apiKeyRepository = unitOfWork.GetApiKeyRepository();
-        _tokenGenerator = tokenGenerator;
-        _currentUserIdAccessor = currentUserIdAccessor;
+        _tokenHandler = tokenHandler;
+        _currentUserAccessor = currentUserAccessor;
     }
 
     public async Task<ApiKeyDto> CreateApiKeyAsync(DateTime expiryDate)
     {
+        UserDto currentUser = await _currentUserAccessor.GetCurrentUserAsync();
+
         Guid newId = Guid.NewGuid();
         var apiKey = new ApiKeyDto()
         {
             Id = newId,
             ExpiryDate = expiryDate,
-            Key = _tokenGenerator.GenerateApiToken(newId, _currentUserIdAccessor.GetCurrentUserId())
+            Key = _tokenHandler.GenerateApiToken(newId, currentUser.Id)
         };
 
         _apiKeyRepository.Create(apiKey.ToModel());
@@ -51,7 +52,7 @@ public class ApiKeyService : IApiKeyService
 
     public async Task<string> RenewApiKeyAsync(string token)
     {
-        ApiKeyData apiTokenData = _tokenGenerator.ExtractApiKeyData(token);
+        ApiKeyData apiTokenData = _tokenHandler.ExtractApiKeyData(token);
         
         if (IsValidToken(apiTokenData.ValidTo)) 
         {
@@ -70,7 +71,7 @@ public class ApiKeyService : IApiKeyService
             throw new InvalidApiKeyException();
         }
 
-        return _tokenGenerator.GenerateApiToken(apiTokenData.KeyId, apiTokenData.UserId);
+        return _tokenHandler.GenerateApiToken(apiTokenData.KeyId, apiTokenData.UserId);
     }
 
     private bool IsValidToken(DateTime validTo) 

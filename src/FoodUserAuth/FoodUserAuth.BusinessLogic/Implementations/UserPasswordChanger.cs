@@ -2,6 +2,7 @@
 using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.DataAccess.Interfaces;
+using FoodUserAuth.BusinessLogic.Dto;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -20,7 +21,7 @@ public class UserPasswordChanger : IUserPasswordChanger
         _passwordGenerator = passwordGenerator ?? throw new ArgumentNullException(nameof(passwordGenerator));
     }
 
-    public async Task ChangeAsync(User user, string oldPassword, string newPassword)
+    public async Task ChangeAsync(UserDto user, string oldPassword, string newPassword)
     {
         if (user == null)
         {
