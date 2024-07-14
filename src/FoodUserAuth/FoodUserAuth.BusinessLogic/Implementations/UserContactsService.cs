@@ -28,7 +28,7 @@ public class UserContactsService : IUserContactsService
     {
         var userContact = await _unitOfWork
             .GetUserContactsRepository()
-            .FindContact(сontactType, contact, false);
+            .Find(сontactType, contact, false);
 
         return userContact?.ToDto();
     }

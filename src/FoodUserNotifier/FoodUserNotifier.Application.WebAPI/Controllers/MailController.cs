@@ -18,19 +18,20 @@ namespace FoodUserNotifier.Application.WebAPI.Controllers
     [Route("api/v1/[controller]")]
     [Produces("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Administration)]
-    public class MailController : ControllerBase, IMailController
+    public class MailController : ControllerBase
     {
-        IGmailMessage gmailMessage;
+        GmailMessage gmailMessage;
         public   MailController(IServiceProvider service) 
         {
-            gmailMessage = service.GetRequiredService<IGmailMessage>();   
+            gmailMessage = (GmailMessage)service.GetRequiredService<IGmailMessage>();   
         }
 
 
         [HttpGet("{FromEmail}/{ToEmail}/{subject}/{content}")]
         public void SendMessage([FromRoute]  string FromEmail, [FromRoute] string ToEmail, [FromRoute] string subject, [FromRoute] string content) 
         {
-            gmailMessage.Message("chuchunov.nikolay@gmail.com", ToEmail, subject, content);
+           
+            gmailMessage.Message("chuchunov.nikolay@gmail.com", ToEmail, subject, @content);
         }
 
 

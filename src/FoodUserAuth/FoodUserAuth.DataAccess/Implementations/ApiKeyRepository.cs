@@ -16,14 +16,14 @@ internal class ApiKeyRepository : IApiKeyRepository, IDisposable
     }
 
   
-    public void Create(ApiKey token)
+    public void Create(ApiKey key)
     {
-        _dbContext.Add(token);
+        _dbContext.Add(key);
     }
 
-    public void Delete(ApiKey token)
+    public void Delete(ApiKey key)
     {
-        _dbContext.Remove(token);
+        _dbContext.Remove(key);
     }
 
     public async Task<IEnumerable<ApiKey>> GetAllAsync()

@@ -6,4 +6,6 @@ public interface IGmailMessage
 {
     public void Message(string FromEmail, string ToEmail, string subject, string content);
 
+   
+
 }
