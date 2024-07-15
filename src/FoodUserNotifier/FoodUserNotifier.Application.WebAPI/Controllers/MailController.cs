@@ -17,9 +17,10 @@ namespace FoodUserNotifier.Application.WebAPI.Controllers
 {
 
     [ApiController]
-    [Route("api/v1/[controller]")]
-    [Produces("application/json")]
-    [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Administration)]
+   // [Route("api/v1/[controller]")]
+  //  [Produces("application/json")]
+  //  [Authorize(AuthenticationSchemes = "Bearer, ApiKey", Roles = UserRole.Administration)]
+    [Route("[controller]")]
     public class MailController : ControllerBase
     {
         GmailMessage gmailMessage;
