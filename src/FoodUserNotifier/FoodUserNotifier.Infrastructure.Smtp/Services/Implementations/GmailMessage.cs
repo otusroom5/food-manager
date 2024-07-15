@@ -26,8 +26,9 @@ namespace FoodUserNotifier.Infrastructure.Smtp.Services.Implementations
         {
             var mess = new MailMessage { Subject = subject, From = new MailAddress(FromEmail) };
             mess.ReplyToList.Add(new MailAddress(ToEmail));
+            mess.Attachments.Add(new Attachment(content));
             mess.To.Add(new MailAddress(ToEmail));
-            var adds = AlternateView.CreateAlternateViewFromString(content, new System.Net.Mime.ContentType("text/plain"));
+            var adds = AlternateView.CreateAlternateViewFromString("Отчет от " + DateTime.Now, new System.Net.Mime.ContentType("text/plain"));
             adds.ContentType.CharSet = Encoding.UTF8.WebName;
             mess.AlternateViews.Add(adds);
             var mime = MimeMessage.CreateFromMailMessage(mess);
