@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using FoodManager.Shared.Types;
 using FoodUserAuth.BusinessLogic.Dto;
 using FoodUserAuth.WebApi.Contracts.Requests;
-using FoodUserAuth.BusinessLogic.Services;
-using FoodUserAuth.DataAccess.Entities;
 
 namespace FoodUserAuth.WebApi.Controllers;
 
@@ -21,14 +19,12 @@ namespace FoodUserAuth.WebApi.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
-    private readonly IUsersService _userService;
     private readonly IUserVerifier _userVerifier;
     private readonly ITokenHandler _tokenService;
     private readonly IUserPasswordChanger _userPasswordChanger;
     private readonly ICurrentUserAccessor _currentUserAccessor;
 
     public AccountsController(ILogger<AccountsController> logger,
-        IUsersService userService,
         IUserVerifier userVerifier,
         ICurrentUserAccessor currentUserAccessor,
         IUserPasswordChanger userPasswordChanger,
@@ -36,7 +32,6 @@ public class AccountsController : ControllerBase
     {
         _logger = logger;
         _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         _userPasswordChanger = userPasswordChanger ?? throw new ArgumentNullException(nameof(userPasswordChanger));
         _userVerifier = userVerifier ?? throw new ArgumentNullException(nameof(userVerifier));
         _currentUserAccessor = currentUserAccessor ?? throw new ArgumentNullException(nameof(currentUserAccessor));
@@ -71,13 +66,12 @@ public class AccountsController : ControllerBase
         _logger.LogDebug("Attempt to login {LoginName}", request.LoginName);
         try
         {
-            if (!await _userVerifier.VerifyAsync(request.LoginName, request.Password))
+            UserDto user = await _userVerifier.VerifyAndReturnUserIfSuccessAsync(request.LoginName, request.Password);
+            if (user == null)
             {
                 _logger.LogInformation("User not found");
                 return BadRequest(ResponseBase.Create("User not found"));
             }
-
-            UserDto user = await _userService.FindByLoginNameAsync(request.LoginName);
 
             _logger.LogInformation("User ({1}) is accepted", request.LoginName);
 

@@ -10,6 +10,12 @@ internal abstract class ResponseBase
     {
         return Create("Something wrong. Please contact administrator");
     }
+
+    public static ResponseBase CreateFailure(Exception ex)
+    {
+        return Create($"Something wrong. Please contact administrator: {ex.Message}");
+    }
+
     public static ResponseBase CreateSuccess()
     {
         return Create("Success");

@@ -4,9 +4,9 @@ namespace FoodUserAuth.DataAccess.Interfaces;
 
 public interface IApiKeyRepository
 {
-    void Create(ApiKey token);
-    void Update(ApiKey user);
-    void Delete(ApiKey token);
+    void Create(ApiKey key);
+    void Update(ApiKey key);
+    void Delete(ApiKey key);
     Task<IEnumerable<ApiKey>> GetAllAsync();
     Task<ApiKey> GetByIdOrDefaultAsync(Guid id);
 }

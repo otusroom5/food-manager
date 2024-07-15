@@ -1,6 +1,8 @@
-﻿namespace FoodUserAuth.BusinessLogic.Interfaces;
+﻿using FoodUserAuth.BusinessLogic.Dto;
+
+namespace FoodUserAuth.BusinessLogic.Interfaces;
 
 public interface IUserVerifier
 {
-    Task<bool> VerifyAsync(string loginName, string password);
+    Task<UserDto> VerifyAndReturnUserIfSuccessAsync(string loginName, string password);
 }

@@ -71,7 +71,7 @@ public class ApiKeysController : ControllerBase
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(ResponseBase.CreateFailure());
+            return BadRequest(ResponseBase.CreateFailure(ex));
         }
     }
 
@@ -102,7 +102,7 @@ public class ApiKeysController : ControllerBase
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(ResponseBase.CreateFailure());
+            return BadRequest(ResponseBase.CreateFailure(ex));
         }
     }
 
@@ -126,7 +126,7 @@ public class ApiKeysController : ControllerBase
         {
             _logger.LogError(ex, ex.Message);
 
-            return BadRequest(ResponseBase.CreateFailure());
+            return BadRequest(ResponseBase.CreateFailure(ex));
         }
     }
 

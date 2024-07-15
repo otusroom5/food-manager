@@ -31,9 +31,9 @@ internal class ApiKeyRepository : IApiKeyRepository, IDisposable
         return await _dbContext.ApiKeys.ToListAsync();
     }
 
-    public void Update(ApiKey user)
+    public void Update(ApiKey key)
     {
-        _dbContext.Entry(user).State = EntityState.Modified;
+        _dbContext.Entry(key).State = EntityState.Modified;
     }
 
     public async Task<ApiKey> GetByIdOrDefaultAsync(Guid id)

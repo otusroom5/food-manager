@@ -29,6 +29,11 @@ public class ApiKeyService : IApiKeyService
     {
         UserDto currentUser = await _currentUserAccessor.GetCurrentUserAsync();
 
+        if (currentUser == null)
+        {
+            throw new AccessViolationException("Api Keys can not be created by predefined user");
+        }
+
         Guid newId = Guid.NewGuid();
         var apiKey = new ApiKeyDto()
         {

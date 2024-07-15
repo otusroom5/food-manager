@@ -3,6 +3,8 @@ using FoodUserAuth.DataAccess.Entities;
 using FoodUserAuth.BusinessLogic.Exceptions;
 using FoodUserAuth.DataAccess.Interfaces;
 using FoodUserAuth.DataAccess.Types;
+using FoodUserAuth.BusinessLogic.Dto;
+using FoodUserAuth.BusinessLogic.Extensions;
 
 namespace FoodUserAuth.BusinessLogic.Services;
 
@@ -32,38 +34,38 @@ public class UserVerifier : IUserVerifier
         };
     }
 
-    public async Task<bool> VerifyAsync(string loginName, string password)
+    public async Task<UserDto> VerifyAndReturnUserIfSuccessAsync(string loginName, string password)
     {
         User user = await FindByLoginNameAsync(loginName);
 
         if (!_passwordHasher.VerifyHash(password, user.Password))
         {
-            return false;
+            return null;
         }
 
-        return true;
+        return user.ToDto();
     }
 
     private async Task<User> FindByLoginNameAsync(string loginName)
     {
-        User foundUser = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
+        User user = await _unitOfWork.GetUsersRepository().FindByLoginNameAsync(loginName);
 
-        if (foundUser == null)
+        if (user == null)
         {
             if (!IsPredefinedLoginName(loginName))
             {
                 throw new UserNotFoundException();
             }
 
-            foundUser = _predefinedUser;
+            user = _predefinedUser;
         }
 
-        if (foundUser.IsDisabled)
+        if (user.IsDisabled)
         {
             throw new UserDisabledException();
         }
 
-        return foundUser;
+        return user;
     }
 
     private bool IsPredefinedLoginName(string loginName)
