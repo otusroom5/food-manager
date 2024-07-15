@@ -59,22 +59,5 @@ namespace FoodUserNotifier.Infrastructure.Smtp.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на {
-        ///  &quot;web&quot;: {
-        ///    &quot;client_id&quot;: &quot;589235263377-b6kph65ouruqntgfffim011tlv1v1j4t.apps.googleusercontent.com&quot;,
-        ///    &quot;client_secret&quot;: &quot;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&quot;,
-        ///    &quot;redirect_uris&quot;: [ &quot;http://localhost&quot; ],
-        ///    &quot;auth_uri&quot;: &quot;https://accounts.google.com/o/oauth2/auth&quot;,
-        ///    &quot;token_uri&quot;: &quot;https://accounts.google.com/o/oauth2/token&quot;
-        ///  }
-        ///}.
-        /// </summary>
-        internal static string client_secrets_json {
-            get {
-                return ResourceManager.GetString("client_secrets.json", resourceCulture);
-            }
-        }
     }
 }
