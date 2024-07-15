@@ -18,7 +18,7 @@ public sealed class GmailMessageSender : IMessageSender
     private readonly IServiceProvider _serviceProvider;
     private readonly IGmailMessage _gmailMessage;
 
-    private GmailMessageSender( ILoggerFactory loggerFactory, IServiceProvider serviceProvider ) 
+    public GmailMessageSender( ILoggerFactory loggerFactory, IServiceProvider serviceProvider ) 
     {
         _logger = loggerFactory.CreateLogger<GmailMessageSender>();
         _gmailMessage = serviceProvider.GetService<IGmailMessage>();
