@@ -4,6 +4,7 @@ namespace FoodUserNotifier.Application.WebAPI.Utils
 {
     public sealed class LogMediator
     {
+        public static readonly object _locker = new ();
         public LogMediator(Serilog.ILogger logger, IDomainLogger domainLogger) 
         {
             domainLogger.Subscribe(new Observer(logger));
@@ -28,17 +29,20 @@ namespace FoodUserNotifier.Application.WebAPI.Utils
 
             public void OnNext(DomainLogMessage value)
             {
-                switch (value.Type)
+                lock (_locker)
                 {
-                    case DomainLogRecordType.Information:
-                        _logger.Information(value.Message);
-                        break;
-                    case DomainLogRecordType.Warning:
-                        _logger.Warning(value.Message);
-                        break;
-                    case DomainLogRecordType.Error:
-                        _logger.Error(value.Message);
-                        break;
+                    switch (value.Type)
+                    {
+                        case DomainLogRecordType.Information:
+                            _logger.Information(value.Message);
+                            break;
+                        case DomainLogRecordType.Warning:
+                            _logger.Warning(value.Message);
+                            break;
+                        case DomainLogRecordType.Error:
+                            _logger.Error(value.Message);
+                            break;
+                    }
                 }
             }
         }
